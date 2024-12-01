@@ -1,17 +1,19 @@
-package com.ageinghippy.model;
+package com.ageinghippy.data.model;
 
-public class FoodCategory {
+public class Dish {
     private int id;
     private String name;
     private String description;
+    private String preparationTechniqueCode;
 
-    public FoodCategory() {
+    public Dish() {
     }
 
-    public FoodCategory(int id, String name, String description) {
+    public Dish(int id, String name, String description, String preparationTechniqueCode) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.preparationTechniqueCode = preparationTechniqueCode;
     }
 
     public int getId() {
@@ -38,12 +40,21 @@ public class FoodCategory {
         this.description = description;
     }
 
+    public String getPreparationTechniqueCode() {
+        return preparationTechniqueCode;
+    }
+
+    public void setPreparationTechniqueCode(String preparationTechniqueCode) {
+        this.preparationTechniqueCode = preparationTechniqueCode;
+    }
+
     @Override
     public String toString() {
-        return "FoodCategory{" +
+        return "Dish{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", preparationTechniqueCode='" + preparationTechniqueCode + '\'' +
                 '}';
     }
 }

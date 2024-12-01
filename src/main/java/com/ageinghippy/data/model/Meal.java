@@ -1,4 +1,4 @@
-package com.ageinghippy.model;
+package com.ageinghippy.data.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

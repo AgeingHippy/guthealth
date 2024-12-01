@@ -3,18 +3,21 @@ package com.ageinghippy.controller;
 
 import com.ageinghippy.data.GutHealthDAO;
 import com.ageinghippy.service.FoodCategoryService;
+import com.ageinghippy.service.FoodTypeService;
 import com.ageinghippy.service.PreparationTechniqueService;
 
 import java.util.Scanner;
 
 public class CLIMenu {
-    private final FoodCategoryService foodCategoryService;
     private final PreparationTechniqueService preparationTechniqueService;
+    private final FoodCategoryService foodCategoryService;
+    private final FoodTypeService foodTypeService;
 
     public CLIMenu() {
         GutHealthDAO gutHealthDAO = new GutHealthDAO();
-        foodCategoryService = new FoodCategoryService(gutHealthDAO);
         preparationTechniqueService = new PreparationTechniqueService(gutHealthDAO);
+        foodCategoryService = new FoodCategoryService(gutHealthDAO);
+        foodTypeService = new FoodTypeService(gutHealthDAO, foodCategoryService);
     }
 
     public void showMainMenu() {
@@ -74,6 +77,7 @@ public class CLIMenu {
                     break;
                 case 3:
                     System.out.println("You have chosen " + options[choice]);
+                    foodTypeDataManipulationMenu();
                     break;
                 case 4:
                     System.out.println("You have chosen " + options[choice]);
@@ -208,7 +212,44 @@ public class CLIMenu {
         } while (choice != 0);
     }
 
-    private void foodTypeCategoryManipulationMenu() {
+    private void foodTypeDataManipulationMenu() {
+        int choice;
+        String title = "=== FOOD TYPE DATA MANIPULATION MENU ===";
+        String[] options = new String[5] ;
+        options[0] = "to exit";
+        options[1] = "to add new food type";
+        options[2] = "to update an existing food type";
+        options[3] = "to delete an existing food type";
+        options[4] = "to view existing food types";
+
+        do {
+            choice = getChoice(title, options);
+
+            switch (choice) {
+                case 0: //exit
+                    System.out.println("You have chosen " + options[choice]);
+                    break;
+                case 1: //insert
+                    System.out.println("You have chosen " + options[choice]);
+                    foodTypeService.createFoodType();
+                    break;
+                case 2: //update
+                    System.out.println("You have chosen " + options[choice]);
+                    foodTypeService.updateFoodType();
+                    break;
+                case 3: //delete
+                    System.out.println("You have chosen " + options[choice]);
+                    foodTypeService.deleteFoodType();
+                    break;
+                case 4:
+                    System.out.println("You have chosen " + options[choice]);
+                    foodTypeService.printFoodTypes();
+                    break;
+                default:
+                    System.out.println("You have made an invalid choice. Please try again.");
+            }
+
+        } while (choice != 0);
 
     }
 

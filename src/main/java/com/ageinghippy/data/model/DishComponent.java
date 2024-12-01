@@ -1,4 +1,4 @@
-package com.ageinghippy.model;
+package com.ageinghippy.data.model;
 
 public class DishComponent {
     private int id;

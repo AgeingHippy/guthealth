@@ -2,8 +2,7 @@ package com.ageinghippy.service;
 
 import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.model.FoodCategory;
-import com.ageinghippy.model.PreparationTechnique;
+import com.ageinghippy.data.model.FoodCategory;
 import com.ageinghippy.util.Util;
 
 import java.util.ArrayList;
@@ -95,13 +94,29 @@ public class FoodCategoryService {
         System.out.println("=== ========= ===");
     }
 
+    public FoodCategory selectFoodCategory() {
+        String[] options;
+        int choice;
+        FoodCategory foodCategory = null;
+        ArrayList<FoodCategory> foodCategories = gutHealthDAO.getFoodCategories();
+        if (!foodCategories.isEmpty()) {
+            //build an array containing food category items
+            options = new String[foodCategories.size()];
+            for (int i = 0; i < foodCategories.size(); i++) {
+                options[i] = foodCategories.get(i).getName() + "( " + foodCategories.get(i).getDescription() + ")";
+            }
+            choice = CLIMenu.getChoice("Please select the food category", options);
+            foodCategory = foodCategories.get(choice);
+        }
+        return foodCategory;
+    }
+
     private FoodCategory saveFoodCategory(FoodCategory foodCategory) {
         int id = 0;
         if (foodCategory.getId() == 0) {
             //insert
             id = gutHealthDAO.insertFoodCategory(foodCategory);
-        }
-        else {
+        } else {
             //update
             if (gutHealthDAO.updateFoodCategory(foodCategory)) {
                 id = foodCategory.getId();

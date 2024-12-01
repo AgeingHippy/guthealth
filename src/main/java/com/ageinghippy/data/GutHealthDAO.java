@@ -1,6 +1,6 @@
 package com.ageinghippy.data;
 
-import com.ageinghippy.model.*;
+import com.ageinghippy.data.model.*;
 
 import java.sql.*;
 import java.text.MessageFormat;
@@ -433,7 +433,8 @@ public class GutHealthDAO {
         int id = 0;
         try (PreparedStatement ps = connection.prepareStatement(SQL_INSERT_FOOD_TYPE, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, foodType.getFoodCategoryId());
-            ps.setString(2, foodType.getDescription());
+            ps.setString(2, foodType.getName());
+            ps.setString(3, foodType.getDescription());
 
             if (ps.executeUpdate() > 0) {
                 ResultSet generatedKeys = ps.getGeneratedKeys();
