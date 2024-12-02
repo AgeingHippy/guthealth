@@ -4,6 +4,7 @@ package com.ageinghippy.controller;
 import com.ageinghippy.data.GutHealthDAO;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
+import com.ageinghippy.service.FullDishService;
 import com.ageinghippy.service.PreparationTechniqueService;
 
 import java.util.Scanner;
@@ -12,12 +13,14 @@ public class CLIMenu {
     private final PreparationTechniqueService preparationTechniqueService;
     private final FoodCategoryService foodCategoryService;
     private final FoodTypeService foodTypeService;
+    private final FullDishService fullDishService;
 
     public CLIMenu() {
         GutHealthDAO gutHealthDAO = new GutHealthDAO();
         preparationTechniqueService = new PreparationTechniqueService(gutHealthDAO);
         foodCategoryService = new FoodCategoryService(gutHealthDAO);
         foodTypeService = new FoodTypeService(gutHealthDAO, foodCategoryService);
+        fullDishService = new FullDishService(gutHealthDAO, preparationTechniqueService,foodTypeService);
     }
 
     public void showMainMenu() {
@@ -57,8 +60,8 @@ public class CLIMenu {
         options[1] = "to manipulate preparation technique lookup data";
         options[2] = "to manipulate food category lookup data";
         options[3] = "to manipulate food type lookup data";
-        options[4] = "to manipulate a meal (add a new meal, modify meal components etc.";
-        options[5] = "to manipulate a dish (add a new dish, modify dish components etc.";
+        options[4] = "to manipulate a dish (add a new dish, modify dish components etc.";
+        options[5] = "to manipulate a meal (add a new meal, modify meal components etc.";
 
         do {
             choice = getChoice(title, options);
@@ -81,6 +84,7 @@ public class CLIMenu {
                     break;
                 case 4:
                     System.out.println("You have chosen " + options[choice]);
+                    dishDataManipulationMenu();
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
@@ -253,11 +257,55 @@ public class CLIMenu {
 
     }
 
+    private void dishDataManipulationMenu() {
+        int choice;
+        String title = "=== DISH DATA MANIPULATION MENU ===";
+        String[] options = new String[6] ;
+        options[0] = "to exit";
+        options[1] = "to add a new dish";
+        options[2] = "to update an existing dish";
+        options[3] = "to delete an existing dish";
+        options[4] = "to view existing dishes";
+        options[5] = "to view full details of an existing dish";
+
+        do {
+            choice = getChoice(title, options);
+
+            switch (choice) {
+                case 0: //exit
+                    System.out.println("You have chosen " + options[choice]);
+                    break;
+                case 1: //insert
+                    System.out.println("You have chosen " + options[choice]);
+                    fullDishService.createFullDish();
+                    break;
+                case 2: //update
+                    System.out.println("You have chosen " + options[choice]);
+                    fullDishService.updateFullDish();
+                    break;
+                case 3: //delete
+                    System.out.println("You have chosen " + options[choice]);
+                    fullDishService.deleteFullDish();
+                    break;
+                case 4:
+                    System.out.println("You have chosen " + options[choice]);
+                    fullDishService.printDishes();
+                    break;
+                case 5:
+                    System.out.println("You have chosen " + options[choice]);
+                    fullDishService.printFullDishDetails();
+                    break;
+                default:
+                    System.out.println("You have made an invalid choice. Please try again.");
+            }
+
+        } while (choice != 0);
+    }
+
     public static int getChoice(String title, String[] options) {
         Scanner scanner = new Scanner(System.in);
         String input;
         int choice = -1;
-        boolean choiceNotMade = true;
 
         do {
             System.out.println("=== " + title + " ===");
@@ -272,11 +320,19 @@ public class CLIMenu {
             try {
                 choice =  Integer.parseInt(input);
                 if (choice < 0 || choice > options.length ) {
-                    throw new NumberFormatException("Invalid choice");
+                    throw new NumberFormatException("Choice out of bounds");
                 }
             }
             catch (NumberFormatException e) {
                 System.err.println("Invalid choice entered. Please try again.");
+                try {
+                    //we sleep long enough for the error thread to have time to write the error before we continue.
+                    //(I like the red 'invalid choice' message)
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+                choice = -1;
             }
 
         } while (choice < 0 );

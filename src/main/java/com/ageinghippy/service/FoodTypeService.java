@@ -82,8 +82,7 @@ public class FoodTypeService {
         int id = Util.getIntFromUser("Please enter the food type id");
         FoodType foodType = gutHealthDAO.getFoodType(id);
         if (foodType != null) {
-            //todo - modify print of foodType in the title to have category name rather than category_id
-            String title = "=== DELETE " + foodType + " ===";
+            String title = "=== DELETE " + foodTypePrintString(foodType) + " ===";
             String[] options = new String[2];
             options[0] = "to exit without deleting";
             options[1] = "to delete the Food Category";
@@ -143,13 +142,23 @@ public class FoodTypeService {
     }
 
     public void printFoodType(FoodType foodType) {
-        String foodTypeString = foodType.toString();
-        FoodCategory foodCategory =gutHealthDAO.getFoodCategory(foodType.getFoodCategoryId());
-        String foodCategoryString = "foodCategory = '" + foodCategory.getName() + "'";
-        String pattern = "foodCategory_id=\\d+";
+        System.out.println(foodTypePrintString(foodType));
+    }
 
-        foodTypeString = foodTypeString.replaceAll(pattern, foodCategoryString);
-        System.out.println(foodTypeString);
+    /**
+     * Build and return a string describing the given {@code FoodType} with all foreign keys replaced by descriptors
+     *
+     * @param foodType the {@FoodType} for which a readable string is required
+     * @return a {@code String} containing readable food type details
+     */
+    public String foodTypePrintString(FoodType foodType) {
+        FoodCategory foodCategory = gutHealthDAO.getFoodCategory(foodType.getFoodCategoryId());
+        return "FoodType{" +
+                "id=" + foodType.getId() +
+                ", foodCategory='" + foodCategory.getName() + '\''+
+                ", name='" + foodType.getName() + '\'' +
+                ", description='" + foodType.getDescription() + '\'' +
+                '}';
     }
 
 }

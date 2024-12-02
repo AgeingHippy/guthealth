@@ -2,6 +2,7 @@ package com.ageinghippy.service;
 
 import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
+import com.ageinghippy.data.model.FoodCategory;
 import com.ageinghippy.data.model.PreparationTechnique;
 import com.ageinghippy.util.Util;
 
@@ -92,6 +93,23 @@ public class PreparationTechniqueService {
         System.out.println("=== " + preparationTechniques.size() + " PreparationTechnique records returned ===");
         preparationTechniques.forEach(System.out::println);
         System.out.println("=== ========= ===");
+    }
+
+    public PreparationTechnique selectPreparationTechnique() {
+        String[] options;
+        int choice;
+        PreparationTechnique preparationTechnique = null;
+        ArrayList<PreparationTechnique> preparationTechniques = gutHealthDAO.getPreparationTechniques();
+        if (!preparationTechniques.isEmpty()) {
+            //build an array containing food category items
+            options = new String[preparationTechniques.size()];
+            for (int i = 0; i < preparationTechniques.size(); i++) {
+                options[i] = preparationTechniques.get(i).getCode() + "( " + preparationTechniques.get(i).getDescription() + ")";
+            }
+            choice = CLIMenu.getChoice("Please select the preparation technique", options);
+            preparationTechnique = preparationTechniques.get(choice);
+        }
+        return preparationTechnique;
     }
 
     private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {

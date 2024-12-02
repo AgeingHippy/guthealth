@@ -12,13 +12,12 @@ public class Util {
         String input;
         LocalDate date = null;
         do {
-            System.out.print(prompt +" : ");
+            System.out.print(prompt + " (YYYY-MM-DD) : ");
             input = scanner.nextLine();
 
             try {
-                date =  LocalDate.parse(input);
-            }
-            catch (DateTimeParseException e) {
+                date = LocalDate.parse(input);
+            } catch (DateTimeParseException e) {
                 System.err.println("Invalid date entered. Expected format YYYY-MM-DD");
             }
         } while (date == null);
@@ -30,13 +29,12 @@ public class Util {
         String input;
         LocalTime time = null;
         do {
-            System.out.print(prompt+" : ");
+            System.out.print(prompt + " (HH:MI[:SS]) : ");
             input = scanner.nextLine();
 
             try {
-                time =  LocalTime.parse(input);
-            }
-            catch (DateTimeParseException e) {
+                time = LocalTime.parse(input);
+            } catch (DateTimeParseException e) {
                 System.err.println("Invalid time entered. Expected format HH:MI[:SS]");
             }
         } while (time == null);
@@ -48,13 +46,12 @@ public class Util {
         String input;
         Integer i = null;
         do {
-            System.out.print(prompt+" : ");
+            System.out.print(prompt + " : ");
             input = scanner.nextLine();
 
             try {
-                i =  Integer.parseInt(input);
-            }
-            catch (NumberFormatException e) {
+                i = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
                 System.err.println("Invalid number entered. Expected integer");
             }
         } while (i == null);
@@ -65,7 +62,7 @@ public class Util {
         Scanner scanner = new Scanner(System.in);
         String input;
         do {
-            System.out.print(prompt+" : ");
+            System.out.print(prompt + " : ");
             input = scanner.nextLine();
             if (input.isBlank()) {
                 System.err.println("Invalid string entered. Expected it should not be blank");
