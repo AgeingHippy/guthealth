@@ -161,7 +161,7 @@ public class GutHealthDAO {
         return foodCategory;
     }
 
-    /**
+        /**
      * Fetch all matching {@code FoodType} records from the database
      *
      * @param whereClause - a String containing an optional where clause including the word WHERE
@@ -292,7 +292,7 @@ public class GutHealthDAO {
                 al.add(new MealComponent(
                         rs.getInt("id"),
                         rs.getInt("meal_id"),
-                        rs.getInt("foor_type_id"),
+                        rs.getInt("food_type_id"),
                         rs.getString("preparation_technique_code"),
                         rs.getInt("volume")
                 ));

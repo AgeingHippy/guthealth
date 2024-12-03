@@ -4,3 +4,4 @@ This is also initially used as the Capstone poject for CodingNomads Java 301 mod
 
 Note. Only implementing methods included in 301 at this point. No Spring, no tests, no logging and no data access optimisation.
 
+![er-diagram.png](src/main/resources/er-diagram.png)

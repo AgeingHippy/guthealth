@@ -69,7 +69,7 @@ public class FoodTypeService {
                         break;
                     case 4:
                         foodType.setDescription(Util.getStringFromUser("Please enter the updated food type description"));
-                        System.out.println("UNSAVED : " );
+                        System.out.println("UNSAVED : ");
                         break;
                 }
 
@@ -102,18 +102,28 @@ public class FoodTypeService {
         }
     }
 
-    public void printFoodTypes() {
-        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes();
+    public void printFoodTypes(String whereClause) {
+        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes(whereClause);
         System.out.println("=== " + foodTypes.size() + " FoodType records returned ===");
         foodTypes.forEach(this::printFoodType);
         System.out.println("=== ========= ===");
     }
 
     public FoodType selectFoodType() {
+        return selectFoodType(null);
+    }
+
+    public FoodType selectFoodType(FoodCategory foodCategory) {
+        String whereClause = "";
         String[] options;
         int choice;
         FoodType foodType = null;
-        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes();
+
+        if (foodCategory != null) {
+            whereClause = String.format("WHERE food_category_id = %d", foodCategory.getId());
+        }
+
+        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes(whereClause);
         if (!foodTypes.isEmpty()) {
             //build an array containing food type items
             options = new String[foodTypes.size()];
@@ -155,7 +165,7 @@ public class FoodTypeService {
         FoodCategory foodCategory = gutHealthDAO.getFoodCategory(foodType.getFoodCategoryId());
         return "FoodType{" +
                 "id=" + foodType.getId() +
-                ", foodCategory='" + foodCategory.getName() + '\''+
+                ", foodCategory='" + foodCategory.getName() + '\'' +
                 ", name='" + foodType.getName() + '\'' +
                 ", description='" + foodType.getDescription() + '\'' +
                 '}';

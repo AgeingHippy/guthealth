@@ -2,13 +2,11 @@ package com.ageinghippy.service;
 
 import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.Dish;
-import com.ageinghippy.data.model.DishComponent;
-import com.ageinghippy.data.model.FoodType;
-import com.ageinghippy.data.model.FullDish;
+import com.ageinghippy.data.model.*;
 import com.ageinghippy.util.Util;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 /**
  * Manage all that is related to dishes including dish components
@@ -16,11 +14,13 @@ import java.util.ArrayList;
 public class FullDishService {
     private final GutHealthDAO gutHealthDAO;
     private final PreparationTechniqueService preparationTechniqueService;
+    private final FoodCategoryService foodCategoryService;
     private final FoodTypeService foodTypeService;
 
-    public FullDishService(GutHealthDAO gutHealthDAO, PreparationTechniqueService preparationTechniqueService, FoodTypeService foodTypeService) {
+    public FullDishService(GutHealthDAO gutHealthDAO, PreparationTechniqueService preparationTechniqueService, FoodCategoryService foodCategoryService, FoodTypeService foodTypeService) {
         this.gutHealthDAO = gutHealthDAO;
         this.preparationTechniqueService = preparationTechniqueService;
+        this.foodCategoryService = foodCategoryService;
         this.foodTypeService = foodTypeService;
     }
 
@@ -36,6 +36,7 @@ public class FullDishService {
         saveFullDish(fullDish);
     }
 
+    //todo move to CLIMenu
     public void updateFullDish() {
         int id = Util.getIntFromUser("Please enter the dish id");
         FullDish fullDish = getFullDish(id);
@@ -72,7 +73,7 @@ public class FullDishService {
                     break;
                 case 4:
                     System.out.println("You have chosen " + options[choice]);
-                    System.err.println("Not yet implemented");
+                    removeFullDishComponents(fullDish);
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
@@ -83,7 +84,6 @@ public class FullDishService {
                     break;
             }
         } while (choice < 0 || choice > 1);
-
     }
 
     private void updateDish(Dish dish) {
@@ -159,12 +159,37 @@ public class FullDishService {
                     break;
                 case 1:
                     System.out.println("You have chosen " + options[choice]);
-                    dishComponent.setFoodTypeId(foodTypeService.selectFoodType().getId());
+                    dishComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
                     break;
                 case 2:
                     System.out.println("You have chosen " + options[choice]);
                     dishComponent.setProportion(Util.getIntFromUser("Please enter this component's proportion"));
                     break;
+            }
+        } while (choice != 0);
+    }
+
+    private void removeFullDishComponents(FullDish fullDish) {
+        int choice;
+        String[] options;
+        String title = "=== Select dish component to remove from " + fullDish.getDish().getName() + " ===";
+
+        //we need to rebuild the list each time a component is removed
+        //Use a lambda for this
+        Function<ArrayList<DishComponent>, String[]> buildOptionsList = (dishComponents) -> {
+            String[] optionsList = new String[dishComponents.size() + 1];
+            optionsList[0] = "To Exit";
+            for (int i = 0; i < dishComponents.size(); i++) {
+                optionsList[i + 1] = dishComponentPrintString(dishComponents.get(i));
+            }
+            return optionsList;
+        };
+
+        do {
+            options = buildOptionsList.apply(fullDish.getDishComponents());
+            choice = CLIMenu.getChoice(title, options);
+            if (choice != 0) {
+                fullDish.removeDishComponent(fullDish.getDishComponents().get(choice - 1));
             }
         } while (choice != 0);
     }
@@ -200,7 +225,6 @@ public class FullDishService {
         } else {
             System.out.println("Dish with primary key '" + id + "' not found");
         }
-
     }
 
     public ArrayList<FullDish> getFullDishes() {
@@ -246,7 +270,7 @@ public class FullDishService {
         DishComponent dishComponent = new DishComponent();
 
         dishComponent.setDishId(dishId);
-        dishComponent.setFoodTypeId(foodTypeService.selectFoodType().getId());
+        dishComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
         dishComponent.setProportion(Util.getIntFromUser("Please enter the proportion this component is of the full dish"));
 
         return dishComponent;
@@ -256,7 +280,7 @@ public class FullDishService {
         String title = "=== SAVE DISH AND COMPONENTS===";
         String[] options = new String[2];
         options[0] = "to exit without saving";
-        options[1] = "to save the dish and associated components";
+        options[1] = "to save changes to the dish and associated components";
 
         int choice = CLIMenu.getChoice(title, options);
         switch (choice) {
@@ -267,12 +291,18 @@ public class FullDishService {
                 //save dish
                 fullDish.setDish(saveDish(fullDish.getDish()));
 
-                //save dish components
+                //save current dish components
                 fullDish.getDishComponents().forEach(dishComponent -> {
                     dishComponent.setDishId(
                             dishComponent.getDishId() == 0 ? fullDish.getDish().getId() : dishComponent.getDishId());
                     dishComponent = saveDishComponent(dishComponent);
                 });
+
+                //delete removed dish components
+                fullDish.getRemovedDishComponents().forEach(this::deleteDishComponent);
+                //reset deletedDishComponents to
+                fullDish.getRemovedDishComponents().clear();
+
                 System.out.println("SAVE COMPLETED");
                 break;
         }
@@ -301,8 +331,18 @@ public class FullDishService {
         return gutHealthDAO.getDishComponent(id);
     }
 
+    private void deleteDishComponent(DishComponent dishComponent) {
+        if (dishComponent.getId() != 0) {
+            gutHealthDAO.deleteDishComponent(dishComponent);
+        }
+    }
+
     public void printDishes() {
-        ArrayList<Dish> dishes = gutHealthDAO.getDishes();
+        printDishes("");
+    }
+
+    public void printDishes(String whereClause) {
+        ArrayList<Dish> dishes = gutHealthDAO.getDishes(whereClause);
         System.out.println("=== " + dishes.size() + " DISHES FOUND ===");
         dishes.forEach(this::printDish);
     }
@@ -316,6 +356,11 @@ public class FullDishService {
         ArrayList<FullDish> fullDishes = getFullDishes();
         System.out.println("=== " + fullDishes.size() + " DISHES FOUND ===");
         fullDishes.forEach(this::printFullDish);
+    }
+
+    public void printFullDish(int id) {
+        FullDish fullDish = getFullDish(id);
+        printFullDish(fullDish);
     }
 
     private void printFullDish(FullDish fullDish) {
