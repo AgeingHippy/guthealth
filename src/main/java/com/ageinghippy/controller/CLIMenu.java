@@ -21,7 +21,7 @@ public class CLIMenu {
         foodCategoryService = new FoodCategoryService(gutHealthDAO);
         foodTypeService = new FoodTypeService(gutHealthDAO, foodCategoryService);
         fullDishService = new FullDishService(gutHealthDAO, preparationTechniqueService, foodCategoryService, foodTypeService);
-        fullMealService = new FullMealService(gutHealthDAO, preparationTechniqueService, foodCategoryService, foodTypeService);
+        fullMealService = new FullMealService(gutHealthDAO, preparationTechniqueService, foodCategoryService, foodTypeService, fullDishService);
     }
 
     public void showMainMenu() {
@@ -133,7 +133,7 @@ public class CLIMenu {
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
-                    System.err.println("Functionality not yet implemented");
+                    mealDataViewMenu();
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -471,6 +471,7 @@ public class CLIMenu {
 
         } while (choice != 0);
     }
+
     public static int getChoice(String title, String[] options) {
         Scanner scanner = new Scanner(System.in);
         String input;

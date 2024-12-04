@@ -13,12 +13,14 @@ public class FullMealService {
     private final PreparationTechniqueService preparationTechniqueService;
     private final FoodCategoryService foodCategoryService;
     private final FoodTypeService foodTypeService;
+    private final FullDishService fullDishService;
 
-    public FullMealService(GutHealthDAO gutHealthDAO, PreparationTechniqueService preparationTechniqueService, FoodCategoryService foodCategoryService, FoodTypeService foodTypeService) {
+    public FullMealService(GutHealthDAO gutHealthDAO, PreparationTechniqueService preparationTechniqueService, FoodCategoryService foodCategoryService, FoodTypeService foodTypeService, FullDishService fullDishService) {
         this.gutHealthDAO = gutHealthDAO;
         this.preparationTechniqueService = preparationTechniqueService;
         this.foodCategoryService = foodCategoryService;
         this.foodTypeService = foodTypeService;
+        this.fullDishService = fullDishService;
     }
 
     public void createFullMeal() {
@@ -33,9 +35,9 @@ public class FullMealService {
         saveFullMeal(fullMeal);
     }
 
-    //todo move to CLIMenu
+    //todo move to CLIMenu?
     public void updateFullMeal() {
-        int id = Util.getIntFromUser("Please enter the dish id");
+        int id = Util.getIntFromUser("Please enter the meal id");
         FullMeal fullMeal = getFullMeal(id);
 
         String title = "=== UPDATE MEAL DETAILS ===";
@@ -46,7 +48,7 @@ public class FullMealService {
         options[2] = "to update meal details";
         options[3] = "to update existing meal component details";
         options[4] = "to delete an existing meal component";
-        options[5] = "to add a new meal component";
+        options[5] = "to add new meal components";
 
         do {
             printFullMeal(fullMeal);
@@ -74,7 +76,8 @@ public class FullMealService {
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
-                    fullMeal.addMealComponent(createMealComponent(fullMeal.getMeal().getId()));
+//                    fullMeal.addMealComponent(createMealComponent(fullMeal.getMeal().getId()));
+                    addMealComponents(fullMeal);
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -128,7 +131,7 @@ public class FullMealService {
                 System.out.println("You have chosen " + options[choice]);
             } else {
                 updateMealComponent(mealComponents.get(choice - 1)); //note options and mealComponents are out of sync by 1
-                //update options array element to reflect changes
+                //update options array element to reflect changes to current meal component
                 options[choice] = mealComponentPrintString(mealComponents.get(choice - 1));
             }
         } while (choice != 0);
@@ -242,9 +245,10 @@ public class FullMealService {
     private void addMealComponents(FullMeal fullMeal) {
         String title = "=== ADD NEW MEAL COMPONENT ===";
         int choice = -1;
-        String[] options = new String[2];
+        String[] options = new String[3];
         options[0] = "to exit";
         options[1] = "to add a new component";
+        options[2] = "to add meal components based on a dish";
 
         do {
             choice = CLIMenu.getChoice(title, options);
@@ -256,21 +260,45 @@ public class FullMealService {
                     System.out.println("You have chosen " + options[choice]);
                     fullMeal.addMealComponent(createMealComponent(fullMeal.getMeal().getId()));
                     break;
+                case 2:
+                    System.out.println("You have chosen " + options[choice]);
+                    //select dish, specify volume, and then create meal components from dish components
+                    FullDish fullDish = fullDishService.getFullDish(Util.getIntFromUser("Please enter the dish id"));
+                    int volume = Util.getIntFromUser("Please enter the volume of this dish consumed in this meal");
+                    ArrayList<MealComponent> additionalMealComponents = createMealComponents(fullMeal.getMeal().getId(), volume, fullDish);
+                    fullMeal.addMealComponents(additionalMealComponents);
+                    break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
             }
         } while (choice != 0);
     }
 
-    private MealComponent createMealComponent(int id) {
+    private MealComponent createMealComponent(int mealId) {
         MealComponent mealComponent = new MealComponent();
 
-        mealComponent.setMealId(id);
+        mealComponent.setMealId(mealId);
         mealComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
         mealComponent.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechnique().getCode());
         mealComponent.setVolume(Util.getIntFromUser("Please enter the volume of this meal component consumed"));
 
         return mealComponent;
+    }
+
+    private ArrayList<MealComponent> createMealComponents(int mealId, int volume, FullDish fullDish) {
+        int baseVolume = fullDish.getDishComponents().stream().mapToInt(DishComponent::getProportion).sum();
+        ArrayList<MealComponent> mealComponents = new ArrayList<>();
+
+        fullDish.getDishComponents().forEach(dish -> {
+            MealComponent mc = new MealComponent();
+            mc.setMealId(mealId);
+            mc.setFoodTypeId(dish.getFoodTypeId());
+            mc.setPreparationTechniqueCode(fullDish.getDish().getPreparationTechniqueCode());
+            mc.setVolume(volume * dish.getProportion() / baseVolume);
+            mealComponents.add(mc);
+        });
+
+        return mealComponents;
     }
 
     private FullMeal saveFullMeal(FullMeal fullMeal) {
@@ -290,8 +318,7 @@ public class FullMealService {
 
                 //save current meal components
                 fullMeal.getMealComponents().forEach(mealComponent -> {
-                    mealComponent.setMealId(
-                            mealComponent.getMealId() == 0 ? fullMeal.getMeal().getId() : mealComponent.getMealId());
+                    mealComponent.setMealId(mealComponent.getMealId() == 0 ? fullMeal.getMeal().getId() : mealComponent.getMealId());
                     mealComponent = saveMealComponent(mealComponent);
                 });
 
@@ -375,10 +402,6 @@ public class FullMealService {
 
     public String mealComponentPrintString(MealComponent mealComponent) {
         FoodType foodType = gutHealthDAO.getFoodType(mealComponent.getFoodTypeId());
-        return "MealComponent{" +
-                ", foodType=" + foodType.getName() +
-                ", preparationTechniqueCode='" + mealComponent.getPreparationTechniqueCode() + '\'' +
-                ", volume=" + mealComponent.getVolume() +
-                '}';
+        return "MealComponent{" + " foodType=" + foodType.getName() + ", preparationTechniqueCode='" + mealComponent.getPreparationTechniqueCode() + '\'' + ", volume=" + mealComponent.getVolume() + '}';
     }
 }
