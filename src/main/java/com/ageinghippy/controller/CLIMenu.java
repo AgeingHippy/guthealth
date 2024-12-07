@@ -2,7 +2,6 @@ package com.ageinghippy.controller;
 
 
 import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.FoodCategory;
 import com.ageinghippy.service.*;
 import com.ageinghippy.util.Util;
 
@@ -15,13 +14,20 @@ public class CLIMenu {
     private final FullDishService fullDishService;
     private final FullMealService fullMealService;
 
+    private final CLIFoodCategoryMenu cliFoodCategoryMenu;
+    private final CLIFoodTypeMenu cliFoodTypeMenu;
+    private final CLIPreparationTechniqueMenu cliPreparationTechniqueMenu;
+
     public CLIMenu() {
         GutHealthDAO gutHealthDAO = new GutHealthDAO();
         preparationTechniqueService = new PreparationTechniqueService(gutHealthDAO);
         foodCategoryService = new FoodCategoryService(gutHealthDAO);
-        foodTypeService = new FoodTypeService(gutHealthDAO, foodCategoryService);
+        foodTypeService = new FoodTypeService(gutHealthDAO);
         fullDishService = new FullDishService(gutHealthDAO, preparationTechniqueService, foodCategoryService, foodTypeService);
         fullMealService = new FullMealService(gutHealthDAO, preparationTechniqueService, foodCategoryService, foodTypeService, fullDishService);
+        cliPreparationTechniqueMenu = new CLIPreparationTechniqueMenu(preparationTechniqueService);
+        cliFoodCategoryMenu = new CLIFoodCategoryMenu(foodCategoryService);
+        cliFoodTypeMenu = new CLIFoodTypeMenu(foodTypeService,cliFoodCategoryMenu);
     }
 
     public void showMainMenu() {
@@ -77,11 +83,11 @@ public class CLIMenu {
                     break;
                 case 2: //manipulate food category lookup data
                     System.out.println("You have chosen " + options[choice]);
-                    foodCategoryDataManipulationMenu();
+                    cliFoodCategoryMenu.foodCategoryDataManipulationMenu(this);
                     break;
                 case 3: //manipulate food type lookup data
                     System.out.println("You have chosen " + options[choice]);
-                    foodTypeDataManipulationMenu();
+                    cliFoodTypeMenu.foodTypeDataManipulationMenu(this);
                     break;
                 case 4: //manipulate a dish
                     System.out.println("You have chosen " + options[choice]);
@@ -117,15 +123,15 @@ public class CLIMenu {
                     break;
                 case 1: //view preparation technique lookup data
                     System.out.println("You have chosen " + options[choice]);
-                    preparationTechniqueService.printPreparationTechniques();
+                    preparationTechniqueService.printPreparationTechniquesMenuOption();
                     break;
                 case 2: //view food category lookup data
                     System.out.println("You have chosen " + options[choice]);
-                    foodCategoryService.printFoodCategories();
+                    cliFoodCategoryMenu.printFoodCategoriesMenuOption();
                     break;
                 case 3: //food type lookup data
                     System.out.println("You have chosen " + options[choice]);
-                    foodTypeDataViewMenu();
+                    cliFoodTypeMenu.foodTypeDataViewMenu();
                     break;
                 case 4: //view dish data
                     System.out.println("You have chosen " + options[choice]);
@@ -161,141 +167,19 @@ public class CLIMenu {
                     break;
                 case 1: //insert
                     System.out.println("You have chosen " + options[choice]);
-                    preparationTechniqueService.createPreparationTechnique();
+                    preparationTechniqueService.createPreparationTechniqueMenuOption();
                     break;
                 case 2: //update
                     System.out.println("You have chosen " + options[choice]);
-                    preparationTechniqueService.updatePreparationTechnique();
+                    preparationTechniqueService.updatePreparationTechniqueMenuOption();
                     break;
                 case 3: //delete
                     System.out.println("You have chosen " + options[choice]);
-                    preparationTechniqueService.deletePreparationTechnique();
+                    preparationTechniqueService.deletePreparationTechniqueMenuOption();
                     break;
                 case 4:
                     System.out.println("You have chosen " + options[choice]);
-                    preparationTechniqueService.printPreparationTechniques();
-                    break;
-                default:
-                    System.out.println("You have made an invalid choice. Please try again.");
-            }
-
-        } while (choice != 0);
-    }
-
-    private void foodCategoryDataManipulationMenu() {
-        int choice;
-        String title = "=== FOOD CATEGORY DATA MANIPULATION MENU ===";
-        String[] options = new String[5];
-        options[0] = "to exit";
-        options[1] = "to add new food category";
-        options[2] = "to update an existing food category";
-        options[3] = "to delete an existing food category";
-        options[4] = "to view existing food categories";
-
-        do {
-            choice = getChoice(title, options);
-
-            switch (choice) {
-                case 0: //exit
-                    System.out.println("You have chosen " + options[choice]);
-                    break;
-                case 1: //insert
-                    System.out.println("You have chosen " + options[choice]);
-                    foodCategoryService.createFoodCategory();
-                    break;
-                case 2: //update
-                    System.out.println("You have chosen " + options[choice]);
-                    foodCategoryService.updateFoodCategory();
-                    break;
-                case 3: //delete
-                    System.out.println("You have chosen " + options[choice]);
-                    foodCategoryService.deleteFoodCategory();
-                    break;
-                case 4:
-                    System.out.println("You have chosen " + options[choice]);
-                    foodCategoryService.printFoodCategories();
-                    break;
-                default:
-                    System.out.println("You have made an invalid choice. Please try again.");
-            }
-
-        } while (choice != 0);
-    }
-
-    private void foodTypeDataManipulationMenu() {
-        int choice;
-        String title = "=== FOOD TYPE DATA MANIPULATION MENU ===";
-        String[] options = new String[5];
-        options[0] = "to exit";
-        options[1] = "to add new food type";
-        options[2] = "to update an existing food type";
-        options[3] = "to delete an existing food type";
-        options[4] = "to view existing food types";
-
-        do {
-            choice = getChoice(title, options);
-
-            switch (choice) {
-                case 0: //exit
-                    System.out.println("You have chosen " + options[choice]);
-                    break;
-                case 1: //insert
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.createFoodType();
-                    break;
-                case 2: //update
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.updateFoodType();
-                    break;
-                case 3: //delete
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.deleteFoodType();
-                    break;
-                case 4:
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeDataViewMenu();
-                    break;
-                default:
-                    System.out.println("You have made an invalid choice. Please try again.");
-            }
-
-        } while (choice != 0);
-
-    }
-
-    private void foodTypeDataViewMenu() {
-        int choice;
-        String title = "=== FOOD TYPE DATA VIEW MENU ===";
-        String[] options = new String[5];
-        options[0] = "to exit";
-        options[1] = "to filter by Food Category";
-        options[2] = "to filter by name (LIKE)";
-        options[3] = "to filter by description (LIKE)";
-        options[4] = "to view all existing food types";
-
-        do {
-            choice = getChoice(title, options);
-
-            switch (choice) {
-                case 0: //exit
-                    System.out.println("You have chosen " + options[choice]);
-                    break;
-                case 1: //filter by Food Category
-                    System.out.println("You have chosen " + options[choice]);
-                    FoodCategory foodCategory = foodCategoryService.selectFoodCategory();
-                    foodTypeService.printFoodTypes(String.format("WHERE food_category_id = %s", foodCategory.getId()));
-                    break;
-                case 2: //to filter by name (LIKE)
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.printFoodTypes(String.format("WHERE UPPER(name) LIKE '%%%s%%'", Util.getStringFromUser("Please enter the partial name match").toUpperCase()));
-                    break;
-                case 3: //to filter by description (LIKE)
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.printFoodTypes(String.format("WHERE UPPER(description) LIKE '%%%s%%'", Util.getStringFromUser("Please enter the partial description match").toUpperCase()));
-                    break;
-                case 4: //view all existing food types
-                    System.out.println("You have chosen " + options[choice]);
-                    foodTypeService.printFoodTypes("");
+                    preparationTechniqueService.printPreparationTechniquesMenuOption();
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -323,15 +207,15 @@ public class CLIMenu {
                     break;
                 case 1: //insert
                     System.out.println("You have chosen " + options[choice]);
-                    fullDishService.createFullDish();
+                    fullDishService.createFullDishMenuOption();
                     break;
                 case 2: //update
                     System.out.println("You have chosen " + options[choice]);
-                    fullDishService.updateFullDish();
+                    fullDishService.updateFullDishMenuOption();
                     break;
                 case 3: //delete
                     System.out.println("You have chosen " + options[choice]);
-                    fullDishService.deleteFullDish();
+                    fullDishService.deleteFullDishMenuOption();
                     break;
                 case 4: //view
                     System.out.println("You have chosen " + options[choice]);
@@ -366,7 +250,7 @@ public class CLIMenu {
                     System.out.println("You have chosen " + options[choice]);
                     fullDishService.printDishes(
                             String.format("WHERE preparation_technique_code = '%s'",
-                                    preparationTechniqueService.selectPreparationTechnique().getCode()));
+                                    preparationTechniqueService.selectPreparationTechniqueMenuOption().getCode()));
                     break;
                 case 2: //filter dishes by name (LIKE)
                     System.out.println("You have chosen " + options[choice]);
@@ -507,4 +391,5 @@ public class CLIMenu {
         } while (choice < 0);
         return choice;
     }
+
 }

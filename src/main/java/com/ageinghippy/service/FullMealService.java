@@ -155,11 +155,11 @@ public class FullMealService {
                     break;
                 case 1:
                     System.out.println("You have chosen " + options[choice]);
-                    mealComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
+                    mealComponent.setFoodTypeId(foodTypeService.selectFoodTypeMenuOption(foodCategoryService.selectFoodCategory()).getId());
                     break;
                 case 2:
                     System.out.println("You have chosen " + options[choice]);
-                    mealComponent.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechnique().getCode());
+                    mealComponent.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechniqueMenuOption().getCode());
                     break;
                 case 3:
                     System.out.println("You have chosen " + options[choice]);
@@ -278,8 +278,8 @@ public class FullMealService {
         MealComponent mealComponent = new MealComponent();
 
         mealComponent.setMealId(mealId);
-        mealComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
-        mealComponent.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechnique().getCode());
+        mealComponent.setFoodTypeId(foodTypeService.selectFoodTypeMenuOption(foodCategoryService.selectFoodCategory()).getId());
+        mealComponent.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechniqueMenuOption().getCode());
         mealComponent.setVolume(Util.getIntFromUser("Please enter the volume of this meal component consumed"));
 
         return mealComponent;

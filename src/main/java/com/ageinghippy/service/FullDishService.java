@@ -24,20 +24,35 @@ public class FullDishService {
         this.foodTypeService = foodTypeService;
     }
 
-    public void createFullDish() {
+    public void createFullDishMenuOption() {
         FullDish fullDish = new FullDish();
 
-        fullDish.setDish(createDish());
+        fullDish.setDish(createDishMenuOption());
 
-        addDishComponents(fullDish);
+        addDishComponentsMenuOption(fullDish);
 
         printFullDish(fullDish);
 
-        saveFullDish(fullDish);
+        String title = "=== SAVE DISH AND COMPONENTS===";
+        String[] options = new String[2];
+        options[0] = "to exit without saving";
+        options[1] = "to save changes to the dish and associated components";
+
+        int choice = CLIMenu.getChoice(title, options);
+        switch (choice) {
+            case 0:
+                System.out.println("SAVE ABANDONED");
+                break;
+            case 1:
+                //save dish
+                saveFullDish(fullDish);
+                System.out.println("SAVE COMPLETED");
+                break;
+        }
     }
 
     //todo move to CLIMenu
-    public void updateFullDish() {
+    public void updateFullDishMenuOption() {
         int id = Util.getIntFromUser("Please enter the dish id");
         FullDish fullDish = getFullDish(id);
 
@@ -65,19 +80,19 @@ public class FullDishService {
                     break;
                 case 2:
                     System.out.println("You have chosen " + options[choice]);
-                    updateDish(fullDish.getDish());
+                    updateDishMenuOption(fullDish.getDish());
                     break;
                 case 3:
                     System.out.println("You have chosen " + options[choice]);
-                    updateDishComponents(fullDish.getDishComponents());
+                    updateDishComponentsMenuOption(fullDish.getDishComponents());
                     break;
                 case 4:
                     System.out.println("You have chosen " + options[choice]);
-                    removeFullDishComponents(fullDish);
+                    removeFullDishComponentsMenuOption(fullDish);
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
-                    fullDish.addDishComponent(createDishComponent(fullDish.getDish().getId()));
+                    fullDish.addDishComponent(createDishComponentMenuOption(fullDish.getDish().getId()));
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -86,7 +101,7 @@ public class FullDishService {
         } while (choice < 0 || choice > 1);
     }
 
-    private void updateDish(Dish dish) {
+    private void updateDishMenuOption(Dish dish) {
         int choice;
         String title = "update dish";
 
@@ -109,7 +124,7 @@ public class FullDishService {
                     dish.setDescription(Util.getStringFromUser("Please enter the updated dish description"));
                     break;
                 case 3:
-                    dish.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechnique().getCode());
+                    dish.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechniqueMenuOption().getCode());
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -119,7 +134,7 @@ public class FullDishService {
         } while (choice != 0);
     }
 
-    private void updateDishComponents(ArrayList<DishComponent> dishComponents) {
+    private void updateDishComponentsMenuOption(ArrayList<DishComponent> dishComponents) {
         int choice;
         String title = "=== SELECT DISH COMPONENT TO UPDATE ===";
 
@@ -135,14 +150,14 @@ public class FullDishService {
             if (choice == 0) {
                 System.out.println("You have chosen " + options[choice]);
             } else {
-                updateDishComponent(dishComponents.get(choice - 1)); //note options and dishComponents are out of sync by 1
+                updateDishComponentMenuOption(dishComponents.get(choice - 1)); //note options and dishComponents are out of sync by 1
                 //update options array element to reflect changes
                 options[choice] = dishComponentPrintString(dishComponents.get(choice - 1));
             }
         } while (choice != 0);
     }
 
-    private void updateDishComponent(DishComponent dishComponent) {
+    private void updateDishComponentMenuOption(DishComponent dishComponent) {
         int choice;
         String title = "=== UPDATE %s ===";
         String[] options = new String[3];
@@ -159,7 +174,7 @@ public class FullDishService {
                     break;
                 case 1:
                     System.out.println("You have chosen " + options[choice]);
-                    dishComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
+                    dishComponent.setFoodTypeId(foodTypeService.selectFoodTypeMenuOption(foodCategoryService.selectFoodCategory()).getId());
                     break;
                 case 2:
                     System.out.println("You have chosen " + options[choice]);
@@ -169,7 +184,7 @@ public class FullDishService {
         } while (choice != 0);
     }
 
-    private void removeFullDishComponents(FullDish fullDish) {
+    private void removeFullDishComponentsMenuOption(FullDish fullDish) {
         int choice;
         String[] options;
         String title = "=== Select dish component to remove from " + fullDish.getDish().getName() + " ===";
@@ -194,14 +209,7 @@ public class FullDishService {
         } while (choice != 0);
     }
 
-    public FullDish getFullDish(int id) {
-        FullDish fullDish = new FullDish();
-        fullDish.setDish(gutHealthDAO.getDish(id));
-        fullDish.setDishComponents(gutHealthDAO.getDishComponents("WHERE dish_id = " + fullDish.getDish().getId()));
-        return fullDish;
-    }
-
-    public void deleteFullDish() {
+    public void deleteFullDishMenuOption() {
         int id = Util.getIntFromUser("Please enter the id of the dish you wish to delete");
         FullDish fullDish = getFullDish(id);
 
@@ -227,6 +235,13 @@ public class FullDishService {
         }
     }
 
+    public FullDish getFullDish(int id) {
+        FullDish fullDish = new FullDish();
+        fullDish.setDish(gutHealthDAO.getDish(id));
+        fullDish.setDishComponents(gutHealthDAO.getDishComponents("WHERE dish_id = " + fullDish.getDish().getId()));
+        return fullDish;
+    }
+
     public ArrayList<FullDish> getFullDishes() {
         ArrayList<FullDish> fullDishes = new ArrayList<>();
         gutHealthDAO.getDishes().forEach(dish -> {
@@ -235,15 +250,15 @@ public class FullDishService {
         return fullDishes;
     }
 
-    private Dish createDish() {
+    private Dish createDishMenuOption() {
         Dish dish = new Dish();
         dish.setName(Util.getStringFromUser("Please enter the new dish's name"));
         dish.setDescription(Util.getStringFromUser("Please enter the new dish's description"));
-        dish.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechnique().getCode());
+        dish.setPreparationTechniqueCode(preparationTechniqueService.selectPreparationTechniqueMenuOption().getCode());
         return dish;
     }
 
-    private void addDishComponents(FullDish fullDish) {
+    private void addDishComponentsMenuOption(FullDish fullDish) {
         String title = "=== ADD NEW DISH COMPONENT ===";
         int choice = -1;
         String[] options = new String[2];
@@ -258,7 +273,7 @@ public class FullDishService {
                     break;
                 case 1:
                     System.out.println("You have chosen " + options[choice]);
-                    fullDish.addDishComponent(createDishComponent(fullDish.getDish().getId()));
+                    fullDish.addDishComponent(createDishComponentMenuOption(fullDish.getDish().getId()));
                     break;
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
@@ -266,46 +281,33 @@ public class FullDishService {
         } while (choice != 0);
     }
 
-    private DishComponent createDishComponent(int dishId) {
+    private DishComponent createDishComponentMenuOption(int dishId) {
         DishComponent dishComponent = new DishComponent();
 
         dishComponent.setDishId(dishId);
-        dishComponent.setFoodTypeId(foodTypeService.selectFoodType(foodCategoryService.selectFoodCategory()).getId());
+        dishComponent.setFoodTypeId(foodTypeService.selectFoodTypeMenuOption(foodCategoryService.selectFoodCategory()).getId());
         dishComponent.setProportion(Util.getIntFromUser("Please enter the proportion this component is of the full dish"));
 
         return dishComponent;
     }
 
     private FullDish saveFullDish(FullDish fullDish) {
-        String title = "=== SAVE DISH AND COMPONENTS===";
-        String[] options = new String[2];
-        options[0] = "to exit without saving";
-        options[1] = "to save changes to the dish and associated components";
 
-        int choice = CLIMenu.getChoice(title, options);
-        switch (choice) {
-            case 0:
-                System.out.println("SAVE ABANDONED");
-                break;
-            case 1:
-                //save dish
-                fullDish.setDish(saveDish(fullDish.getDish()));
+        //save dish
+        fullDish.setDish(saveDish(fullDish.getDish()));
 
-                //save current dish components
-                fullDish.getDishComponents().forEach(dishComponent -> {
-                    dishComponent.setDishId(
-                            dishComponent.getDishId() == 0 ? fullDish.getDish().getId() : dishComponent.getDishId());
-                    dishComponent = saveDishComponent(dishComponent);
-                });
+        //save current dish components
+        fullDish.getDishComponents().forEach(dishComponent -> {
+            dishComponent.setDishId(
+                    dishComponent.getDishId() == 0 ? fullDish.getDish().getId() : dishComponent.getDishId());
+            dishComponent = saveDishComponent(dishComponent);
+        });
 
-                //delete removed dish components
-                fullDish.getRemovedDishComponents().forEach(this::deleteDishComponent);
-                //reset deletedDishComponents to
-                fullDish.getRemovedDishComponents().clear();
+        //delete removed dish components
+        fullDish.getRemovedDishComponents().forEach(this::deleteDishComponent);
+        //reset deletedDishComponents
+        fullDish.getRemovedDishComponents().clear();
 
-                System.out.println("SAVE COMPLETED");
-                break;
-        }
         return fullDish;
     }
 

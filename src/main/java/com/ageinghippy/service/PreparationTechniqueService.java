@@ -2,7 +2,6 @@ package com.ageinghippy.service;
 
 import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.FoodCategory;
 import com.ageinghippy.data.model.PreparationTechnique;
 import com.ageinghippy.util.Util;
 
@@ -15,7 +14,7 @@ public class PreparationTechniqueService {
         this.gutHealthDAO = gutHealthDAO;
     }
 
-    public void createPreparationTechnique() {
+    public void createPreparationTechniqueMenuOption() {
         //get preparation technique data
         PreparationTechnique preparationTechnique = new PreparationTechnique();
         preparationTechnique.setCode(Util.getStringFromUser("Please enter the new preparation technique code"));
@@ -27,10 +26,10 @@ public class PreparationTechniqueService {
         System.out.println(preparationTechnique);
     }
 
-    public void updatePreparationTechnique() {
+    public void updatePreparationTechniqueMenuOption() {
         //get the record that needs to be updated
         String code = Util.getStringFromUser("Please enter the preparation technique code");
-        PreparationTechnique preparationTechnique = gutHealthDAO.getPreparationTechnique(code);
+        PreparationTechnique preparationTechnique = getPreparationTechnique(code);
 
         int choice = -1;
         String title = "=== UPDATE PREPARATION TECHNIQUE RECORD ===";
@@ -46,7 +45,7 @@ public class PreparationTechniqueService {
 
                 switch (choice) {
                     case 0:
-                        preparationTechnique = gutHealthDAO.getPreparationTechnique(code);
+                        preparationTechnique = getPreparationTechnique(code);
                         System.out.println("CHANGES DISCARDED : " + preparationTechnique);
                         break;
                     case 1:
@@ -63,10 +62,10 @@ public class PreparationTechniqueService {
         }
     }
 
-    public void deletePreparationTechnique() {
+    public void deletePreparationTechniqueMenuOption() {
         //get the record that needs to be deleted
         String code = Util.getStringFromUser("Please enter the preparation technique code");
-        PreparationTechnique preparationTechnique = gutHealthDAO.getPreparationTechnique(code);
+        PreparationTechnique preparationTechnique = getPreparationTechnique(code);
         if (preparationTechnique != null) {
             String title = "=== DELETE " + preparationTechnique + " ===";
             String[] options = new String[2];
@@ -79,7 +78,7 @@ public class PreparationTechniqueService {
                     System.out.println("DELETE ABANDONED");
                     break;
                 case 1:
-                    gutHealthDAO.deletePreparationTechnique(preparationTechnique);
+                    deletePreparationTechnique(preparationTechnique);
                     System.out.println("RECORD DELETED");
                     break;
             }
@@ -88,18 +87,18 @@ public class PreparationTechniqueService {
         }
     }
 
-    public void printPreparationTechniques() {
-        ArrayList<PreparationTechnique> preparationTechniques = gutHealthDAO.getPreparationTechniques();
+    public void printPreparationTechniquesMenuOption() {
+        ArrayList<PreparationTechnique> preparationTechniques = getPreparationTechniques();
         System.out.println("=== " + preparationTechniques.size() + " PreparationTechnique records returned ===");
         preparationTechniques.forEach(System.out::println);
         System.out.println("=== ========= ===");
     }
 
-    public PreparationTechnique selectPreparationTechnique() {
+    public PreparationTechnique selectPreparationTechniqueMenuOption() {
         String[] options;
         int choice;
         PreparationTechnique preparationTechnique = null;
-        ArrayList<PreparationTechnique> preparationTechniques = gutHealthDAO.getPreparationTechniques();
+        ArrayList<PreparationTechnique> preparationTechniques = getPreparationTechniques();
         if (!preparationTechniques.isEmpty()) {
             //build an array containing food category items
             options = new String[preparationTechniques.size()];
@@ -112,7 +111,15 @@ public class PreparationTechniqueService {
         return preparationTechnique;
     }
 
-    private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
+    public PreparationTechnique getPreparationTechnique(String code) {
+        return gutHealthDAO.getPreparationTechnique(code);
+    }
+
+    public ArrayList<PreparationTechnique> getPreparationTechniques() {
+        return gutHealthDAO.getPreparationTechniques();
+    }
+
+    public PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
         String code = null;
         if (gutHealthDAO.getPreparationTechnique(preparationTechnique.getCode()) == null) {
             //insert
@@ -127,4 +134,7 @@ public class PreparationTechniqueService {
         return gutHealthDAO.getPreparationTechnique(code);
     }
 
+    public void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
+        gutHealthDAO.deletePreparationTechnique(preparationTechnique);
+    }
 }

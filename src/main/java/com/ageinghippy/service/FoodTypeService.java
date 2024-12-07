@@ -1,143 +1,32 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.controller.CLIMenu;
+
 import com.ageinghippy.data.GutHealthDAO;
 import com.ageinghippy.data.model.FoodCategory;
 import com.ageinghippy.data.model.FoodType;
-import com.ageinghippy.util.Util;
 
 import java.util.ArrayList;
 
 public class FoodTypeService {
     private final GutHealthDAO gutHealthDAO;
-    private final FoodCategoryService foodCategoryService;
 
-    public FoodTypeService(GutHealthDAO gutHealthDAO, FoodCategoryService foodCategoryService) {
+    public FoodTypeService(GutHealthDAO gutHealthDAO) {
         this.gutHealthDAO = gutHealthDAO;
-        this.foodCategoryService = foodCategoryService;
     }
 
-    public void createFoodType() {
-        //get food type data
-        FoodType foodType = new FoodType();
-        //todo - prevent attempt to create when no food category returned - only possible if no food categories in the database
-        foodType.setFoodCategoryId(foodCategoryService.selectFoodCategory().getId());
-        foodType.setName(Util.getStringFromUser("Please enter the new food type name"));
-        foodType.setDescription(Util.getStringFromUser("Please enter the new food type description"));
-        //todo - validate data
-        //insert into database
-        foodType = saveFoodType(foodType);
-        //return result
-        printFoodType(foodType);
+    public FoodType getFoodType(int id) {
+        return gutHealthDAO.getFoodType(id);
     }
 
-    public void updateFoodType() {
-        //get the record that needs to be updated
-        int id = Util.getIntFromUser("Please enter the food type id");
-        FoodType foodType = gutHealthDAO.getFoodType(id);
-
-        int choice = -1;
-        String title = "=== UPDATE FOOD TYPE RECORD ===";
-        String[] options = new String[5];
-        options[0] = "to discard all changes and exit";
-        options[1] = "to save the changes and exit";
-        options[2] = "to change the food category";
-        options[3] = "to change the name";
-        options[4] = "to change the description";
-
-        if (foodType != null) {
-            System.out.println("foodType = " + foodType);
-            do {
-                printFoodType(foodType);
-
-                choice = CLIMenu.getChoice(title, options);
-
-                switch (choice) {
-                    case 0:
-                        foodType = gutHealthDAO.getFoodType(id);
-                        System.out.println("CHANGES DISCARDED : ");
-                        break;
-                    case 1:
-                        foodType = saveFoodType(foodType);
-                        System.out.println("SAVED : ");
-                        break;
-                    case 2:
-                        foodType.setFoodCategoryId(foodCategoryService.selectFoodCategory().getId());
-                        break;
-                    case 3:
-                        foodType.setName(Util.getStringFromUser("Please enter the updated food type name"));
-                        break;
-                    case 4:
-                        foodType.setDescription(Util.getStringFromUser("Please enter the updated food type description"));
-                        System.out.println("UNSAVED : ");
-                        break;
-                }
-
-            } while (choice < 0 || choice > 1);
-        }
+    public  ArrayList<FoodType> getFoodTypes(String whereClause) {
+        return gutHealthDAO.getFoodTypes(whereClause);
     }
 
-    public void deleteFoodType() {
-        //get the record that needs to be deleted
-        int id = Util.getIntFromUser("Please enter the food type id");
-        FoodType foodType = gutHealthDAO.getFoodType(id);
-        if (foodType != null) {
-            String title = "=== DELETE " + foodTypePrintString(foodType) + " ===";
-            String[] options = new String[2];
-            options[0] = "to exit without deleting";
-            options[1] = "to delete the Food Category";
-
-            int choice = CLIMenu.getChoice(title, options);
-            switch (choice) {
-                case 0:
-                    System.out.println("DELETE ABANDONED");
-                    break;
-                case 1:
-                    gutHealthDAO.deleteFoodType(foodType);
-                    System.out.println("RECORD DELETED");
-                    break;
-            }
-        } else {
-            System.out.println("FoodType with primary key '" + id + "' not found");
-        }
+    public void deleteFoodType(FoodType foodType) {
+        gutHealthDAO.deleteFoodType(foodType);
     }
 
-    public void printFoodTypes(String whereClause) {
-        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes(whereClause);
-        System.out.println("=== " + foodTypes.size() + " FoodType records returned ===");
-        foodTypes.forEach(this::printFoodType);
-        System.out.println("=== ========= ===");
-    }
-
-    public FoodType selectFoodType() {
-        return selectFoodType(null);
-    }
-
-    public FoodType selectFoodType(FoodCategory foodCategory) {
-        String whereClause = "";
-        String[] options;
-        int choice;
-        FoodType foodType = null;
-
-        if (foodCategory != null) {
-            whereClause = String.format("WHERE food_category_id = %d", foodCategory.getId());
-        }
-
-        ArrayList<FoodType> foodTypes = gutHealthDAO.getFoodTypes(whereClause);
-        if (!foodTypes.isEmpty()) {
-            //build an array containing food type items
-            options = new String[foodTypes.size()];
-            for (int i = 0; i < foodTypes.size(); i++) {
-                options[i] = foodTypes.get(i).getName() + "( " + foodTypes.get(i).getDescription() + ")";
-            }
-            choice = CLIMenu.getChoice("Please select the food type", options);
-            foodType = foodTypes.get(choice);
-        }
-        return foodType;
-    }
-
-
-    private FoodType saveFoodType(FoodType foodType) {
+    public FoodType saveFoodType(FoodType foodType) {
         int id = 0;
         if (foodType.getId() == 0) {
             //insert
@@ -151,9 +40,6 @@ public class FoodTypeService {
         return gutHealthDAO.getFoodType(id);
     }
 
-    public void printFoodType(FoodType foodType) {
-        System.out.println(foodTypePrintString(foodType));
-    }
 
     /**
      * Build and return a string describing the given {@code FoodType} with all foreign keys replaced by descriptors
