@@ -13,7 +13,7 @@ public class CLIFoodCategoryMenu {
         this.foodCategoryService = foodCategoryService;
     }
 
-    void foodCategoryDataManipulationMenu(CLIMenu cliMenu) {
+    void foodCategoryDataManipulationMenu( ) {
         int choice;
         String title = "=== FOOD CATEGORY DATA MANIPULATION MENU ===";
         String[] options = new String[5];

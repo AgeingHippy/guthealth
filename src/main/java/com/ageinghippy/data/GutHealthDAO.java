@@ -120,7 +120,6 @@ public class GutHealthDAO {
         }
     }
 
-
     /**
      * Fetch all matching {@code FoodCategory} records from the database
      *
@@ -161,7 +160,7 @@ public class GutHealthDAO {
         return foodCategory;
     }
 
-        /**
+    /**
      * Fetch all matching {@code FoodType} records from the database
      *
      * @param whereClause - a String containing an optional where clause including the word WHERE

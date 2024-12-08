@@ -16,7 +16,7 @@ public class CLIFoodTypeMenu {
         this.cliFoodCategoryMenu = cliFoodCategoryMenu;
     }
 
-    public void createFoodType() {
+    public void createFoodTypeMenuOption() {
         //get food type data
         FoodType foodType = new FoodType();
         //todo - prevent attempt to create when no food category returned - only possible if no food categories in the database
@@ -34,7 +34,7 @@ public class CLIFoodTypeMenu {
         System.out.println(foodTypeService.foodTypePrintString(foodType));
     }
 
-    void foodTypeDataManipulationMenu(CLIMenu cliMenu) {
+    void foodTypeDataManipulationMenuOption() {
         int choice;
         String title = "=== FOOD TYPE DATA MANIPULATION MENU ===";
         String[] options = new String[5];
@@ -53,7 +53,7 @@ public class CLIFoodTypeMenu {
                     break;
                 case 1: //insert
                     System.out.println("You have chosen " + options[choice]);
-                    createFoodType();
+                    createFoodTypeMenuOption();
                     break;
                 case 2: //update
                     System.out.println("You have chosen " + options[choice]);
