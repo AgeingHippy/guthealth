@@ -3,6 +3,7 @@ package com.ageinghippy.controller;
 
 import com.ageinghippy.data.GutHealthDAO;
 import com.ageinghippy.service.*;
+import com.ageinghippy.util.Util;
 
 import java.util.Scanner;
 
@@ -19,6 +20,8 @@ public class CLIMenu {
     private final CLIDishMenu cliDishMenu;
     private final CLIMealMenu cliMealMenu;
 
+    private final FileLoader fileLoader;
+
     public CLIMenu() {
         GutHealthDAO gutHealthDAO = new GutHealthDAO();
         preparationTechniqueService = new PreparationTechniqueService(gutHealthDAO);
@@ -31,15 +34,17 @@ public class CLIMenu {
         cliFoodTypeMenu = new CLIFoodTypeMenu(foodTypeService, cliFoodCategoryMenu);
         cliDishMenu = new CLIDishMenu(fullDishService, cliPreparationTechniqueMenu, cliFoodCategoryMenu, cliFoodTypeMenu);
         cliMealMenu = new CLIMealMenu(fullMealService, fullDishService, cliPreparationTechniqueMenu, cliFoodTypeMenu, cliFoodCategoryMenu);
+        fileLoader = new FileLoader(foodCategoryService, foodTypeService);
     }
 
     public void showMainMenu() {
         int choice;
         String title = "=== MAIN MENU ===";
-        String[] options = new String[3];
+        String[] options = new String[4];
         options[0] = "to exit";
         options[1] = "to manipulate data (add/remove)";
         options[2] = "to query data (generate reports)";
+        options[3] = "to load data from file";
         do {
             choice = CLIMenu.getChoice(title, options);
 
@@ -55,6 +60,9 @@ public class CLIMenu {
                     System.out.println("You have chosen " + options[choice]);
                     showDataViewMenu();
                     break;
+                case 3:
+                    System.out.println("You have chosen " + options[choice]);
+                    loadDataMenu();
                 default:
                     System.out.println("You have made an invalid choice. Please try again.");
             }
@@ -150,6 +158,30 @@ public class CLIMenu {
 
         } while (choice != 0);
     }
+
+    private void loadDataMenu() {
+        int choice;
+        String title = "=== DATA FILE LOAD MENU ===";
+        String[] options = new String[2];
+        options[0] = "to exit";
+        options[1] = "load food types file";
+
+        do {
+            choice = getChoice(title, options);
+
+            switch (choice) {
+                case 0: //exit
+                    System.out.println("You have chosen " + options[choice]);
+                    break;
+                case 1:
+                    System.out.println("You have chosen " + options[choice]);
+                    String filePath = Util.getStringFromUser("Please enter the absolute file path of the load file");
+                    fileLoader.loadFoodTypes(filePath);
+                    break;
+            }
+        } while (choice != 0);
+    }
+
 
     public static int getChoice(String title, String[] options) {
         Scanner scanner = new Scanner(System.in);

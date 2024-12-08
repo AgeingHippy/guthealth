@@ -129,7 +129,6 @@ public class CLIMealMenu {
                 break;
         }
 
-
         fullMealService.saveFullMeal(fullMeal);
     }
 
@@ -173,7 +172,6 @@ public class CLIMealMenu {
                     break;
                 case 5:
                     System.out.println("You have chosen " + options[choice]);
-//                    fullMeal.addMealComponent(createMealComponent(fullMeal.getMeal().getId()));
                     addMealComponentsMenuOption(fullMeal);
                     break;
                 default:
@@ -374,17 +372,6 @@ public class CLIMealMenu {
         ArrayList<Meal> meals = fullMealService.getMeals(whereClause);
         System.out.println("=== " + meals.size() + " MEALS FOUND ===");
         meals.forEach(this::printMeal);
-    }
-
-    public void printFullMealDetails() {
-        int id = Util.getIntFromUser("Please enter the id of the meal you wish to inspect");
-        printFullMeal(fullMealService.getFullMeal(id));
-    }
-
-    public void printFullDishes() {
-        ArrayList<FullMeal> fullMeals = fullMealService.getFullMeals();
-        System.out.println("=== " + fullMeals.size() + " MEALS FOUND ===");
-        fullMeals.forEach(this::printFullMeal);
     }
 
     public void printFullMeal(int id) {

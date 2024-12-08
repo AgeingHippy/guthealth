@@ -26,6 +26,10 @@ public class FoodTypeService {
         gutHealthDAO.deleteFoodType(foodType);
     }
 
+    public void saveFoodTypes(ArrayList<FoodType> foodTypes) {
+        foodTypes.forEach(this::saveFoodType);
+    }
+
     public FoodType saveFoodType(FoodType foodType) {
         int id = 0;
         if (foodType.getId() == 0) {

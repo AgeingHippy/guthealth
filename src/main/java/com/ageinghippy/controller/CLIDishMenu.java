@@ -373,17 +373,6 @@ public class CLIDishMenu {
         dishes.forEach(this::printDish);
     }
 
-    public void printFullDishDetailsMenuOption() {
-        int id = Util.getIntFromUser("Please enter the id of the dish you wish to inspect");
-        printFullDish(fullDishService.getFullDish(id));
-    }
-
-    public void printFullDishes() {
-        ArrayList<FullDish> fullDishes = fullDishService.getFullDishes();
-        System.out.println("=== " + fullDishes.size() + " DISHES FOUND ===");
-        fullDishes.forEach(this::printFullDish);
-    }
-
     public void printFullDish(int id) {
         FullDish fullDish = fullDishService.getFullDish(id);
         printFullDish(fullDish);
