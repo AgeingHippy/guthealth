@@ -25,8 +25,8 @@ The only matter that may need further explanation is how the volume of a particu
 ### File load:
 - Food Types. 
 - - Fields are pipe delimited and minimal validation is applied.
-- - Record format is: <foodCategoryName>|<foodTypeName>|<foodTypeDescription>
-- - <fileName>.err file is created containing records that have failed load along with a textual description of why they failed to load
+- - Record format is: `<foodCategoryName>|<foodTypeName>|<foodTypeDescription>`
+- - `<fileName>.err` file is created containing records that have failed load along with a textual description of why they failed to load
 
 
 ## Data Model
