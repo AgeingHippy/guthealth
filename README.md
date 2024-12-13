@@ -1,12 +1,15 @@
+# GutHealth
+
 GutHealth is the seeds of an applications which will track consumption and gut health and finally use AI to detect links between the two.
 
 This is also initially used as the Capstone poject for CodingNomads Java 301 module.
 
 Note. Only implementing methods included in 301 at this point. No Spring, no tests, no logging and no data access optimisation.
 
-The current phase allows the user to capture meal data using the command line interface.
+The current phase allows the user to capture meal data using the command line interface as well as by file (Only FoodType records at this point).
 
-The categories are:-
+
+### Data categories:-
 - Lookup values
 - - Preparation Technique - This describes how the food was prepared such as Boiled, Pan Fried, Roasted etc. We expect minimal changes to this dataset once it is created. 
 - - Food Category - This is used to break the food into various categories such as Dairy, Protein, Grains, Fruits and Vegetables etc. but it is user configurable. Again, we expect minimal modifications once the dataset is created.
@@ -19,6 +22,14 @@ The categories are:-
 
 The only matter that may need further explanation is how the volume of a particular meal component is determined when adding components based on a dish. The volume of the meal is specified by the user, and then the volume of the component is calculated as dishVolume*dishComponentProportion/SumOf(dishComponentProportion). Note: This may not sum up exactly to the volume specified due to rounding during the calculation mentioned.
 
+### File load:
+- Food Types. 
+- - Fields are pipe delimited and minimal validation is applied.
+- - Record format is: <foodCategoryName>|<foodTypeName>|<foodTypeDescription>
+- - <fileName>.err file is created containing records that have failed load along with a textual description of why they failed to load
+
+
+## Data Model
 Please see the attached ER diagram for further detail.
 
 ![er-diagram.png](src/main/resources/er-diagram.png)
