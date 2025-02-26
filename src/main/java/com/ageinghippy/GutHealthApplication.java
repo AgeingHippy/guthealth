@@ -1,8 +1,10 @@
 package com.ageinghippy;
 
 import com.ageinghippy.controller.CLIMenu;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class Main {
+@SpringBootApplication
+public class GutHealthApplication {
     public static void main(String[] args) {
         CLIMenu cliMenu = new CLIMenu();
         cliMenu.showMainMenu();
