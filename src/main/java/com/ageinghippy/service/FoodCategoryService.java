@@ -1,13 +1,11 @@
 package com.ageinghippy.service;
 
 import com.ageinghippy.model.FoodCategory;
-import com.ageinghippy.model.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.naming.directory.InvalidAttributesException;
 import java.util.ArrayList;
 
 @Service

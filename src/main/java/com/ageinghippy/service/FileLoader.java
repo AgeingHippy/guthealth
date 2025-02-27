@@ -9,11 +9,11 @@ import java.util.function.Function;
 
 public class FileLoader {
     private final FoodCategoryService foodCategoryService;
-    private final FoodTypeService foodTypeService;
+    private final FoodTypeServiceTemp foodTypeServiceTemp;
 
-    public FileLoader(FoodCategoryService foodCategoryService, FoodTypeService foodTypeService) {
+    public FileLoader(FoodCategoryService foodCategoryService, FoodTypeServiceTemp foodTypeServiceTemp) {
         this.foodCategoryService = foodCategoryService;
-        this.foodTypeService = foodTypeService;
+        this.foodTypeServiceTemp = foodTypeServiceTemp;
     }
 
     public void loadFoodTypes(String filePath) {
@@ -45,10 +45,10 @@ public class FileLoader {
                     bufferedWriter.newLine();
                 } else {
                     //data passes the basic validation so create new food type
-                    foodTypes.add(new FoodType(0, foodCategoryByName.apply(lineComponents[0]), lineComponents[1], lineComponents[2]));
+                    foodTypes.add(new FoodType(null, foodCategoryByName.apply(lineComponents[0]), lineComponents[1], lineComponents[2]));
                 }
             }
-            foodTypeService.saveFoodTypes(foodTypes);
+            foodTypeServiceTemp.saveFoodTypes(foodTypes);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

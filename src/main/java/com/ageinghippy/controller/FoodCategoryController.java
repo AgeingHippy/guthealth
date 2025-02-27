@@ -6,34 +6,54 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/food-categories")
+@RequestMapping("/v1/food-categories")
 @RequiredArgsConstructor
 public class FoodCategoryController {
 
     private final FoodCategoryService foodCategoryService;
 
-    @GetMapping("/")
+    @GetMapping
     public ArrayList<FoodCategory> getFoodCategories() {
         return foodCategoryService.getFoodCategories();
     }
 
     @GetMapping("/{id}")
-    public FoodCategory getFoodCategory(@PathVariable Long id) {
-        return foodCategoryService.getFoodCategory(id);
+    public ResponseEntity<FoodCategory>  getFoodCategory(@PathVariable Long id) {
+        FoodCategory foodCategory = foodCategoryService.getFoodCategory(id);
+        if (foodCategory != null) {
+            return ResponseEntity.ok(foodCategory);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PostMapping("/")
-    public FoodCategory postFoodCategory(@Valid @RequestBody FoodCategory foodCategory) {
-        return foodCategoryService.saveFoodCategory(foodCategory);
+    @PostMapping
+    public ResponseEntity<FoodCategory> postFoodCategory(@Valid @RequestBody FoodCategory foodCategory) {
+        foodCategory = foodCategoryService.saveFoodCategory(foodCategory);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(foodCategory.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(foodCategory);
     }
 
     @PutMapping("/{id}")
-    public FoodCategory putFoodCategory(@RequestBody FoodCategory foodCategory, @PathVariable Long id) {
-        return foodCategoryService.updateFoodCategory(id, foodCategory);
+    public ResponseEntity<FoodCategory> putFoodCategory(@RequestBody FoodCategory foodCategory, @PathVariable Long id) {
+        try {
+            foodCategory = foodCategoryService.updateFoodCategory(id, foodCategory);
+            return ResponseEntity.ok(foodCategory);
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

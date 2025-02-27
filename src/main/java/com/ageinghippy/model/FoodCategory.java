@@ -1,5 +1,6 @@
 package com.ageinghippy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,12 +9,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FoodCategory {
+public class FoodCategory implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 8329129305936453349L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -23,6 +32,10 @@ public class FoodCategory {
     private String name;
     @NotEmpty
     private String description;
+
+    @OneToMany(mappedBy = "foodCategory", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("foodCategory")
+    List<FoodType> foodTypes;
 
     @Override
     public String toString() {

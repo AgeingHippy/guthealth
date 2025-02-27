@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FoodTypeRepository extends JpaRepository<FoodType, Long> {
+public interface FoodTypeRepositoryTemp extends JpaRepository<FoodType, Long> {
 
-    List<FoodType> findByFoodCategory_id(Long foodCategoryId);
+//    List<FoodType> findByFoodCategoryId(Long foodCategoryId);
 
     List<FoodType> findByNameContainingIgnoreCase(String infix);
 

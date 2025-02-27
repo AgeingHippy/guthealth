@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,11 +24,12 @@ public class Dish {
     @NotEmpty
     private String description;
 
+    @Column(name = "preparation_technique_code")
     private PreparationTechnique preparationTechnique;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="dish_component_id")
-    private ArrayList<DishComponent> dishComponents;
+    private List<DishComponent> dishComponents;
 
     @Override
     public String toString() {
