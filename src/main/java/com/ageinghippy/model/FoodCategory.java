@@ -1,41 +1,35 @@
-package com.ageinghippy.data.model;
+package com.ageinghippy.model;
 
-import com.ageinghippy.model.PreparationTechnique;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
-
-import java.util.ArrayList;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Dish {
+public class FoodCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotEmpty
     private String name;
-
     @NotEmpty
     private String description;
 
-    private PreparationTechnique preparationTechnique;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="dish_component_id")
-    private ArrayList<DishComponent> dishComponents;
-
     @Override
     public String toString() {
-        return "Dish{" +
+        return "FoodCategory{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", preparationTechniqueCode='" + preparationTechnique.getCode() + '\'' +
                 '}';
     }
 }

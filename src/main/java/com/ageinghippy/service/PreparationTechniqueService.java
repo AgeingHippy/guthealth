@@ -1,9 +1,7 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.PreparationTechnique;
-import com.ageinghippy.util.Util;
+import com.ageinghippy.model.PreparationTechnique;
 
 import java.util.ArrayList;
 

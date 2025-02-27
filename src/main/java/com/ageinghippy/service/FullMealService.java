@@ -1,9 +1,8 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.controller.CLIMenu;
 import com.ageinghippy.data.GutHealthDAO;
 import com.ageinghippy.data.model.*;
-import com.ageinghippy.util.Util;
+import com.ageinghippy.model.FoodType;
 
 import java.util.ArrayList;
 
@@ -56,7 +55,7 @@ public class FullMealService {
             MealComponent mc = new MealComponent();
             mc.setMealId(mealId);
             mc.setFoodTypeId(dish.getFoodTypeId());
-            mc.setPreparationTechniqueCode(fullDish.getDish().getPreparationTechniqueCode());
+            mc.setPreparationTechniqueCode(fullDish.getDish().getPreparationTechnique());
             mc.setVolume(volume * dish.getProportion() / baseVolume);
             mealComponents.add(mc);
         });

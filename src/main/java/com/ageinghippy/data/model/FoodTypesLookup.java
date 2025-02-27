@@ -1,5 +1,7 @@
 package com.ageinghippy.data.model;
 
+import com.ageinghippy.model.FoodType;
+
 import java.util.ArrayList;
 
 public class FoodTypesLookup {

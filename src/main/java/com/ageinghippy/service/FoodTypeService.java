@@ -1,29 +1,43 @@
 package com.ageinghippy.service;
 
 
-import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.FoodCategory;
-import com.ageinghippy.data.model.FoodType;
+import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.FoodType;
+import com.ageinghippy.repository.FoodTypeRepository;
+import com.ageinghippy.util.Util;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
+@RequiredArgsConstructor
 public class FoodTypeService {
-    private final GutHealthDAO gutHealthDAO;
 
-    public FoodTypeService(GutHealthDAO gutHealthDAO) {
-        this.gutHealthDAO = gutHealthDAO;
+    private final FoodTypeRepository foodTypeRepository;
+
+    public FoodType getFoodType(Long id) {
+        return foodTypeRepository.findById(id).orElse(null);
     }
 
-    public FoodType getFoodType(int id) {
-        return gutHealthDAO.getFoodType(id);
+    public ArrayList<FoodType> getFoodTypesByFoodCategory(FoodCategory foodCategory) {
+        return (ArrayList<FoodType>) foodTypeRepository.findByFoodCategory_id(foodCategory.getId());
     }
 
-    public  ArrayList<FoodType> getFoodTypes(String whereClause) {
-        return gutHealthDAO.getFoodTypes(whereClause);
+    public ArrayList<FoodType> getAllFoodTypes() {
+        return (ArrayList<FoodType>) foodTypeRepository.findAll();
+    }
+
+    public ArrayList<FoodType> getAllFoodTypesMatchingName(String infix) {
+        return (ArrayList<FoodType>) foodTypeRepository.findByNameContainingIgnoreCase(infix);
+    }
+
+    public ArrayList<FoodType> getAllFoodTypesMatchingDescription(String infix) {
+        return (ArrayList<FoodType>) foodTypeRepository.findByDescriptionContainingIgnoreCase(infix);
     }
 
     public void deleteFoodType(FoodType foodType) {
-        gutHealthDAO.deleteFoodType(foodType);
+        foodTypeRepository.delete(foodType);
     }
 
     public void saveFoodTypes(ArrayList<FoodType> foodTypes) {
@@ -31,17 +45,24 @@ public class FoodTypeService {
     }
 
     public FoodType saveFoodType(FoodType foodType) {
-        int id = 0;
-        if (foodType.getId() == 0) {
-            //insert
-            id = gutHealthDAO.insertFoodType(foodType);
-        } else {
-            //update
-            if (gutHealthDAO.updateFoodType(foodType)) {
-                id = foodType.getId();
-            }
-        }
-        return gutHealthDAO.getFoodType(id);
+        return foodTypeRepository.save(foodType);
+    }
+
+    /**
+     * Updates the food type identified by the provided id with non-null values as provided in updateFoodType
+     *
+     * @param id The id of the {@code FoodType} to update
+     * @param updateFoodType the {@code FoodType} containing updated values
+     * @return the updated {@code FoodType}
+     *
+     * @throws java.util.NoSuchElementException if the food category with the provided id does not exist
+     */
+    public FoodType updateFoodType(Long id, FoodType updateFoodType) {
+        FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
+        foodType.setName(Util.valueIfNull(updateFoodType.getName(), foodType.getName()));
+        foodType.setDescription(Util.valueIfNull(updateFoodType.getDescription(), foodType.getDescription()));
+        foodType.setFoodCategory(Util.valueIfNull(updateFoodType.getFoodCategory(), foodType.getFoodCategory()));
+        return saveFoodType(foodType);
     }
 
 
@@ -52,10 +73,10 @@ public class FoodTypeService {
      * @return a {@code String} containing readable food type details
      */
     public String foodTypePrintString(FoodType foodType) {
-        FoodCategory foodCategory = gutHealthDAO.getFoodCategory(foodType.getFoodCategoryId());
+//        FoodCategory foodCategory = foodType.getFoodCategory();
         return "FoodType{" +
                 "id=" + foodType.getId() +
-                ", foodCategory='" + foodCategory.getName() + '\'' +
+                ", foodCategory='" + foodType.getFoodCategory().getName() + '\'' +
                 ", name='" + foodType.getName() + '\'' +
                 ", description='" + foodType.getDescription() + '\'' +
                 '}';

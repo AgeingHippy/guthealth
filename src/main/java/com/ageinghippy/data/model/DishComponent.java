@@ -1,59 +1,37 @@
 package com.ageinghippy.data.model;
 
+import com.ageinghippy.model.FoodType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DishComponent {
-    private int id;
-    private int dishId;
-    private int foodTypeId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+//    private int dishId;
+    private FoodType foodType;
     private int proportion;
 
-    public DishComponent() {
-    }
 
-    public DishComponent(int id, int dishId, int foodTypeId, int proportion) {
-        this.id = id;
-        this.dishId = dishId;
-        this.foodTypeId = foodTypeId;
-        this.proportion = proportion;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getDishId() {
-        return dishId;
-    }
-
-    public void setDishId(int dishId) {
-        this.dishId = dishId;
-    }
-
-    public int getFoodTypeId() {
-        return foodTypeId;
-    }
-
-    public void setFoodTypeId(int foodTypeId) {
-        this.foodTypeId = foodTypeId;
-    }
-
-    public int getProportion() {
-        return proportion;
-    }
-
-    public void setProportion(int proportion) {
-        this.proportion = proportion;
-    }
 
     @Override
     public String toString() {
         return "DishComponent{" +
                 "id=" + id +
-                ", dishId=" + dishId +
-                ", foodTypeId=" + foodTypeId +
+//                ", dishId=" + dishId +
+                ", foodType=" + foodType +
                 ", proportion=" + proportion +
                 '}';
     }

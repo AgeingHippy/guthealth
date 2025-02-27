@@ -1,7 +1,7 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.data.model.FoodCategory;
-import com.ageinghippy.data.model.FoodType;
+import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.FoodType;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class FileLoader {
                     bufferedWriter.newLine();
                 } else {
                     //data passes the basic validation so create new food type
-                    foodTypes.add(new FoodType(0, foodCategoryByName.apply(lineComponents[0]).getId(), lineComponents[1], lineComponents[2]));
+                    foodTypes.add(new FoodType(0, foodCategoryByName.apply(lineComponents[0]), lineComponents[1], lineComponents[2]));
                 }
             }
             foodTypeService.saveFoodTypes(foodTypes);
