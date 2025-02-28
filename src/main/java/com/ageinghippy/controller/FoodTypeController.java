@@ -36,7 +36,10 @@ public class FoodTypeController {
 
     @PostMapping
     public ResponseEntity<FoodType> postFoodType(@Valid @RequestBody FoodType foodType) {
-        foodType = foodTypeService.saveFoodType(foodType);
+        if (foodType.getId() != null) {
+            throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
+        }
+        foodType = foodTypeService.createFoodType(foodType);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

@@ -37,6 +37,9 @@ public class FoodCategoryController {
 
     @PostMapping
     public ResponseEntity<FoodCategory> postFoodCategory(@Valid @RequestBody FoodCategory foodCategory) {
+        if (foodCategory.getId() != null) {
+            throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
+        }
         foodCategory = foodCategoryService.saveFoodCategory(foodCategory);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
