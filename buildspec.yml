@@ -6,14 +6,16 @@ phases:
       java: corretto21
   pre_build:
     commands:
-      - echo In the pre_build phase... nothing to do here
+      - echo In the pre_build phase... provide execute permissions on gradlew
+      - chmod +x ./gradlew
   build:
     commands:
+      - echo In the build phase... build project
       - ./gradlew build --scan
-  post-build:
+  post_build:
     commands:
       - echo In the post_build phase... nothing to do here
-  artifacts:
-    files:
-      - build/libs/guthealth.war
-      - appspec.yml
+artifacts:
+  files:
+    - build/libs/guthealth.war
+    - appspec.yml

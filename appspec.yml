@@ -3,6 +3,7 @@ os: linux
 files:
   - source: build/libs/guthealth.war
     destination: /var/lib/tomcat10/webapps
+file_exists_behavior: OVERWRITE
 permissions:
   - object: /
     pattern: "**"
