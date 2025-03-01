@@ -13,7 +13,7 @@ phases:
   post_build:
     commands:
       - echo In the post_build phase... nothing to do here
-  artifacts:
-    files:
-      - build/libs/guthealth.war
-      - appspec.yml
+artifacts:
+  files:
+    - build/libs/guthealth.war
+    - appspec.yml
