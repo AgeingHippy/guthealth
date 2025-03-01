@@ -1,52 +1,35 @@
 package com.ageinghippy.data.model;
 
+import com.ageinghippy.model.PreparationTechnique;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Dish {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotEmpty
     private String name;
+
+    @NotEmpty
     private String description;
-    private String preparationTechniqueCode;
 
-    public Dish() {
-    }
+    @Column(name = "preparation_technique_code")
+    private PreparationTechnique preparationTechnique;
 
-    public Dish(int id, String name, String description, String preparationTechniqueCode) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.preparationTechniqueCode = preparationTechniqueCode;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPreparationTechniqueCode() {
-        return preparationTechniqueCode;
-    }
-
-    public void setPreparationTechniqueCode(String preparationTechniqueCode) {
-        this.preparationTechniqueCode = preparationTechniqueCode;
-    }
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="dish_component_id")
+    private List<DishComponent> dishComponents;
 
     @Override
     public String toString() {
@@ -54,7 +37,7 @@ public class Dish {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", preparationTechniqueCode='" + preparationTechniqueCode + '\'' +
+                ", preparationTechniqueCode='" + preparationTechnique.getCode() + '\'' +
                 '}';
     }
 }

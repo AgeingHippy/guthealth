@@ -1,53 +1,38 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.controller.CLIMenu;
-import com.ageinghippy.data.GutHealthDAO;
-import com.ageinghippy.data.model.PreparationTechnique;
+import com.ageinghippy.model.PreparationTechnique;
+import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
+@RequiredArgsConstructor
 public class PreparationTechniqueService {
-    private final GutHealthDAO gutHealthDAO;
 
-    public PreparationTechniqueService(GutHealthDAO gutHealthDAO) {
-        this.gutHealthDAO = gutHealthDAO;
-    }
-
-
-
-
-
-
-
-
-
-
+    private final PreparationTechniqueRepository preparationTechniqueRepository;
 
     public PreparationTechnique getPreparationTechnique(String code) {
-        return gutHealthDAO.getPreparationTechnique(code);
+        return preparationTechniqueRepository.findById(code).orElse(null);
     }
 
     public ArrayList<PreparationTechnique> getPreparationTechniques() {
-        return gutHealthDAO.getPreparationTechniques();
+        return (ArrayList<PreparationTechnique>) preparationTechniqueRepository.findAll();
     }
 
     public PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
-        String code = null;
-        if (gutHealthDAO.getPreparationTechnique(preparationTechnique.getCode()) == null) {
-            //insert
-            code = gutHealthDAO.insertPreparationTechnique(preparationTechnique);
-        }
-        else {
-            //update
-            if (gutHealthDAO.updatePreparationTechnique(preparationTechnique)) {
-                code = preparationTechnique.getCode();
-            }
-        }
-        return gutHealthDAO.getPreparationTechnique(code);
+        return preparationTechniqueRepository.save(preparationTechnique);
+    }
+
+    public PreparationTechnique updatePreparationTechnique(String code, PreparationTechnique updatePreparationTechnique) {
+        PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
+        preparationTechnique.setDescription(Util.valueIfNull(updatePreparationTechnique.getDescription(), preparationTechnique.getDescription()));
+        return savePreparationTechnique(preparationTechnique);
     }
 
     public void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
-        gutHealthDAO.deletePreparationTechnique(preparationTechnique);
+        preparationTechniqueRepository.delete(preparationTechnique);
     }
 }
