@@ -10,9 +10,9 @@ phases:
   build:
     commands:
       - ./gradlew build --scan
-    post-build:
-      commands:
-        - echo In the post_build phase... nothing to do here
+  post-build:
+    commands:
+      - echo In the post_build phase... nothing to do here
   artifacts:
     files:
       - build/libs/guthealth.war
