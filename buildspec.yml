@@ -6,9 +6,11 @@ phases:
       java: corretto21
   pre_build:
     commands:
-      - echo In the pre_build phase... nothing to do here
+      - echo In the pre_build phase... provide execute permissions on gradlew
+      - chmod +x ./gradlew
   build:
     commands:
+      - echo In the build phase... build project
       - ./gradlew build --scan
   post_build:
     commands:
