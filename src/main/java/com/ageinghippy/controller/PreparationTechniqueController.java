@@ -16,7 +16,7 @@ public class PreparationTechniqueController {
 
     private final PreparationTechniqueService preparationTechniqueService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ArrayList<PreparationTechnique> getPreparationTechniques() {
         return preparationTechniqueService.getPreparationTechniques();
     }
@@ -26,7 +26,7 @@ public class PreparationTechniqueController {
         return preparationTechniqueService.getPreparationTechnique(code);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public PreparationTechnique postPreparationTechnique(@Valid @RequestBody PreparationTechnique preparationTechnique) {
         return preparationTechniqueService.savePreparationTechnique(preparationTechnique);
     }
