@@ -1,4 +1,4 @@
-package com.ageinghippy.model;
+package com.ageinghippy.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;

@@ -1,10 +1,9 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.Meal;
+import com.ageinghippy.model.entity.Meal;
 import com.ageinghippy.repository.MealRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Transient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

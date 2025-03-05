@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.DishComponent;
+import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.repository.DishComponentRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
 import com.ageinghippy.util.Util;

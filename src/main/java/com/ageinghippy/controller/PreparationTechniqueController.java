@@ -1,6 +1,6 @@
 package com.ageinghippy.controller;
 
-import com.ageinghippy.model.PreparationTechnique;
+import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.service.PreparationTechniqueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.Dish;
+import com.ageinghippy.model.entity.Dish;
 import com.ageinghippy.repository.DishRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;

@@ -1,21 +1,41 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.PreparationTechnique;
+import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.entity.PreparationTechnique;
+import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PreparationTechniqueService {
 
     private final PreparationTechniqueRepository preparationTechniqueRepository;
+    private final MyMapper myMapper;
+
+    public List<PreparationTechniqueDTO> getPreparationTechniquesDto() {
+        List<PreparationTechnique> preparationTechniques = preparationTechniqueRepository.findAll();
+        return myMapper.mapList(preparationTechniques, PreparationTechniqueDTO.class);
+    }
+
+    public PreparationTechniqueDTO getPreparationTechniqueDto(String code) {
+        PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
+        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
+    }
+
+    public PreparationTechniqueDTO createPreparationTechniqueDto(PreparationTechniqueDTO preparationTechniqueDTO) {
+        PreparationTechnique preparationTechnique = myMapper.map(preparationTechniqueDTO, PreparationTechnique.class);
+        preparationTechnique = savePreparationTechnique(preparationTechnique);
+        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
+    }
 
     public PreparationTechnique getPreparationTechnique(String code) {
-        return preparationTechniqueRepository.findById(code).orElse(null);
+        return preparationTechniqueRepository.findById(code).orElseThrow();
     }
 
     public ArrayList<PreparationTechnique> getPreparationTechniques() {

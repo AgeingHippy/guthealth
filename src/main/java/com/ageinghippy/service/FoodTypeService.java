@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.FoodType;
+import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
 import com.ageinghippy.util.Util;

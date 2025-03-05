@@ -1,7 +1,7 @@
 package com.ageinghippy.data.model;
 
-import com.ageinghippy.model.Meal;
-import com.ageinghippy.model.MealComponent;
+import com.ageinghippy.model.entity.Meal;
+import com.ageinghippy.model.entity.MealComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package com.ageinghippy.controller;
 
-import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.service.FoodCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,20 +1,17 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.FoodCategory;
-import com.ageinghippy.model.FoodType;
+import com.ageinghippy.model.entity.FoodCategory;
+import com.ageinghippy.model.entity.FoodType;
+import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+@RequiredArgsConstructor
 public class FileLoader {
     private final FoodCategoryService foodCategoryService;
-    private final FoodTypeServiceTemp foodTypeServiceTemp;
-
-    public FileLoader(FoodCategoryService foodCategoryService, FoodTypeServiceTemp foodTypeServiceTemp) {
-        this.foodCategoryService = foodCategoryService;
-        this.foodTypeServiceTemp = foodTypeServiceTemp;
-    }
+    private final FoodTypeService foodTypeService;
 
     public void loadFoodTypes(String filePath) {
         final int EXPECTED = 3;
@@ -48,7 +45,7 @@ public class FileLoader {
                     foodTypes.add(new FoodType(null, foodCategoryByName.apply(lineComponents[0]), lineComponents[1], lineComponents[2]));
                 }
             }
-            foodTypeServiceTemp.saveFoodTypes(foodTypes);
+            foodTypes.forEach(foodTypeService::createFoodType);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

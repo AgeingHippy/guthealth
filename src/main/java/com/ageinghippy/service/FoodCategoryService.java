@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import lombok.RequiredArgsConstructor;

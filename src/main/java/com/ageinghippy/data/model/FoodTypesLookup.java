@@ -1,6 +1,6 @@
 package com.ageinghippy.data.model;
 
-import com.ageinghippy.model.FoodType;
+import com.ageinghippy.model.entity.FoodType;
 
 import java.util.ArrayList;
 
