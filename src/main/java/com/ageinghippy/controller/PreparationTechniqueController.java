@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
@@ -27,8 +29,14 @@ public class PreparationTechniqueController {
     }
 
     @PostMapping("")
-    public PreparationTechnique postPreparationTechnique(@Valid @RequestBody PreparationTechnique preparationTechnique) {
-        return preparationTechniqueService.savePreparationTechnique(preparationTechnique);
+    public ResponseEntity<PreparationTechnique> postPreparationTechnique(@Valid @RequestBody PreparationTechnique preparationTechnique) {
+        preparationTechnique = preparationTechniqueService.createPreparationTechnique(preparationTechnique);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{code}")
+                .buildAndExpand(preparationTechnique.getCode())
+                .toUri();
+        return ResponseEntity.created(location).body(preparationTechnique);
     }
 
     @PutMapping("/{code}")
@@ -42,8 +50,7 @@ public class PreparationTechniqueController {
         if (preparationTechnique != null) {
             preparationTechniqueService.deletePreparationTechnique(preparationTechnique);
             return ResponseEntity.noContent().build();
-        }
-        else {
+        } else {
             return ResponseEntity.notFound().build();
         }
     }

@@ -42,7 +42,14 @@ public class PreparationTechniqueService {
         return (ArrayList<PreparationTechnique>) preparationTechniqueRepository.findAll();
     }
 
-    public PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
+    public PreparationTechnique createPreparationTechnique(PreparationTechnique preparationTechnique) {
+        if (preparationTechniqueRepository.findById(preparationTechnique.getCode()).orElse(null) != null) {
+            throw new IllegalArgumentException("Preparation Technique with code '"+ preparationTechnique.getCode() + "' already exists");
+        }
+        return savePreparationTechnique(preparationTechnique);
+    }
+
+    private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
         return preparationTechniqueRepository.save(preparationTechnique);
     }
 

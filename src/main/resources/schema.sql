@@ -271,7 +271,7 @@ VALUES
 
     (12,4,1,'PrepType1',100),
     (13,4,10,'PrepType3',500),
-    (14,4,15,'PrepType4',200),
+    (14,4,15,'PrepType2',200),
 
     (15,5,11,'PrepType2', 2000);
 /*!40000 ALTER TABLE `meal_component` ENABLE KEYS */;
