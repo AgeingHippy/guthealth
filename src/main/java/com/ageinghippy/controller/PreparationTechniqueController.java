@@ -1,6 +1,6 @@
 package com.ageinghippy.controller;
 
-import com.ageinghippy.model.entity.PreparationTechnique;
+import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,32 +19,32 @@ public class PreparationTechniqueController {
     private final PreparationTechniqueService preparationTechniqueService;
 
     @GetMapping("")
-    public ArrayList<PreparationTechnique> getPreparationTechniques() {
+    public List<PreparationTechniqueDTO> getPreparationTechniques() {
         return preparationTechniqueService.getPreparationTechniques();
     }
 
     @GetMapping("/{code}")
-    public PreparationTechnique getPreparationTechnique(@PathVariable String code) {
+    public PreparationTechniqueDTO getPreparationTechnique(@PathVariable String code) {
         return preparationTechniqueService.getPreparationTechnique(code);
     }
 
     @PostMapping("")
-    public ResponseEntity<PreparationTechnique> postPreparationTechnique(@Valid @RequestBody PreparationTechnique preparationTechnique) {
+    public ResponseEntity<PreparationTechniqueDTO> postPreparationTechnique(@Valid @RequestBody PreparationTechniqueDTO preparationTechnique) {
         preparationTechnique = preparationTechniqueService.createPreparationTechnique(preparationTechnique);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{code}")
-                .buildAndExpand(preparationTechnique.getCode())
+                .buildAndExpand(preparationTechnique.code())
                 .toUri();
         return ResponseEntity.created(location).body(preparationTechnique);
     }
 
     @PutMapping("/{code}")
-    public PreparationTechnique putPreparationTechnique(@RequestBody PreparationTechnique preparationTechnique, @PathVariable String code) {
-        if (preparationTechnique.getCode() != null) {
+    public ResponseEntity<PreparationTechniqueDTO> putPreparationTechnique(@RequestBody PreparationTechniqueDTO preparationTechnique, @PathVariable String code) {
+        if (preparationTechnique.code() != null) {
             throw new IllegalArgumentException("Preparation Technique code cannot be specified in body");
         }
-        return preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique);
+        return ResponseEntity.ok(preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique))                ;
     }
 
     @DeleteMapping("/{code}")

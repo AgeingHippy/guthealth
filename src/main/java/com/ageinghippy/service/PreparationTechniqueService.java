@@ -18,45 +18,37 @@ public class PreparationTechniqueService {
     private final PreparationTechniqueRepository preparationTechniqueRepository;
     private final MyMapper myMapper;
 
-    public List<PreparationTechniqueDTO> getPreparationTechniquesDto() {
-        List<PreparationTechnique> preparationTechniques = preparationTechniqueRepository.findAll();
-        return myMapper.mapList(preparationTechniques, PreparationTechniqueDTO.class);
+    public PreparationTechniqueDTO getPreparationTechnique(String code) {
+        return myMapper.map(preparationTechniqueRepository.findById(code).orElseThrow(), PreparationTechniqueDTO.class);
     }
 
-    public PreparationTechniqueDTO getPreparationTechniqueDto(String code) {
-        PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
-        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
+    public List<PreparationTechniqueDTO> getPreparationTechniques() {
+        return myMapper.mapList(preparationTechniqueRepository.findAll(), PreparationTechniqueDTO.class);
     }
 
-    public PreparationTechniqueDTO createPreparationTechniqueDto(PreparationTechniqueDTO preparationTechniqueDTO) {
-        PreparationTechnique preparationTechnique = myMapper.map(preparationTechniqueDTO, PreparationTechnique.class);
-        preparationTechnique = savePreparationTechnique(preparationTechnique);
-        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
-    }
+    public PreparationTechniqueDTO createPreparationTechnique(PreparationTechniqueDTO preparationTechnique) {
+        PreparationTechnique newPreparationTechnique = myMapper.map(preparationTechnique, PreparationTechnique.class);
 
-    public PreparationTechnique getPreparationTechnique(String code) {
-        return preparationTechniqueRepository.findById(code).orElseThrow();
-    }
-
-    public ArrayList<PreparationTechnique> getPreparationTechniques() {
-        return (ArrayList<PreparationTechnique>) preparationTechniqueRepository.findAll();
-    }
-
-    public PreparationTechnique createPreparationTechnique(PreparationTechnique preparationTechnique) {
-        if (preparationTechniqueRepository.findById(preparationTechnique.getCode()).orElse(null) != null) {
-            throw new IllegalArgumentException("Preparation Technique with code '"+ preparationTechnique.getCode() + "' already exists");
+        if (preparationTechniqueRepository.findById(newPreparationTechnique.getCode()).orElse(null) != null) {
+            throw new IllegalArgumentException("Preparation Technique with code '" + newPreparationTechnique.getCode() + "' already exists");
         }
-        return savePreparationTechnique(preparationTechnique);
+        newPreparationTechnique = savePreparationTechnique(newPreparationTechnique);
+
+        return myMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
     }
 
     private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
         return preparationTechniqueRepository.save(preparationTechnique);
     }
 
-    public PreparationTechnique updatePreparationTechnique(String code, PreparationTechnique updatePreparationTechnique) {
+    public PreparationTechniqueDTO updatePreparationTechnique(String code, PreparationTechniqueDTO updatePreparationTechnique) {
+
         PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
-        preparationTechnique.setDescription(Util.valueIfNull(updatePreparationTechnique.getDescription(), preparationTechnique.getDescription()));
-        return savePreparationTechnique(preparationTechnique);
+        preparationTechnique.setDescription(
+                Util.valueIfNull(updatePreparationTechnique.description(), preparationTechnique.getDescription()));
+        preparationTechnique = savePreparationTechnique(preparationTechnique);
+
+        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
     }
 
     public void deletePreparationTechnique(String code) {

@@ -20,11 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = GutHealthApplication.class)
 @AutoConfigureMockMvc
@@ -90,6 +90,7 @@ class PreparationTechniqueControllerIT {
                                 .content("{\"code\":\"newCode\",\"description\":\"newDescription\"}"))
                         .andDo(print())
                         .andExpect(status().isCreated())
+                        .andExpect(header().string("Location",matchesPattern(".*" +baseUrl + "/newCode")))
                         .andReturn();
 
         PreparationTechniqueDTO preparationTechniqueDTO = objectMapper.readValue(result.getResponse().getContentAsString(), PreparationTechniqueDTO.class);
