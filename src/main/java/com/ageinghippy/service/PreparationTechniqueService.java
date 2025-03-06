@@ -59,6 +59,11 @@ public class PreparationTechniqueService {
         return savePreparationTechnique(preparationTechnique);
     }
 
+    public void deletePreparationTechnique(String code) {
+        PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
+        deletePreparationTechnique(preparationTechnique);
+    }
+
     public void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
         preparationTechniqueRepository.delete(preparationTechnique);
     }

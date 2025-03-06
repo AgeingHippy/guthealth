@@ -41,18 +41,16 @@ public class PreparationTechniqueController {
 
     @PutMapping("/{code}")
     public PreparationTechnique putPreparationTechnique(@RequestBody PreparationTechnique preparationTechnique, @PathVariable String code) {
+        if (preparationTechnique.getCode() != null) {
+            throw new IllegalArgumentException("Preparation Technique code cannot be specified in body");
+        }
         return preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique);
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<String> deletePreparationTechnique(@PathVariable String code) {
-        PreparationTechnique preparationTechnique = preparationTechniqueService.getPreparationTechnique(code);
-        if (preparationTechnique != null) {
-            preparationTechniqueService.deletePreparationTechnique(preparationTechnique);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        preparationTechniqueService.deletePreparationTechnique(code);
+        return ResponseEntity.noContent().build();
     }
 
 }
