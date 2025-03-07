@@ -1,5 +1,6 @@
 package com.ageinghippy.controller;
 
+import com.ageinghippy.model.dto.FoodTypeDTO;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.service.FoodTypeService;
 import jakarta.validation.Valid;
@@ -32,6 +33,25 @@ public class FoodTypeController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<FoodTypeDTO> getFoodTypeDto(@PathVariable Long id) {
+        return ResponseEntity.ok(foodTypeService.getFoodTypeDto(id));
+    }
+
+    @PostMapping("/dto")
+    public ResponseEntity<FoodTypeDTO> postFoodTypeDto(@Valid @RequestBody FoodTypeDTO foodType) {
+        if (foodType.id() != null) {
+            throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
+        }
+        foodType = foodTypeService.createFoodTypeDto(foodType);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(foodType.id())
+                .toUri();
+        return ResponseEntity.created(location).body(foodType);
     }
 
     @PostMapping

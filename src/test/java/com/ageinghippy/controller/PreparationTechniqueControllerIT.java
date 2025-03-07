@@ -1,4 +1,4 @@
-package it.com.ageinghippy.controller;
+package com.ageinghippy.controller;
 
 import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;

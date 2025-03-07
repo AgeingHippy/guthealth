@@ -31,7 +31,7 @@ public class GutControllerAdvice {
     @ResponseStatus(value= HttpStatus.BAD_REQUEST)
     public ResponseErrorMessage noSuchElementExceptionResponse(DataIntegrityViolationException ex) {
         log.warn(ex.getMessage());
-        return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, "Data Integrity Violation");
     }
 
 

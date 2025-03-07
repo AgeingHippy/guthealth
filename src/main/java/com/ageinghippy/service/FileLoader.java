@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class FileLoader {
         String line; // FoodCategoryName | foodTypeName | foodTypeDescription
         String errorMessage;
         ArrayList<FoodType> foodTypes = new ArrayList<>();
-        ArrayList<FoodCategory> foodCategories = foodCategoryService.getFoodCategories();
+        List<FoodCategory> foodCategories = foodCategoryService.getFoodCategories();
         Function<String, FoodCategory> foodCategoryByName = foodCategoryName ->
                 foodCategories.stream().filter(fc -> fc.getName().equalsIgnoreCase(foodCategoryName)).findFirst().orElse(null);
 
