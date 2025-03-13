@@ -1,8 +1,6 @@
 package com.ageinghippy.model;
 
-import com.ageinghippy.model.dto.FoodCategoryDto;
-import com.ageinghippy.model.dto.FoodTypeDTO;
-import com.ageinghippy.model.dto.PreparationTechniqueDTO;
+import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.PreparationTechnique;
@@ -23,10 +21,14 @@ public class MyMapper extends ModelMapper {
 
         if (destinationType == PreparationTechniqueDTO.class) {
             return (D) toDto((PreparationTechnique) source);
-        } else if (destinationType == FoodCategoryDto.class) {
-            return (D) toDto((FoodCategory) source);
-        } else if (destinationType == FoodTypeDTO.class) {
-            return (D) toDto((FoodType) source);
+        } else if (destinationType == FoodCategoryDTOSimple.class) {
+            return (D) toDtoSimple((FoodCategory) source);
+        } else if (destinationType == FoodCategoryDTOComplex.class) {
+            return (D) toDtoComplex((FoodCategory) source);
+        } else if (destinationType == FoodTypeDTOSimple.class) {
+            return (D) toDtoSimple((FoodType) source);
+        } else if (destinationType == FoodTypeDTOComplex.class) {
+            return (D) toDtoComplex((FoodType) source);
         } else {
             return super.map(source, destinationType);
         }
@@ -42,21 +44,35 @@ public class MyMapper extends ModelMapper {
         return new PreparationTechniqueDTO(preparationTechnique.getCode(), preparationTechnique.getDescription());
     }
 
-    private FoodTypeDTO toDto(FoodType foodType) {
-        return new FoodTypeDTO(
+    private FoodTypeDTOSimple toDtoSimple(FoodType foodType) {
+        return new FoodTypeDTOSimple(
                 foodType.getId(),
-                foodType.getFoodCategory().getId(),
-                foodType.getFoodCategory().getName(),
                 foodType.getName(),
                 foodType.getDescription());
     }
 
-    private FoodCategoryDto toDto(FoodCategory foodCategory) {
-        return new FoodCategoryDto(
+    private FoodTypeDTOComplex toDtoComplex(FoodType foodType) {
+        return new FoodTypeDTOComplex(
+                foodType.getId(),
+                foodType.getName(),
+                foodType.getDescription(),
+                toDtoSimple(foodType.getFoodCategory()));
+    }
+
+    private FoodCategoryDTOSimple toDtoSimple(FoodCategory foodCategory) {
+        return new FoodCategoryDTOSimple(
+                foodCategory.getId(),
+                foodCategory.getName(),
+                foodCategory.getDescription()
+        );
+    }
+
+    private FoodCategoryDTOComplex toDtoComplex(FoodCategory foodCategory) {
+        return new FoodCategoryDTOComplex(
                 foodCategory.getId(),
                 foodCategory.getName(),
                 foodCategory.getDescription(),
-                mapList(foodCategory.getFoodTypes(),FoodTypeDTO.class)
+                mapList(foodCategory.getFoodTypes(), FoodTypeDTOSimple.class)
         );
     }
 

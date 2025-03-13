@@ -27,7 +27,7 @@ public class FoodType implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("foodTypes")
+//    @JsonIgnoreProperties("foodTypes")
     private FoodCategory foodCategory;
 
     @NotNull
@@ -40,7 +40,7 @@ public class FoodType implements Serializable {
     public String toString() {
         return "FoodType{" +
                 "id=" + id +
-                ", foodCategory_id=" + foodCategory.getId() +
+                ", foodCategory=" + foodCategory +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';

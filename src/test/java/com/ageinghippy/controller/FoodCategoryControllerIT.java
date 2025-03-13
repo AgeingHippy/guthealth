@@ -1,9 +1,8 @@
 package com.ageinghippy.controller;
 
 import com.ageinghippy.GutHealthApplication;
-import com.ageinghippy.model.dto.FoodCategoryDto;
+import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.entity.FoodCategory;
-import com.ageinghippy.model.entity.PreparationTechnique;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -52,11 +51,11 @@ public class FoodCategoryControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<FoodCategoryDto> resultList =
+        List<FoodCategoryDTOComplex> resultList =
                 objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        List<String> foodCategoryNames = resultList.stream().map(FoodCategoryDto::name).toList();
+        List<String> foodCategoryNames = resultList.stream().map(FoodCategoryDTOComplex::name).toList();
 
         assertEquals(resultList.size(), 5);
         assert (foodCategoryNames.contains("foodCategory1_name"));
@@ -82,8 +81,8 @@ public class FoodCategoryControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        FoodCategoryDto resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDto.class);
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
 
         assertEquals(resultDto.name(), "foodCategory3_name");
     }
@@ -115,8 +114,8 @@ public class FoodCategoryControllerIT {
                 .andReturn();
 
         //verify response is new category
-        FoodCategoryDto resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDto.class);
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
         assertNotNull(resultDto.id());
         assertEquals(resultDto.name(), "anotherCategory");
 
@@ -164,8 +163,8 @@ public class FoodCategoryControllerIT {
                 .andReturn();
 
         //verify response is new category
-        FoodCategoryDto resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDto.class);
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
         assertEquals(resultDto.id(),1L);
         assertEquals(resultDto.name(), "foodCategory1_name_updated");
         assertEquals(resultDto.description(), "Updated description here");

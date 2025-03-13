@@ -33,7 +33,7 @@ public class FoodCategory implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "foodCategory", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("foodCategory")
+//    @JsonIgnoreProperties("foodCategory")
     List<FoodType> foodTypes;
 
     @Override
