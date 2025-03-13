@@ -1,11 +1,12 @@
-package com.ageinghippy.data.model;
+package com.ageinghippy.model.entity;
 
-import com.ageinghippy.model.PreparationTechnique;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Dish {
+public class Dish implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 7214811498965048416L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,11 +29,12 @@ public class Dish {
     @NotEmpty
     private String description;
 
-    @Column(name = "preparation_technique_code")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "preparation_technique_code")
     private PreparationTechnique preparationTechnique;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="dish_component_id")
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("dish")
     private List<DishComponent> dishComponents;
 
     @Override

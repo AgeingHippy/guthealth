@@ -1,4 +1,4 @@
-package com.ageinghippy.model;
+package com.ageinghippy.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

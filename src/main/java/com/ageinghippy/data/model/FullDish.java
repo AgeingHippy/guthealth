@@ -1,5 +1,8 @@
 package com.ageinghippy.data.model;
 
+import com.ageinghippy.model.entity.Dish;
+import com.ageinghippy.model.entity.DishComponent;
+
 import java.util.ArrayList;
 
 public class FullDish {

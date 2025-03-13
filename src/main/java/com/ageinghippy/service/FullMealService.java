@@ -1,10 +1,5 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.data.model.*;
-import com.ageinghippy.model.FoodType;
-
-import java.util.ArrayList;
-
 public class FullMealService {
 //    private final GutHealthDAO gutHealthDAO;
 //    private final PreparationTechniqueService preparationTechniqueService;

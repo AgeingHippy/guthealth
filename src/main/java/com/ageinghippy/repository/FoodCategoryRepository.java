@@ -1,6 +1,6 @@
 package com.ageinghippy.repository;
 
-import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.entity.FoodCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

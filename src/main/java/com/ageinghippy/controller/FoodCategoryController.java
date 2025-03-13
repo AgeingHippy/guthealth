@@ -1,6 +1,6 @@
 package com.ageinghippy.controller;
 
-import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.service.FoodCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -20,7 +21,7 @@ public class FoodCategoryController {
     private final FoodCategoryService foodCategoryService;
 
     @GetMapping
-    public ArrayList<FoodCategory> getFoodCategories() {
+    public List<FoodCategory> getFoodCategories() {
         return foodCategoryService.getFoodCategories();
     }
 
@@ -40,7 +41,7 @@ public class FoodCategoryController {
         if (foodCategory.getId() != null) {
             throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
         }
-        foodCategory = foodCategoryService.saveFoodCategory(foodCategory);
+        foodCategory = foodCategoryService.createFoodCategory(foodCategory);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

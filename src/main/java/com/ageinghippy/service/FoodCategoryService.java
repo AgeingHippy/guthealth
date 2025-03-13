@@ -1,29 +1,45 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.FoodCategory;
+import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FoodCategoryService {
     private final FoodCategoryRepository foodCategoryRepository;
+    private final MyMapper myMapper;
+    private final EntityManager entityManager;
 
     public FoodCategory getFoodCategory(Long id) {
         return foodCategoryRepository.findById(id).orElse(null);
     }
 
-    public ArrayList<FoodCategory> getFoodCategories() {
-        return (ArrayList<FoodCategory>) foodCategoryRepository.findAll();
+    public List<FoodCategory> getFoodCategories() {
+        return foodCategoryRepository.findAll();
     }
 
+    @Transactional
+    public FoodCategory createFoodCategory(FoodCategory foodCategory) {
+
+        foodCategory = saveFoodCategory(foodCategory);
+
+        return foodCategory;
+    }
+
+    @Transactional
     public FoodCategory saveFoodCategory(FoodCategory foodCategory) {
         foodCategory = foodCategoryRepository.save(foodCategory);
-
+        entityManager.flush();
+        entityManager.refresh(foodCategory);
         return foodCategory;
     }
 
@@ -36,6 +52,7 @@ public class FoodCategoryService {
      *
      * @throws java.util.NoSuchElementException if the food category with the provided id does not exist
      */
+    @Transactional
     public FoodCategory updateFoodCategory(Long id, FoodCategory updateFoodCategory) {
         FoodCategory foodCategory = foodCategoryRepository.findById(id).orElseThrow();
         foodCategory.setName(Util.valueIfNull(updateFoodCategory.getName(), foodCategory.getName()));
