@@ -1,6 +1,7 @@
 package com.ageinghippy.model;
 
 import com.ageinghippy.model.dto.*;
+import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.PreparationTechnique;
@@ -32,6 +33,11 @@ public class DTOMapper extends ModelMapper {
         } else if (source.getClass() == FoodTypeDTOComplex.class && destinationType == FoodType.class) {
             //todo - sledgehammer solution - to refactor
             return (D) mapFoodTypeDTOComplextoFoodType((FoodTypeDTOComplex) source);
+        } else if (destinationType == DishComponentDTO.class) {
+            return (D) toDTO((DishComponent) source);
+        } else if (source.getClass() == DishComponentDTO.class && destinationType == DishComponent.class) {
+            //todo - sledgehammer solution - to refactor
+            return (D) mapDishComponentDTODishComponent((DishComponentDTO) source);
         } else {
             return super.map(source, destinationType);
         }
@@ -45,6 +51,12 @@ public class DTOMapper extends ModelMapper {
 
     private PreparationTechniqueDTO toDto(PreparationTechnique preparationTechnique) {
         return new PreparationTechniqueDTO(preparationTechnique.getCode(), preparationTechnique.getDescription());
+    }
+
+    private DishComponentDTO toDTO(DishComponent dishComponent) {
+        return new DishComponentDTO(dishComponent.getId(),
+                map(dishComponent.getFoodType(), FoodTypeDTOSimple.class),
+                dishComponent.getProportion());
     }
 
     private FoodTypeDTOSimple toDtoSimple(FoodType foodType) {
@@ -96,4 +108,14 @@ public class DTOMapper extends ModelMapper {
                 .build();
     }
 
+    private DishComponent mapDishComponentDTODishComponent(DishComponentDTO source) {
+        return DishComponent.builder()
+                .id(source.id())
+                .foodType(
+                        source.foodType() != null
+                                ? map(source.foodType(), FoodType.class)
+                                : null)
+                .proportion(source.proportion())
+                .build();
+    }
 }

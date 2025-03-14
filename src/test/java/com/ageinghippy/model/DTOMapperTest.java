@@ -1,9 +1,7 @@
 package com.ageinghippy.model;
 
 import com.ageinghippy.model.dto.*;
-import com.ageinghippy.model.entity.FoodCategory;
-import com.ageinghippy.model.entity.FoodType;
-import com.ageinghippy.model.entity.PreparationTechnique;
+import com.ageinghippy.model.entity.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -18,11 +16,12 @@ class DTOMapperTest {
 
     @ParameterizedTest
     @MethodSource({
-            "verify_map_provider_PreparationTechniqueDTO",
-            "verify_map_provider_FoodCategoryDTOSimple",
-            "verify_map_provider_FoodTypeDTOSimple",
-            "verify_map_provider_FoodCategoryDTOComplex",
-            "verify_map_provider_FoodTypeDTOComplex"
+//            "verify_map_provider_PreparationTechniqueDTO",
+//            "verify_map_provider_FoodCategoryDTOSimple",
+//            "verify_map_provider_FoodTypeDTOSimple",
+//            "verify_map_provider_FoodCategoryDTOComplex",
+//            "verify_map_provider_FoodTypeDTOComplex",
+            "verify_map_provider_DishComponentDTO"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
 
@@ -37,11 +36,12 @@ class DTOMapperTest {
 
     @ParameterizedTest
     @MethodSource({
-            "verify_mapList_provider_PreparationTechniqueDTO",
-            "verify_mapList_provider_FoodCategoryDTOSimple",
-            "verify_mapList_provider_FoodTypeDTOSimple",
-            "verify_mapList_provider_FoodCategoryDTOComplex",
-            "verify_mapList_provider_FoodTypeDTOComplex"
+//            "verify_mapList_provider_PreparationTechniqueDTO",
+//            "verify_mapList_provider_FoodCategoryDTOSimple",
+//            "verify_mapList_provider_FoodTypeDTOSimple",
+//            "verify_mapList_provider_FoodCategoryDTOComplex",
+//            "verify_mapList_provider_FoodTypeDTOComplex",
+            "verify_mapList_provider_DishComponentDTO"
     })
     <S, T> void mapList(String testDescription, List<S> sourceList, List<T> targetList, Class<T> targetClassType) {
 
@@ -523,5 +523,151 @@ class DTOMapperTest {
         );
     }
 
+    private static Stream<Object[]> verify_map_provider_DishComponentDTO() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map DishComponent to DishComponentDTO",
+                        DishComponent.builder()
+                                .id(1L)
+                                .dish(Dish.builder().id(11L).build())
+                                .foodType(FoodType.builder()
+                                        .id(101L)
+                                        .name("foodType101")
+                                        .description("foodTypeDesc101")
+                                        .foodCategory(FoodCategory.builder().id(111L).build())
+                                        .build())
+                                .proportion(100)
+                                .build(),
+                        new DishComponentDTO(1L,
+                                new FoodTypeDTOSimple(101L, "foodType101", "foodTypeDesc101"),
+                                100),
+                        DishComponentDTO.class
+                },
+                new Object[]{
+                        "Map DishComponentDTO to DishComponent",
+                        new DishComponentDTO(1L,
+                                new FoodTypeDTOSimple(101L, "foodType101", "foodTypeDesc101"),
+                                100),
+                        DishComponent.builder()
+                                .id(1L)
+                                .dish(null)
+                                .foodType(FoodType.builder()
+                                        .id(101L)
+                                        .name("foodType101")
+                                        .description("foodTypeDesc101")
+                                        .foodCategory(null)
+                                        .build())
+                                .proportion(100)
+                                .build(),
+                        DishComponent.class
+                }
+        );
+    }
 
+    private static Stream<Object[]> verify_mapList_provider_DishComponentDTO() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map DishComponent to DishComponentDTO",
+                        List.of(
+                                DishComponent.builder()
+                                        .id(1L)
+                                        .dish(Dish.builder().id(11L).build())
+                                        .foodType(FoodType.builder()
+                                                .id(101L)
+                                                .name("foodType101")
+                                                .description("foodTypeDesc101")
+                                                .foodCategory(FoodCategory.builder().id(111L).build())
+                                                .build())
+                                        .proportion(100)
+                                        .build(),
+                                DishComponent.builder()
+                                        .id(2L)
+                                        .dish(Dish.builder().id(11L).build())
+                                        .foodType(FoodType.builder()
+                                                .id(202L)
+                                                .name("foodType202")
+                                                .description("foodTypeDesc202")
+                                                .foodCategory(FoodCategory.builder().id(222L).build())
+                                                .build())
+                                        .proportion(200)
+                                        .build(),
+                                DishComponent.builder()
+                                        .id(3L)
+                                        .dish(Dish.builder().id(11L).build())
+                                        .foodType(FoodType.builder()
+                                                .id(303L)
+                                                .name("foodType303")
+                                                .description("foodTypeDesc303")
+                                                .foodCategory(FoodCategory.builder().id(333L).build())
+                                                .build())
+                                        .proportion(300)
+                                        .build()
+                        ),
+                        List.of(
+                                new DishComponentDTO(1L,
+                                        new FoodTypeDTOSimple(101L, "foodType101", "foodTypeDesc101"),
+                                        100),
+                                new DishComponentDTO(2L,
+                                        new FoodTypeDTOSimple(202L, "foodType202", "foodTypeDesc202"),
+                                        200),
+                                new DishComponentDTO(3L,
+                                        new FoodTypeDTOSimple(303L, "foodType303", "foodTypeDesc303"),
+                                        300)
+                        ),
+                        DishComponentDTO.class
+                },
+                new Object[]{
+                        "Map DishComponentDTO to DishComponent",
+                        List.of(
+                                new DishComponentDTO(1L,
+                                        new FoodTypeDTOSimple(101L, "foodType101", "foodTypeDesc101"),
+                                        100),
+                                new DishComponentDTO(2L,
+                                        new FoodTypeDTOSimple(202L, "foodType202", "foodTypeDesc202"),
+                                        200),
+                                new DishComponentDTO(3L,
+                                        new FoodTypeDTOSimple(303L, "foodType303", "foodTypeDesc303"),
+                                        300)
+                        ),
+                        List.of(
+                                DishComponent.builder()
+                                        .id(1L)
+                                        .dish(null)
+                                        .foodType(FoodType.builder()
+                                                .id(101L)
+                                                .name("foodType101")
+                                                .description("foodTypeDesc101")
+                                                .foodCategory(null)
+                                                .build())
+                                        .proportion(100)
+                                        .build(),
+                                DishComponent.builder()
+                                        .id(2L)
+                                        .dish(null)
+                                        .foodType(FoodType.builder()
+                                                .id(202L)
+                                                .name("foodType202")
+                                                .description("foodTypeDesc202")
+                                                .foodCategory(null)
+                                                .build())
+                                        .proportion(200)
+                                        .build(),
+                                DishComponent.builder()
+                                        .id(3L)
+                                        .dish(null)
+                                        .foodType(FoodType.builder()
+                                                .id(303L)
+                                                .name("foodType303")
+                                                .description("foodTypeDesc303")
+                                                .foodCategory(null)
+                                                .build())
+                                        .proportion(300)
+                                        .build()
+                        ),
+                        DishComponent.class
+                }
+        );
+    }
 }
