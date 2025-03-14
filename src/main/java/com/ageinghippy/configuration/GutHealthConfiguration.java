@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class GutHealthConfiguration {
 
     @Bean
-    public DTOMapper myMapper() {
-        DTOMapper DTOMapper = new DTOMapper();
-//        myMapper.registerModule(new RecordModule());
-        return DTOMapper;
+    public DTOMapper dtoMapper() {
+        return new DTOMapper();
     }
 
 }
