@@ -27,7 +27,7 @@ public class FoodType implements Serializable {
 
     @NotNull
     @ManyToOne(optional = false)
-//    @JsonIgnoreProperties("foodTypes")
+    @JsonIgnoreProperties("foodTypes")
     private FoodCategory foodCategory;
 
     @NotNull

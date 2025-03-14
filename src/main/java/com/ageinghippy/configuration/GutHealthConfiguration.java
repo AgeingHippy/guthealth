@@ -1,6 +1,6 @@
 package com.ageinghippy.configuration;
 
-import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.DTOMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class GutHealthConfiguration {
 
     @Bean
-    public MyMapper myMapper() {
-        MyMapper myMapper = new MyMapper();
+    public DTOMapper myMapper() {
+        DTOMapper DTOMapper = new DTOMapper();
 //        myMapper.registerModule(new RecordModule());
-        return myMapper;
+        return DTOMapper;
     }
 
 }

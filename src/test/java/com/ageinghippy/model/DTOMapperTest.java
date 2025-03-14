@@ -12,16 +12,16 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MyMapperTest {
+class DTOMapperTest {
 
-    MyMapper myMapper = new MyMapper();
+    DTOMapper DTOMapper = new DTOMapper();
 
     @ParameterizedTest
     @MethodSource({
-//            "verify_map_provider_PreparationTechniqueDTO",
-//            "verify_map_provider_FoodCategoryDTOSimple",
-//            "verify_map_provider_FoodTypeDTOSimple",
-//            "verify_map_provider_FoodCategoryDTOComplex" //,
+            "verify_map_provider_PreparationTechniqueDTO",
+            "verify_map_provider_FoodCategoryDTOSimple",
+            "verify_map_provider_FoodTypeDTOSimple",
+            "verify_map_provider_FoodCategoryDTOComplex",
             "verify_map_provider_FoodTypeDTOComplex"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
@@ -29,7 +29,7 @@ class MyMapperTest {
         //GIVEN an Entity
 
         //WHEN we map to a DTO
-        T mappedTarget = myMapper.map(source, classType);
+        T mappedTarget = DTOMapper.map(source, classType);
 
         //THEN the valid values are mapped
         assertEquals(mappedTarget, target, testDescription);
@@ -40,14 +40,15 @@ class MyMapperTest {
             "verify_mapList_provider_PreparationTechniqueDTO",
             "verify_mapList_provider_FoodCategoryDTOSimple",
             "verify_mapList_provider_FoodTypeDTOSimple",
-            "verify_mapList_provider_FoodCategoryDTOComplex"
+            "verify_mapList_provider_FoodCategoryDTOComplex",
+            "verify_mapList_provider_FoodTypeDTOComplex"
     })
     <S, T> void mapList(String testDescription, List<S> sourceList, List<T> targetList, Class<T> targetClassType) {
 
         //GIVEN a List of objects
 
         //WHEN we map the list
-        List<T> mappedTargetList = myMapper.mapList(sourceList, targetClassType);
+        List<T> mappedTargetList = DTOMapper.mapList(sourceList, targetClassType);
 
         //Then the elements of the list match
         assertEquals(mappedTargetList.size(), targetList.size(), testDescription);
@@ -375,16 +376,20 @@ class MyMapperTest {
                                         .name("name1")
                                         .description("description1")
                                         .foodTypes(
-                                                List.of(FoodType.builder().id(11L).name("n1").description("d1").build(),
-                                                        FoodType.builder().id(22L).name("n2").description("d2").build()))
+                                                List.of(
+                                                        FoodType.builder().id(11L).name("n1").description("d1").build(),
+                                                        FoodType.builder().id(22L).name("n2").description("d2").build()
+                                                ))
                                         .build(),
                                 FoodCategory.builder()
                                         .id(2L)
                                         .name("name2")
                                         .description("description2")
                                         .foodTypes(
-                                                List.of(FoodType.builder().id(33L).name("n3").description("d3").build(),
-                                                        FoodType.builder().id(44L).name("n4").description("d4").build()))
+                                                List.of(
+                                                        FoodType.builder().id(33L).name("n3").description("d3").build(),
+                                                        FoodType.builder().id(44L).name("n4").description("d4").build()
+                                                ))
                                         .build()
                         ),
                         FoodCategory.class
@@ -405,14 +410,18 @@ class MyMapperTest {
                                         FoodCategory.builder().id(22L).name("FC22").description("Desc 22").build()
                                 )
                                 .build(),
-                        new FoodTypeDTOComplex(1L, "name1", "description1",
-                                new FoodCategoryDTOSimple(22L, "FC22","Desc 22")),
+                        new FoodTypeDTOComplex(1L,
+                                new FoodCategoryDTOSimple(22L, "FC22", "Desc 22"),
+                                "name1",
+                                "description1"),
                         FoodTypeDTOComplex.class
                 },
                 new Object[]{
                         "Map FoodTypeDTOComplex to FoodType",
-                        new FoodTypeDTOComplex(1L, "name1", "description1",
-                                new FoodCategoryDTOSimple(22L, "FC22","Desc 22")),
+                        new FoodTypeDTOComplex(1L,
+                                new FoodCategoryDTOSimple(22L, "FC22", "Desc 22"),
+                                "name1",
+                                "description1"),
                         FoodType.builder()
                                 .id(1L)
                                 .name("name1")
@@ -425,5 +434,94 @@ class MyMapperTest {
                 }
         );
     }
+
+    private static Stream<Object[]> verify_mapList_provider_FoodTypeDTOComplex() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map FoodType to FoodTypeDTOComplex",
+                        List.of(
+                                FoodType.builder()
+                                        .id(1L)
+                                        .name("name1")
+                                        .description("description1")
+                                        .foodCategory(
+                                                FoodCategory.builder().id(11L).name("FC11").description("Desc 11").build()
+                                        )
+                                        .build(),
+                                FoodType.builder()
+                                        .id(2L)
+                                        .name("name2")
+                                        .description("description2")
+                                        .foodCategory(
+                                                FoodCategory.builder().id(22L).name("FC22").description("Desc 22").build()
+                                        )
+                                        .build(),
+                                FoodType.builder()
+                                        .id(3L)
+                                        .name("name3")
+                                        .description("description3")
+                                        .build()
+                        ),
+                        List.of(
+                                new FoodTypeDTOComplex(1L,
+                                        new FoodCategoryDTOSimple(11L, "FC11", "Desc 11"),
+                                        "name1",
+                                        "description1"),
+                                new FoodTypeDTOComplex(2L,
+                                        new FoodCategoryDTOSimple(22L, "FC22", "Desc 22"),
+                                        "name2",
+                                        "description2"),
+                                new FoodTypeDTOComplex(3L,
+                                        null,
+                                        "name3",
+                                        "description3")
+                        ),
+                        FoodTypeDTOComplex.class
+                },
+                new Object[]{
+                        "Map FoodTypeDTOComplex to FoodType",
+                        List.of(
+                                new FoodTypeDTOComplex(1L,
+                                        new FoodCategoryDTOSimple(11L, "FC11", "Desc 11"),
+                                        "name1",
+                                        "description1"),
+                                new FoodTypeDTOComplex(2L,
+                                        new FoodCategoryDTOSimple(22L, "FC22", "Desc 22"),
+                                        "name2",
+                                        "description2"),
+                                new FoodTypeDTOComplex(3L,
+                                        null,
+                                        "name3",
+                                        "description3")
+                        ),
+                        List.of(
+                                FoodType.builder()
+                                        .id(1L)
+                                        .name("name1")
+                                        .description("description1")
+                                        .foodCategory(
+                                                FoodCategory.builder().id(11L).name("FC11").description("Desc 11").build()
+                                        )
+                                        .build(),
+                                FoodType.builder()
+                                        .id(2L)
+                                        .name("name2")
+                                        .description("description2")
+                                        .foodCategory(
+                                                FoodCategory.builder().id(22L).name("FC22").description("Desc 22").build()
+                                        )
+                                        .build(),
+                                FoodType.builder()
+                                        .id(3L)
+                                        .name("name3")
+                                        .description("description3")
+                                        .build()
+                        ),
+                        FoodType.class
+                }
+        );
+    }
+
 
 }

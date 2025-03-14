@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
@@ -18,7 +18,7 @@ import java.util.List;
 public class FoodTypeService {
     private final FoodTypeRepository foodTypeRepository;
     private final FoodCategoryRepository foodCategoryRepository;
-    private final MyMapper myMapper;
+    private final DTOMapper DTOMapper;
     private final EntityManager entityManager;
 
     public FoodType getFoodType(Long id) {
@@ -26,7 +26,7 @@ public class FoodTypeService {
     }
 
     public FoodTypeDTOComplex getFoodTypeDto(Long id) {
-        return myMapper.map(foodTypeRepository.findById(id).orElseThrow(), FoodTypeDTOComplex.class);
+        return DTOMapper.map(foodTypeRepository.findById(id).orElseThrow(), FoodTypeDTOComplex.class);
     }
 
     public List<FoodType> getFoodTypes() {
@@ -35,11 +35,11 @@ public class FoodTypeService {
 
     @Transactional
     public FoodTypeDTOComplex createFoodTypeDto(FoodTypeDTOComplex newFoodType) {
-        FoodType foodType = myMapper.map(newFoodType, FoodType.class);
+        FoodType foodType = DTOMapper.map(newFoodType, FoodType.class);
 
 //        foodType.setFoodCategory(foodCategoryRepository.findById(foodType.getFoodCategory().getId()).orElseThrow());
 
-        return myMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
+        return DTOMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
     }
 
     @Transactional

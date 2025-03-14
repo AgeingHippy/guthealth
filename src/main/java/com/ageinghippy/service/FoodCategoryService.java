@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FoodCategoryService {
     private final FoodCategoryRepository foodCategoryRepository;
-    private final MyMapper myMapper;
+    private final DTOMapper DTOMapper;
     private final EntityManager entityManager;
 
     public FoodCategory getFoodCategory(Long id) {

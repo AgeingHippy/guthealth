@@ -9,9 +9,9 @@ import org.modelmapper.record.RecordModule;
 
 import java.util.List;
 
-public class MyMapper extends ModelMapper {
+public class DTOMapper extends ModelMapper {
 
-    public MyMapper() {
+    public DTOMapper() {
         super();
         this.registerModule(new RecordModule());
     }
@@ -29,6 +29,9 @@ public class MyMapper extends ModelMapper {
             return (D) toDtoSimple((FoodType) source);
         } else if (destinationType == FoodTypeDTOComplex.class) {
             return (D) toDtoComplex((FoodType) source);
+        } else if (source.getClass() == FoodTypeDTOComplex.class && destinationType == FoodType.class) {
+            //todo - sledgehammer solution - to refactor
+            return (D) mapFoodTypeDTOComplextoFoodType((FoodTypeDTOComplex) source);
         } else {
             return super.map(source, destinationType);
         }
@@ -54,9 +57,9 @@ public class MyMapper extends ModelMapper {
     private FoodTypeDTOComplex toDtoComplex(FoodType foodType) {
         return new FoodTypeDTOComplex(
                 foodType.getId(),
+                foodType.getFoodCategory() != null ? toDtoSimple(foodType.getFoodCategory()) : null,
                 foodType.getName(),
-                foodType.getDescription(),
-                toDtoSimple(foodType.getFoodCategory()));
+                foodType.getDescription());
     }
 
     private FoodCategoryDTOSimple toDtoSimple(FoodCategory foodCategory) {
@@ -74,6 +77,23 @@ public class MyMapper extends ModelMapper {
                 foodCategory.getDescription(),
                 mapList(foodCategory.getFoodTypes(), FoodTypeDTOSimple.class)
         );
+    }
+
+    /*
+    Sledgehammer solution to the fact that ModelMapper default map method is not mapping the contained food category
+    todo - Refactor to use native ModelMapper functionality
+     */
+    private FoodType mapFoodTypeDTOComplextoFoodType(FoodTypeDTOComplex source) {
+        return FoodType.builder()
+                .id(source.id())
+                .name(source.name())
+                .description(source.description())
+                .foodCategory(
+                        source.foodCategory() != null
+                                ? super.map(source.foodCategory(), FoodCategory.class)
+                                : null
+                )
+                .build();
     }
 
 }
