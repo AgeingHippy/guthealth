@@ -1,6 +1,7 @@
 package com.ageinghippy.service;
 
 import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
@@ -19,7 +20,7 @@ public class FoodCategoryService {
     private final EntityManager entityManager;
 
     public FoodCategory getFoodCategory(Long id) {
-        return foodCategoryRepository.findById(id).orElse(null);
+        return foodCategoryRepository.findById(id).orElseThrow();
     }
 
     public List<FoodCategory> getFoodCategories() {

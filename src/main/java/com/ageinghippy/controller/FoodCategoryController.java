@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/v1/food-categories")
@@ -26,14 +24,8 @@ public class FoodCategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FoodCategory>  getFoodCategory(@PathVariable Long id) {
-        FoodCategory foodCategory = foodCategoryService.getFoodCategory(id);
-        if (foodCategory != null) {
-            return ResponseEntity.ok(foodCategory);
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<FoodCategory> getFoodCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(foodCategoryService.getFoodCategory(id));
     }
 
     @PostMapping
@@ -52,24 +44,15 @@ public class FoodCategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<FoodCategory> putFoodCategory(@RequestBody FoodCategory foodCategory, @PathVariable Long id) {
-        try {
-            foodCategory = foodCategoryService.updateFoodCategory(id, foodCategory);
-            return ResponseEntity.ok(foodCategory);
-        } catch(NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+        foodCategory = foodCategoryService.updateFoodCategory(id, foodCategory);
+        return ResponseEntity.ok(foodCategory);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFoodCategory(@PathVariable Long id) {
         FoodCategory foodCategory = foodCategoryService.getFoodCategory(id);
-        if (foodCategory != null) {
-            foodCategoryService.deleteFoodCategory(foodCategory);
-            return ResponseEntity.noContent().build();
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+        foodCategoryService.deleteFoodCategory(foodCategory);
+        return ResponseEntity.noContent().build();
     }
 
 }
