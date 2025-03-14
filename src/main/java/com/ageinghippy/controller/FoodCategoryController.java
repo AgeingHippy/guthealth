@@ -1,6 +1,7 @@
 package com.ageinghippy.controller;
 
-import com.ageinghippy.model.entity.FoodCategory;
+import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
+import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.service.FoodCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,39 +20,37 @@ public class FoodCategoryController {
     private final FoodCategoryService foodCategoryService;
 
     @GetMapping
-    public List<FoodCategory> getFoodCategories() {
+    public List<FoodCategoryDTOSimple> getFoodCategories() {
         return foodCategoryService.getFoodCategories();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FoodCategory> getFoodCategory(@PathVariable Long id) {
+    public ResponseEntity<FoodCategoryDTOComplex> getFoodCategory(@PathVariable Long id) {
         return ResponseEntity.ok(foodCategoryService.getFoodCategory(id));
     }
 
     @PostMapping
-    public ResponseEntity<FoodCategory> postFoodCategory(@Valid @RequestBody FoodCategory foodCategory) {
-        if (foodCategory.getId() != null) {
+    public ResponseEntity<FoodCategoryDTOComplex> postFoodCategory(@Valid @RequestBody FoodCategoryDTOSimple foodCategory) {
+        if (foodCategory.id() != null) {
             throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
         }
-        foodCategory = foodCategoryService.createFoodCategory(foodCategory);
+        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.createFoodCategory(foodCategory);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(foodCategory.getId())
+                .buildAndExpand(foodCategoryDTOComplex.id())
                 .toUri();
-        return ResponseEntity.created(location).body(foodCategory);
+        return ResponseEntity.created(location).body(foodCategoryDTOComplex);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FoodCategory> putFoodCategory(@RequestBody FoodCategory foodCategory, @PathVariable Long id) {
-        foodCategory = foodCategoryService.updateFoodCategory(id, foodCategory);
-        return ResponseEntity.ok(foodCategory);
+    public ResponseEntity<FoodCategoryDTOComplex> putFoodCategory(@RequestBody FoodCategoryDTOSimple foodCategory, @PathVariable Long id) {
+        return ResponseEntity.ok(foodCategoryService.updateFoodCategory(id, foodCategory));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFoodCategory(@PathVariable Long id) {
-        FoodCategory foodCategory = foodCategoryService.getFoodCategory(id);
-        foodCategoryService.deleteFoodCategory(foodCategory);
+        foodCategoryService.deleteFoodCategory(id);
         return ResponseEntity.noContent().build();
     }
 

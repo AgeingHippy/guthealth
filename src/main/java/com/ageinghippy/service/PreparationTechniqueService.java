@@ -15,25 +15,25 @@ import java.util.List;
 public class PreparationTechniqueService {
 
     private final PreparationTechniqueRepository preparationTechniqueRepository;
-    private final DTOMapper DTOMapper;
+    private final DTOMapper dtoMapper;
 
     public PreparationTechniqueDTO getPreparationTechnique(String code) {
-        return DTOMapper.map(preparationTechniqueRepository.findById(code).orElseThrow(), PreparationTechniqueDTO.class);
+        return dtoMapper.map(preparationTechniqueRepository.findById(code).orElseThrow(), PreparationTechniqueDTO.class);
     }
 
     public List<PreparationTechniqueDTO> getPreparationTechniques() {
-        return DTOMapper.mapList(preparationTechniqueRepository.findAll(), PreparationTechniqueDTO.class);
+        return dtoMapper.mapList(preparationTechniqueRepository.findAll(), PreparationTechniqueDTO.class);
     }
 
     public PreparationTechniqueDTO createPreparationTechnique(PreparationTechniqueDTO preparationTechnique) {
-        PreparationTechnique newPreparationTechnique = DTOMapper.map(preparationTechnique, PreparationTechnique.class);
+        PreparationTechnique newPreparationTechnique = dtoMapper.map(preparationTechnique, PreparationTechnique.class);
 
         if (preparationTechniqueRepository.findById(newPreparationTechnique.getCode()).orElse(null) != null) {
             throw new IllegalArgumentException("Preparation Technique with code '" + newPreparationTechnique.getCode() + "' already exists");
         }
         newPreparationTechnique = savePreparationTechnique(newPreparationTechnique);
 
-        return DTOMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
+        return dtoMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
     }
 
     private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
@@ -47,7 +47,7 @@ public class PreparationTechniqueService {
                 Util.valueIfNull(updatePreparationTechnique.description(), preparationTechnique.getDescription()));
         preparationTechnique = savePreparationTechnique(preparationTechnique);
 
-        return DTOMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
+        return dtoMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
     }
 
     public void deletePreparationTechnique(String code) {

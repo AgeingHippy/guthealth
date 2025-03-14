@@ -18,7 +18,7 @@ import java.util.List;
 public class FoodTypeService {
     private final FoodTypeRepository foodTypeRepository;
     private final FoodCategoryRepository foodCategoryRepository;
-    private final DTOMapper DTOMapper;
+    private final DTOMapper dtoMapper;
     private final EntityManager entityManager;
 
     public FoodType getFoodType(Long id) {
@@ -26,7 +26,7 @@ public class FoodTypeService {
     }
 
     public FoodTypeDTOComplex getFoodTypeDto(Long id) {
-        return DTOMapper.map(foodTypeRepository.findById(id).orElseThrow(), FoodTypeDTOComplex.class);
+        return dtoMapper.map(foodTypeRepository.findById(id).orElseThrow(), FoodTypeDTOComplex.class);
     }
 
     public List<FoodType> getFoodTypes() {
@@ -35,11 +35,11 @@ public class FoodTypeService {
 
     @Transactional
     public FoodTypeDTOComplex createFoodTypeDto(FoodTypeDTOComplex newFoodType) {
-        FoodType foodType = DTOMapper.map(newFoodType, FoodType.class);
+        FoodType foodType = dtoMapper.map(newFoodType, FoodType.class);
 
 //        foodType.setFoodCategory(foodCategoryRepository.findById(foodType.getFoodCategory().getId()).orElseThrow());
 
-        return DTOMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
+        return dtoMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
     }
 
     @Transactional
