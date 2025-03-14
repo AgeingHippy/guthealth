@@ -1,10 +1,7 @@
 package com.ageinghippy.model;
 
 import com.ageinghippy.model.dto.*;
-import com.ageinghippy.model.entity.DishComponent;
-import com.ageinghippy.model.entity.FoodCategory;
-import com.ageinghippy.model.entity.FoodType;
-import com.ageinghippy.model.entity.PreparationTechnique;
+import com.ageinghippy.model.entity.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.record.RecordModule;
 
@@ -38,6 +35,10 @@ public class DTOMapper extends ModelMapper {
         } else if (source.getClass() == DishComponentDTO.class && destinationType == DishComponent.class) {
             //todo - sledgehammer solution - to refactor
             return (D) mapDishComponentDTODishComponent((DishComponentDTO) source);
+        } else if (destinationType == DishDTOSimple.class) {
+            return (D) toDtoSimple((Dish) source);
+        } else if (source.getClass() == DishDTOSimple.class && destinationType == Dish.class) {
+            return (D) mapDishDTOSimpleToDish((DishDTOSimple) source);
         } else {
             return super.map(source, destinationType);
         }
@@ -82,6 +83,13 @@ public class DTOMapper extends ModelMapper {
         );
     }
 
+    private DishDTOSimple toDtoSimple(Dish source) {
+        return new DishDTOSimple(source.getId(),
+                source.getName(),
+                source.getDescription(),
+                map(source.getPreparationTechnique(), PreparationTechniqueDTO.class));
+    }
+
     private FoodCategoryDTOComplex toDtoComplex(FoodCategory foodCategory) {
         return new FoodCategoryDTOComplex(
                 foodCategory.getId(),
@@ -116,6 +124,15 @@ public class DTOMapper extends ModelMapper {
                                 ? map(source.foodType(), FoodType.class)
                                 : null)
                 .proportion(source.proportion())
+                .build();
+    }
+
+    private Dish mapDishDTOSimpleToDish(DishDTOSimple source) {
+        return Dish.builder()
+                .id(source.id())
+                .name(source.name())
+                .description(source.description())
+                .preparationTechnique(map(source.preparationTechnique(), PreparationTechnique.class))
                 .build();
     }
 }
