@@ -38,8 +38,14 @@ public class DTOMapper extends ModelMapper {
         } else if (destinationType == DishDTOSimple.class) {
             return (D) toDtoSimple((Dish) source);
         } else if (source.getClass() == DishDTOSimple.class && destinationType == Dish.class) {
+            //todo - sledgehammer solution - to refactor
             return (D) mapDishDTOSimpleToDish((DishDTOSimple) source);
-        } else {
+        } else if (destinationType == DishDTOComplex.class) {
+            return (D) toDtoComplex((Dish) source);
+        } else if (source.getClass() == DishDTOComplex.class && destinationType == Dish.class) {
+            //todo - sledgehammer solution - to refactor
+            return (D) mapDishDTOComplexToDish((DishDTOComplex) source);
+        }else {
             return super.map(source, destinationType);
         }
     }
@@ -133,6 +139,25 @@ public class DTOMapper extends ModelMapper {
                 .name(source.name())
                 .description(source.description())
                 .preparationTechnique(map(source.preparationTechnique(), PreparationTechnique.class))
+                .build();
+    }
+
+    private DishDTOComplex toDtoComplex(Dish source) {
+        return new DishDTOComplex(
+                source.getId(),
+                source.getName(),
+                source.getDescription(),
+                map(source.getPreparationTechnique(), PreparationTechniqueDTO.class),
+                mapList(source.getDishComponents(), DishComponentDTO.class));
+    }
+
+    private Dish mapDishDTOComplexToDish(DishDTOComplex source) {
+        return Dish.builder()
+                .id(source.id())
+                .name(source.name())
+                .description(source.description())
+                .preparationTechnique(map(source.preparationTechnique(),PreparationTechnique.class))
+                .dishComponents(mapList(source.dishComponents(), DishComponent.class))
                 .build();
     }
 }

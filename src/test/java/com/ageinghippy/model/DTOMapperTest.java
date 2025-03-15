@@ -22,7 +22,8 @@ class DTOMapperTest {
             "verify_map_provider_FoodCategoryDTOComplex",
             "verify_map_provider_FoodTypeDTOComplex",
             "verify_map_provider_DishComponentDTO",
-            "verify_map_provider_DishDTOSimple"
+            "verify_map_provider_DishDTOSimple",
+            "verify_map_provider_DishDTOComplex"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
 
@@ -43,7 +44,8 @@ class DTOMapperTest {
             "verify_mapList_provider_FoodCategoryDTOComplex",
             "verify_mapList_provider_FoodTypeDTOComplex",
             "verify_mapList_provider_DishComponentDTO",
-            "verify_mapList_provider_DishDTOSimple"
+            "verify_mapList_provider_DishDTOSimple",
+            "verify_mapList_provider_DishDTOComplex"
     })
     <S, T> void mapList(String testDescription, List<S> sourceList, List<T> targetList, Class<T> targetClassType) {
 
@@ -673,73 +675,6 @@ class DTOMapperTest {
         );
     }
 
-    private static Stream<Object[]> verify_mapList_provider_DishDTOSimple() {
-        return Stream.of(
-                //id, name, description
-                new Object[]{
-                        "Map Dish to DishDTOSimple",
-                        List.of(
-                                Dish.builder()
-                                        .id(1L)
-                                        .name("Dish1")
-                                        .description("DishDescription1")
-                                        .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
-                                        .dishComponents(
-                                                List.of(
-                                                        DishComponent.builder()
-                                                                .id(101L)
-                                                                .dish(Dish.builder().id(1L).build())
-                                                                .foodType(FoodType.builder()
-                                                                        .id(11L)
-                                                                        .name("FT11")
-                                                                        .build())
-                                                                .proportion(100)
-                                                                .build(),
-                                                        DishComponent.builder()
-                                                                .id(102L)
-                                                                .dish(Dish.builder().id(1L).build())
-                                                                .foodType(FoodType.builder()
-                                                                        .id(12L)
-                                                                        .name("FT12")
-                                                                        .build())
-                                                                .proportion(200)
-                                                                .build()
-                                                )
-                                        )
-                                        .build()
-                        ),
-                        List.of(
-                                new DishDTOSimple(1L,
-                                        "Dish1",
-                                        "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1"))
-                        ),
-                        DishDTOSimple.class
-                },
-                new Object[]{
-                        "Map DishDTOSimple to Dish",
-                        List.of(
-                                new DishDTOSimple(1L,
-                                        "Dish1",
-                                        "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1"))
-                        ),
-                        List.of(
-                                Dish.builder()
-                                        .id(1L)
-                                        .name("Dish1")
-                                        .description("DishDescription1")
-                                        .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
-                                        .dishComponents(null)
-                                        .build()
-                        ),
-                        Dish.class
-                }
-        );
-    }
-
     private static Stream<Object[]> verify_map_provider_DishDTOSimple() {
         return Stream.of(
                 //id, name, description
@@ -798,4 +733,382 @@ class DTOMapperTest {
                 }
         );
     }
+
+    private static Stream<Object[]> verify_mapList_provider_DishDTOSimple() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map Dish to DishDTOSimple",
+                        List.of(
+                                Dish.builder()
+                                        .id(1L)
+                                        .name("Dish1")
+                                        .description("DishDescription1")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(101L)
+                                                                .dish(Dish.builder().id(1L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(11L)
+                                                                        .name("FT11")
+                                                                        .build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(102L)
+                                                                .dish(Dish.builder().id(1L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(12L)
+                                                                        .name("FT12")
+                                                                        .build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build(),
+                                Dish.builder()
+                                        .id(2L)
+                                        .name("Dish2")
+                                        .description("DishDescription2")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(201L)
+                                                                .dish(Dish.builder().id(2L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(11L)
+                                                                        .name("FT11")
+                                                                        .build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(202L)
+                                                                .dish(Dish.builder().id(2L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(12L)
+                                                                        .name("FT12")
+                                                                        .build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build()
+                        ),
+                        List.of(
+                                new DishDTOSimple(1L,
+                                        "Dish1",
+                                        "DishDescription1",
+                                        new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                new DishDTOSimple(2L,
+                                        "Dish2",
+                                        "DishDescription2",
+                                        new PreparationTechniqueDTO("PT2", "PTDesc2"))
+                        ),
+                        DishDTOSimple.class
+                },
+                new Object[]{
+                        "Map DishDTOSimple to Dish",
+                        List.of(
+                                new DishDTOSimple(1L,
+                                        "Dish1",
+                                        "DishDescription1",
+                                        new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                new DishDTOSimple(2L,
+                                        "Dish2",
+                                        "DishDescription2",
+                                        new PreparationTechniqueDTO("PT2", "PTDesc2"))
+                        ),
+                        List.of(
+                                Dish.builder()
+                                        .id(1L)
+                                        .name("Dish1")
+                                        .description("DishDescription1")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        .dishComponents(null)
+                                        .build(),
+                                Dish.builder()
+                                        .id(2L)
+                                        .name("Dish2")
+                                        .description("DishDescription2")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                        .dishComponents(null)
+                                        .build()
+                        ),
+                        Dish.class
+                }
+        );
+    }
+
+    private static Stream<Object[]> verify_map_provider_DishDTOComplex() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map Dish to DishDTOComplex",
+                        Dish.builder()
+                                .id(1L)
+                                .name("Dish1")
+                                .description("DishDescription1")
+                                .preparationTechnique(
+                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                .dishComponents(
+                                        List.of(
+                                                DishComponent.builder()
+                                                        .id(101L)
+                                                        .dish(Dish.builder().id(1L).build())
+                                                        .foodType(FoodType.builder()
+                                                                .id(11L)
+                                                                .name("FT11")
+                                                                .build())
+                                                        .proportion(100)
+                                                        .build(),
+                                                DishComponent.builder()
+                                                        .id(102L)
+                                                        .dish(Dish.builder().id(1L).build())
+                                                        .foodType(FoodType.builder()
+                                                                .id(12L)
+                                                                .name("FT12")
+                                                                .build())
+                                                        .proportion(200)
+                                                        .build()
+                                        )
+                                )
+                                .build(),
+                        new DishDTOComplex(1L,
+                                "Dish1",
+                                "DishDescription1",
+                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                List.of(
+                                        new DishComponentDTO(101L,
+                                                new FoodTypeDTOSimple(11L, "FT11", null),
+                                                100),
+                                        new DishComponentDTO(102L,
+                                                new FoodTypeDTOSimple(12L, "FT12", null),
+                                                200)
+                                )
+                        ),
+                        DishDTOComplex.class
+                },
+                new Object[]{
+                        "Map DishDTOComplex to Dish",
+                        new DishDTOComplex(1L,
+                                "Dish1",
+                                "DishDescription1",
+                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                List.of(
+                                        new DishComponentDTO(101L,
+                                                new FoodTypeDTOSimple(11L, "FT11", null),
+                                                100),
+                                        new DishComponentDTO(102L,
+                                                new FoodTypeDTOSimple(12L, "FT12", null),
+                                                200)
+                                )
+                        ),
+                        Dish.builder()
+                                .id(1L)
+                                .name("Dish1")
+                                .description("DishDescription1")
+                                .preparationTechnique(
+                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                .dishComponents(
+                                        List.of(
+                                                DishComponent.builder()
+                                                        .id(101L)
+                                                        .foodType(FoodType.builder().id(11L).name("FT11").build())
+                                                        .proportion(100)
+                                                        .build(),
+                                                DishComponent.builder()
+                                                        .id(102L)
+                                                        .foodType(FoodType.builder().id(12L).name("FT12").build())
+                                                        .proportion(200)
+                                                        .build()
+                                        )
+                                )
+                                .build(),
+                        Dish.class
+                }
+        );
+    }
+
+    private static Stream<Object[]> verify_mapList_provider_DishDTOComplex() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map Dish to DishDTOComplex",
+                        List.of(
+                                Dish.builder()
+                                        .id(1L)
+                                        .name("Dish1")
+                                        .description("DishDescription1")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(101L)
+                                                                .dish(Dish.builder().id(1L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(11L)
+                                                                        .name("FT11")
+                                                                        .build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(102L)
+                                                                .dish(Dish.builder().id(1L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(12L)
+                                                                        .name("FT12")
+                                                                        .build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build(),
+                                Dish.builder()
+                                        .id(2L)
+                                        .name("Dish2")
+                                        .description("DishDescription2")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(201L)
+                                                                .dish(Dish.builder().id(2L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(21L)
+                                                                        .name("FT21")
+                                                                        .build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(202L)
+                                                                .dish(Dish.builder().id(2L).build())
+                                                                .foodType(FoodType.builder()
+                                                                        .id(22L)
+                                                                        .name("FT22")
+                                                                        .build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build()
+                        ),
+                        List.of(
+                                new DishDTOComplex(1L,
+                                        "Dish1",
+                                        "DishDescription1",
+                                        new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                        List.of(
+                                                new DishComponentDTO(101L,
+                                                        new FoodTypeDTOSimple(11L, "FT11", null),
+                                                        100),
+                                                new DishComponentDTO(102L,
+                                                        new FoodTypeDTOSimple(12L, "FT12", null),
+                                                        200)
+                                        )
+                                ),
+                                new DishDTOComplex(2L,
+                                        "Dish2",
+                                        "DishDescription2",
+                                        new PreparationTechniqueDTO("PT2", "PTDesc2"),
+                                        List.of(
+                                                new DishComponentDTO(201L,
+                                                        new FoodTypeDTOSimple(21L, "FT21", null),
+                                                        100),
+                                                new DishComponentDTO(202L,
+                                                        new FoodTypeDTOSimple(22L, "FT22", null),
+                                                        200)
+                                        )
+                                )
+                        ),
+                        DishDTOComplex.class
+                },
+                new Object[]{
+                        "Map DishDTOComplex to Dish",
+                        List.of(
+                                new DishDTOComplex(1L,
+                                        "Dish1",
+                                        "DishDescription1",
+                                        new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                        List.of(
+                                                new DishComponentDTO(101L,
+                                                        new FoodTypeDTOSimple(11L, "FT11", null),
+                                                        100),
+                                                new DishComponentDTO(102L,
+                                                        new FoodTypeDTOSimple(12L, "FT12", null),
+                                                        200)
+                                        )
+                                ),
+                                new DishDTOComplex(2L,
+                                        "Dish2",
+                                        "DishDescription2",
+                                        new PreparationTechniqueDTO("PT2", "PTDesc2"),
+                                        List.of(
+                                                new DishComponentDTO(201L,
+                                                        new FoodTypeDTOSimple(21L, "FT21", null),
+                                                        100),
+                                                new DishComponentDTO(202L,
+                                                        new FoodTypeDTOSimple(22L, "FT22", null),
+                                                        200)
+                                        )
+                                )
+                        ),
+                        List.of(
+                                Dish.builder()
+                                        .id(1L)
+                                        .name("Dish1")
+                                        .description("DishDescription1")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(101L)
+                                                                .foodType(FoodType.builder().id(11L).name("FT11").build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(102L)
+                                                                .foodType(FoodType.builder().id(12L).name("FT12").build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build(),
+                                Dish.builder()
+                                        .id(2L)
+                                        .name("Dish2")
+                                        .description("DishDescription2")
+                                        .preparationTechnique(
+                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                        .dishComponents(
+                                                List.of(
+                                                        DishComponent.builder()
+                                                                .id(201L)
+                                                                .foodType(FoodType.builder().id(21L).name("FT21").build())
+                                                                .proportion(100)
+                                                                .build(),
+                                                        DishComponent.builder()
+                                                                .id(202L)
+                                                                .foodType(FoodType.builder().id(22L).name("FT22").build())
+                                                                .proportion(200)
+                                                                .build()
+                                                )
+                                        )
+                                        .build()
+                        ),
+                        Dish.class
+                }
+        );
+    }
+
+
 }
