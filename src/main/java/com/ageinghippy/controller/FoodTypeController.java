@@ -1,6 +1,7 @@
 package com.ageinghippy.controller;
 
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
+import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.service.FoodTypeService;
 import jakarta.validation.Valid;
@@ -21,31 +22,22 @@ public class FoodTypeController {
     private final FoodTypeService foodTypeService;
 
     @GetMapping
-    public List<FoodType> getFoodTypes() {
+    //todo - is there value in this call? - content could become overwhelming and meaningless.... Add foodCategoryId path parameter?
+    public List<FoodTypeDTOSimple> getFoodTypes() {
         return foodTypeService.getFoodTypes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FoodType> getFoodType(@PathVariable Long id) {
-        FoodType foodType = foodTypeService.getFoodType(id);
-        if (foodType != null) {
-            return ResponseEntity.ok(foodType);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<FoodTypeDTOComplex> getFoodType(@PathVariable Long id) {
+        return ResponseEntity.ok(foodTypeService.getFoodType(id));
     }
 
-    @GetMapping("/dto/{id}")
-    public ResponseEntity<FoodTypeDTOComplex> getFoodTypeDto(@PathVariable Long id) {
-        return ResponseEntity.ok(foodTypeService.getFoodTypeDto(id));
-    }
-
-    @PostMapping("/dto")
-    public ResponseEntity<FoodTypeDTOComplex> postFoodTypeDto(@Valid @RequestBody FoodTypeDTOComplex foodType) {
+    @PostMapping
+    public ResponseEntity<FoodTypeDTOComplex> postFoodType(@Valid @RequestBody FoodTypeDTOComplex foodType) {
         if (foodType.id() != null) {
             throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
         }
-        foodType = foodTypeService.createFoodTypeDto(foodType);
+        foodType = foodTypeService.createFoodType(foodType);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -54,22 +46,8 @@ public class FoodTypeController {
         return ResponseEntity.created(location).body(foodType);
     }
 
-    @PostMapping
-    public ResponseEntity<FoodType> postFoodType(@Valid @RequestBody FoodType foodType) {
-        if (foodType.getId() != null) {
-            throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
-        }
-        foodType = foodTypeService.createFoodType(foodType);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(foodType.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(foodType);
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<FoodType> putFoodType(@RequestBody FoodType foodType, @PathVariable Long id) {
+    public ResponseEntity<FoodTypeDTOComplex> putFoodType(@RequestBody FoodTypeDTOComplex foodType, @PathVariable Long id) {
         try {
             foodType = foodTypeService.updateFoodType(id, foodType);
             return ResponseEntity.ok(foodType);
@@ -80,13 +58,8 @@ public class FoodTypeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFoodType(@PathVariable Long id) {
-        FoodType foodType = foodTypeService.getFoodType(id);
-        if (foodType != null) {
-            foodTypeService.deleteFoodType(foodType);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        foodTypeService.deleteFoodType(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
