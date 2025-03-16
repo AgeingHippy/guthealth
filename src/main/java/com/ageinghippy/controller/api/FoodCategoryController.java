@@ -1,4 +1,4 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
@@ -13,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/food-categories")
+@RequestMapping("/api/v1/food-categories")
 @RequiredArgsConstructor
 public class FoodCategoryController {
 

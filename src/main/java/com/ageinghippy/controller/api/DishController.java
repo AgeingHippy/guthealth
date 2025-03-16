@@ -1,4 +1,4 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.model.entity.Dish;
 import com.ageinghippy.service.DishService;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/v1/dishes")
+@RequestMapping("/api/v1/dishes")
 @RequiredArgsConstructor
 public class DishController {
 

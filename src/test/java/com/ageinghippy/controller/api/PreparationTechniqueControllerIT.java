@@ -1,4 +1,4 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
@@ -41,7 +41,7 @@ class PreparationTechniqueControllerIT {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String baseUrl = "/v1/preparation-techniques";
+    private final String baseUrl = "/api/v1/preparation-techniques";
 
     @Test
     @Order(1)

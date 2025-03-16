@@ -1,4 +1,4 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/preparation-techniques")
+@RequestMapping("/api/v1/preparation-techniques")
 public class PreparationTechniqueController {
 
     private final PreparationTechniqueService preparationTechniqueService;

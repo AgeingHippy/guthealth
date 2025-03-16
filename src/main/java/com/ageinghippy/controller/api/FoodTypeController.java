@@ -1,8 +1,7 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
-import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.service.FoodTypeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/v1/food-types")
+@RequestMapping("/api/v1/food-types")
 @RequiredArgsConstructor
 public class FoodTypeController {
 

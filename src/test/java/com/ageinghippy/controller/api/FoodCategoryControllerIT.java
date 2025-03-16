@@ -1,12 +1,9 @@
-package com.ageinghippy.controller;
+package com.ageinghippy.controller.api;
 
 import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.dto.FoodTypeDTOComplex;
-import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
-import com.ageinghippy.model.entity.FoodType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -36,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class FoodTypeControllerIT {
+public class FoodCategoryControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,7 +43,7 @@ public class FoodTypeControllerIT {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String baseUrl = "/v1/food-types";
+    private final String baseUrl = "/api/v1/food-categories";
 
     @Test
     @Order(1)
@@ -57,73 +54,57 @@ public class FoodTypeControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<FoodTypeDTOSimple> resultList =
+        List<FoodCategoryDTOSimple> resultList =
                 objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertEquals(resultList.size(), 15);
-        //check a portion of the contents
-        assert (resultList.contains(new FoodTypeDTOSimple(1L, "foodType1", "Food Type one Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(2L, "foodType2", "Food Type two Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(3L, "foodType3", "Food Type three Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(4L, "foodType4", "Food Type four Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(5L, "foodType5", "Food Type five Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(6L, "foodType6", "Food Type six Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(7L, "foodType7", "Food Type seven Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(8L, "foodType8", "Food Type eight Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(9L, "foodType9", "Food Type nine Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(10L, "foodType10", "Food Type ten Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(11L, "foodType11", "Food Type eleven Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(12L, "foodType12", "Food Type twelve Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(13L, "foodType13", "Food Type thirteen Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(14L, "foodType14", "Food Type fourteen Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(15L, "foodType15", "Food Type fifteen Description")));
+        List<String> foodCategoryNames = resultList.stream().map(FoodCategoryDTOSimple::name).toList();
+
+        assertEquals(resultList.size(), 5);
+        assert (resultList.contains(new FoodCategoryDTOSimple(1L,"foodCategory1_name","Food Category one description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(2L,"foodCategory2_name","Food Category two description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(3L,"foodCategory3_name","Food Category three description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(4L,"foodCategory4_name","Food Category four description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(5L,"foodCategory5_name","Food Category five description")));
     }
 
     @Test
     @Order(2)
     void getOne_success() throws Exception {
-        Long id = 3L;
-        MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", id))
+        Long foodCategoryId = 3L;
+        MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", foodCategoryId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        FoodTypeDTOComplex resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodTypeDTOComplex.class);
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
 
-        assertEquals(resultDto,
-                new FoodTypeDTOComplex(3L,
-                        new FoodCategoryDTOSimple(1L, "foodCategory1_name", "Food Category one description"),
-                        "foodType3",
-                        "Food Type three Description"));
-
+        assertEquals(resultDto.name(), "foodCategory3_name");
+        assertEquals(resultDto.foodTypes().size(),4);
     }
 
     @Test
     @Order(3)
     void getOne_notFound() throws Exception {
-        Long id = 99L;
-        mockMvc.perform(get(baseUrl + "/{id}", id))
+        Long foodCategoryId = 99L;
+        mockMvc.perform(get(baseUrl + "/{id}", foodCategoryId))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void create_success() throws Exception {
-        String newFoodTypeJson = """
+        String newFoodCategoryJson = """
                 {
-                  "name":"anotherName",
-                  "description":"anotherDescription",
-                  "foodCategory": {
-                    "id": 2
-                  }
+                  "name":"anotherCategory",
+                  "description":"anotherDescription"
                 }""";
 
         MvcResult result = mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFoodTypeJson))
+                        .content(newFoodCategoryJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", matchesPattern(".*" + baseUrl + "/\\d+")))
@@ -131,106 +112,73 @@ public class FoodTypeControllerIT {
                 .andReturn();
 
         //verify response is new category
-        FoodTypeDTOComplex resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodTypeDTOComplex.class);
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
         assertNotNull(resultDto.id());
-        assertEquals(resultDto.name(), "anotherName");
-        assertEquals(resultDto.description(), "anotherDescription");
-        assertEquals(resultDto.foodCategory(),
-                new FoodCategoryDTOSimple(2L, "foodCategory2_name", "Food Category two description"));
+        assertEquals(resultDto.name(), "anotherCategory");
+        assertEquals(resultDto.foodTypes().size(),0);
 
         //and verify category is in fact inserted into the database
         String fetchedName = entityManager.createQuery(
-                        "SELECT name FROM FoodType WHERE id = " + resultDto.id())
+                        "SELECT name FROM FoodCategory WHERE id = " + resultDto.id())
                 .getSingleResult().toString();
-        assertEquals(fetchedName, "anotherName");
+        assertEquals(fetchedName, "anotherCategory");
     }
 
     @Test
     void create_failure_alreadyExists() throws Exception {
-        String newFoodTypeJson = """
+        String newFoodCategoryJson = """
                 {
-                  "name":"foodType4",
-                  "description":"anotherDifferentDescription",
-                  "foodCategory": {
-                    "id": 1
-                  }
+                  "name":"foodCategory1_name",
+                  "description":"Duplicated category"
                 }""";
 
         mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFoodTypeJson))
+                        .content(newFoodCategoryJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
         //and verify original category is unchanged in the database
         String fetchedDescription = entityManager.createQuery(
-                        "SELECT description FROM FoodType WHERE name = 'foodType4'")
+                        "SELECT description FROM FoodCategory WHERE name = 'foodCategory1_name'")
                 .getSingleResult().toString();
-        assertEquals(fetchedDescription, "Food Type four Description");
-    }
-
-    @Test
-    void create_failure_invalidFoodCategory() throws Exception {
-        String newFoodTypeJson = """
-                {
-                  "name":"thirdName",
-                  "description":"thirdDescription",
-                  "foodCategory": {
-                    "id": 99
-                  }
-                }""";
-
-        mockMvc.perform(post(baseUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFoodTypeJson))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-
-        //and verify food type is in fact not inserted into the database
-        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM FoodType WHERE name = 'thirdName'")
-                .getSingleResult();
-        assertEquals(count, 0);
+        assertEquals(fetchedDescription, "Food Category one description");
     }
 
     @Test
     void update_success() throws Exception {
-        String newFoodTypeJson = """
+        String newFoodCategoryJson = """
                 {
-                  "name":"foodType1_NEW",
-                  "description":"Food Type one Description_NEW",
-                  "foodCategory": {
-                    "id": 2
-                  }
+                  "name":"foodCategory1_name_updated",
+                  "description":"Updated description here"
                 }""";
 
         MvcResult result = mockMvc.perform(put(baseUrl + "/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFoodTypeJson))
+                        .content(newFoodCategoryJson))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
 
-        //verify response is updated foodType
-        FoodTypeDTOComplex resultDto =
-                objectMapper.readValue(result.getResponse().getContentAsString(), FoodTypeDTOComplex.class);
-        assertEquals(resultDto,
-                new FoodTypeDTOComplex(1L,
-                        new FoodCategoryDTOSimple(2L, "foodCategory2_name", "Food Category two description"),
-                        "foodType1_NEW",
-                        "Food Type one Description_NEW")
-        );
+        //verify response is new category
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
+        assertEquals(resultDto.id(),1L);
+        assertEquals(resultDto.name(), "foodCategory1_name_updated");
+        assertEquals(resultDto.description(), "Updated description here");
+        assertEquals(resultDto.foodTypes().size(),5);
 
         //and verify category is in fact updated in the database
         String fetchedName = entityManager.createQuery(
-                        "SELECT name FROM FoodType WHERE id = 1")
+                        "SELECT name FROM FoodCategory WHERE id = 1")
                 .getSingleResult().toString();
-        assertEquals(fetchedName, "foodType1_NEW");
+        assertEquals(fetchedName, "foodCategory1_name_updated");
     }
 
     @Test
     void update_failure_notFound() throws Exception {
-        String newFoodTypeJson = """
+        String newFoodCategoryJson = """
                 {
                   "name":"name_updated",
                   "description":"Another updated description here"
@@ -238,14 +186,14 @@ public class FoodTypeControllerIT {
 
         mockMvc.perform(put(baseUrl + "/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFoodTypeJson))
+                        .content(newFoodCategoryJson))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void update_failure_badRequest() throws Exception {
-        String requestJson = """
+        String newFoodCategoryJson = """
                 {
                     "id":2
                     "name":"name_updated",
@@ -254,37 +202,36 @@ public class FoodTypeControllerIT {
 
         mockMvc.perform(put(baseUrl + "/{id}", 2L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(newFoodCategoryJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
         String fetchedName = entityManager.createQuery(
-                        "SELECT name FROM FoodType WHERE id = 2")
+                        "SELECT name FROM FoodCategory WHERE id = 2")
                 .getSingleResult().toString();
-        assertEquals(fetchedName, "foodType2");
+        assertEquals(fetchedName, "foodCategory2_name");
     }
 
     @Test
     @Transactional
     void delete_success() throws Exception {
         //given a specific record exists in the database
-        entityManager.persist(FoodType.builder()
+        entityManager.persist(FoodCategory.builder()
                 .name("testName")
                 .description("testDesc")
-                .foodCategory(FoodCategory.builder().id(1L).build())
                 .build());
 
-        Long id = (Long) entityManager.createQuery("SELECT id FROM FoodType where name = 'testName'").getSingleResult();
+        Long foodCategoryId = (Long) entityManager.createQuery("SELECT id FROM FoodCategory where name = 'testName'").getSingleResult();
 
         //WHEN the delete endpoint is called
-        mockMvc.perform(delete(baseUrl + "/{id}", id)
+        mockMvc.perform(delete(baseUrl + "/{id}", foodCategoryId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
         //and verify the record has been deleted from the database
-        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM FoodType where name = 'testName'").getSingleResult();
-        assertEquals(count, 0L);
+        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM FoodCategory where name = 'testName'").getSingleResult();
+        assertEquals(count,0L);
     }
 
     @Test
