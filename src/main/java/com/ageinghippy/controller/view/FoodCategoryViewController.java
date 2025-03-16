@@ -1,5 +1,6 @@
 package com.ageinghippy.controller.view;
 
+import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
@@ -21,7 +22,7 @@ public class FoodCategoryViewController {
     public String showFoodCategories(Model model) {
         List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories();
 
-        model.addAttribute("foodCategories",foodCategories);
+        model.addAttribute("foodCategories", foodCategories);
 
         return "/food-category";
     }
@@ -35,18 +36,10 @@ public class FoodCategoryViewController {
 
     @GetMapping("/new")
     public String showNewFoodCategoryForm(Model model) {
-        model.addAttribute("foodCategory",new FoodCategoryDTOSimple(null,null,null));
+        model.addAttribute("foodCategory", new FoodCategoryDTOSimple(null, null, null));
 
         return "/food-category-new";
     }
-
-//    @GetMapping("/edit/{id}")
-//    public String showNewFoodCategoryForm(Model model, @PathVariable Long id) {
-//        FoodCategoryDTOSimple foodCategory = foodCategoryService.getFoodCategory(id);
-//        model.addAttribute("foodCategory",new FoodCategoryDTOSimple(null,null,null));
-//
-//        return "/food-category-new";
-//    }
 
     @PostMapping("/create")
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory) {
@@ -54,6 +47,19 @@ public class FoodCategoryViewController {
 
         //todo - redirect to edit to allow addition of new food types?
         return "redirect:/food-category";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditFoodCategoryForm(Model model, @PathVariable Long id) {
+        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.getFoodCategory(id);
+        //todo - do I want to use dtoComplex for new and edited food categories?
+        model.addAttribute("foodCategory",
+                new FoodCategoryDTOSimple(
+                        foodCategoryDTOComplex.id(),
+                        foodCategoryDTOComplex.name(),
+                        foodCategoryDTOComplex.description()));
+
+        return "/food-category-edit";
     }
 
     @PostMapping("/update/{id}")
