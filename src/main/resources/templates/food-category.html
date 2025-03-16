@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Category</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <p>This is used to break the food into various categories such as Dairy, Protein, Grains, Fruits and Vegetables etc. but it is user configurable. Again, we expect minimal modifications once the dataset is created.</p>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="foodCategory : ${foodCategories}">
+            <td th:text="${foodCategory.id}"></td>
+            <td th:text="${foodCategory.name}"></td>
+            <td th:text="${foodCategory.description}"></td>
+            <td>
+                <a th:href="@{'/food-category/edit/' + ${foodCategory.id}}" class="icon-link">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{'/food-category/delete/' + ${foodCategory.id}}" class="icon-link">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{'/food-category/new'}">
+        <button type="button" class="btn btn-primary">Add New</button>
+    </a>
+
+</div>
+
+</body>
+</html>

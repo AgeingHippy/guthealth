@@ -1,4 +1,4 @@
-package com.ageinghippy.controller.advice;
+package com.ageinghippy.controller.api.advice;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
