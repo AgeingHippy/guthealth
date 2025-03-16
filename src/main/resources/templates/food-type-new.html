@@ -4,7 +4,7 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Create Food Category</title>
+    <title>Create Food Type</title>
 </head>
 <body>
 
@@ -12,7 +12,12 @@
 
     <div>
         <form action="#" th:action="@{'/food-category/create'}"
-              th:object="${foodCategory}" method="post">
+              th:object="${foodType}" method="post">
+            <div class="mb-3" style="display:none">
+                <label for="foodCategory.id" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="foodCategory.id" th:field="*{foodCategory.id}"
+                       th:value="${foodCategory.id}" required="true">
+            </div>
             <div class="mb-3">
                 <label for="name" class="col-form-label">Name:</label>
                 <input type="text" class="form-control" id="name" th:field="*{name}" required="true">

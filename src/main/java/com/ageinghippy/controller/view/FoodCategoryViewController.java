@@ -2,6 +2,7 @@ package com.ageinghippy.controller.view;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
+import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/food-category")
@@ -42,11 +44,37 @@ public class FoodCategoryViewController {
     }
 
     @PostMapping("/create")
-    public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory) {
-        foodCategoryService.createFoodCategory(foodCategory);
+    public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory, @RequestParam Optional<Boolean> addFoodTypes) {
+        Long id = foodCategoryService.createFoodCategory(foodCategory).id();
 
         //todo - redirect to edit to allow addition of new food types?
-        return "redirect:/food-category";
+        if (addFoodTypes.orElseGet(() -> false)) {
+            return "redirect:/food-category/"+id+"/food-type/edit";
+        } else {
+            return "redirect:/food-category";
+        }
+    }
+
+    @RequestMapping("/{id}/food-type/edit")
+    public String showFoodCategoryEditFoodTypes(Model model, @PathVariable Long id) {
+        FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(id);
+
+        model.addAttribute("foodCategoryId",id);
+        model.addAttribute("foodCategoryName",foodCategory.name());
+        model.addAttribute("foodTypes",foodCategory.foodTypes());
+
+        return  "/food-category-edit-food-type";
+    }
+
+    @RequestMapping("/food-type/new")
+    public String showFoodCategoryNewFoodType(Model model, @RequestParam Long foodCategoryId) {
+        FoodTypeDTOComplex foodTypeDTOComplex = new FoodTypeDTOComplex(
+                null,
+                new FoodCategoryDTOSimple(foodCategoryId, null, null),
+                null,
+                null);
+
+
     }
 
     @GetMapping("/edit/{id}")

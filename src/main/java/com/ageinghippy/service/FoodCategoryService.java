@@ -4,6 +4,7 @@ import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
+import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
@@ -31,6 +32,24 @@ public class FoodCategoryService {
     @Transactional
     public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOSimple foodCategory) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
+
+        newFoodCategory = saveFoodCategory(newFoodCategory);
+
+        return dTOMapper.map(newFoodCategory, FoodCategoryDTOComplex.class);
+    }
+
+    //todo - prototype method
+    @Transactional
+    public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOComplex foodCategory) {
+        FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
+
+        //need to assign foodCategory explicitly
+        //todo - assign in mapper?
+        for (int i=0; i< newFoodCategory.getFoodTypes().size(); i++) {
+            newFoodCategory.getFoodTypes().get(i).setFoodCategory(newFoodCategory);
+        }
+
+        List<FoodType> foodTypes = newFoodCategory.getFoodTypes();
 
         newFoodCategory = saveFoodCategory(newFoodCategory);
 

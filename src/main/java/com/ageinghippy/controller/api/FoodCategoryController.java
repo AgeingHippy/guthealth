@@ -43,6 +43,21 @@ public class FoodCategoryController {
         return ResponseEntity.created(location).body(foodCategoryDTOComplex);
     }
 
+    //todo - prototype method
+    @PostMapping("/complex")
+    public ResponseEntity<FoodCategoryDTOComplex> postFoodCategoryComplex(@Valid @RequestBody FoodCategoryDTOComplex foodCategory) {
+        if (foodCategory.id() != null) {
+            throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
+        }
+        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.createFoodCategory(foodCategory);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(foodCategoryDTOComplex.id())
+                .toUri();
+        return ResponseEntity.created(location).body(foodCategoryDTOComplex);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<FoodCategoryDTOComplex> putFoodCategory(@RequestBody FoodCategoryDTOSimple foodCategory, @PathVariable Long id) {
         return ResponseEntity.ok(foodCategoryService.updateFoodCategory(id, foodCategory));
