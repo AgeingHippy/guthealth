@@ -1,4 +1,4 @@
-package com.ageinghippy.controller.view;
+package com.ageinghippy.controller.mvc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package com.ageinghippy.controller.api;
+package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;

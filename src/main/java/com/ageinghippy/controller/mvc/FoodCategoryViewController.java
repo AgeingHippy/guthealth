@@ -1,8 +1,7 @@
-package com.ageinghippy.controller.view;
+package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +29,13 @@ public class FoodCategoryViewController {
         return "/food-category";
     }
 
-    @GetMapping("/view/{id}")
+    @GetMapping("/mvc/{id}")
     public String showSpecificFoodCategoryView(Model model, @PathVariable Long id) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(id);
 
         model.addAttribute("foodCategory", foodCategory);
 
-        return "food-category-view";
+        return "food-category-mvc";
     }
 
 

@@ -1,4 +1,4 @@
-package com.ageinghippy.controller.api.advice;
+package com.ageinghippy.controller.rest.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice(basePackages = {"com.ageinghippy.controller.api"})
+@RestControllerAdvice(basePackages = {"com.ageinghippy.controller.rest"})
 @Slf4j
 public class GutRestControllerAdvice {
 

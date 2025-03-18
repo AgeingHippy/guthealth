@@ -1,4 +1,4 @@
-package com.ageinghippy.controller.view;
+package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;

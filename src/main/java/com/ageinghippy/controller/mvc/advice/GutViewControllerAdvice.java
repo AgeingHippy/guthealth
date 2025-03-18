@@ -1,6 +1,6 @@
-package com.ageinghippy.controller.view.advice;
+package com.ageinghippy.controller.mvc.advice;
 
-import com.ageinghippy.controller.api.advice.ResponseErrorMessage;
+import com.ageinghippy.controller.rest.advice.ResponseErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.NoSuchElementException;
 
-@ControllerAdvice(basePackages = {"com.ageinghippy.controller.view"})
+@ControllerAdvice(basePackages = {"com.ageinghippy.controller.mvc"})
 @Slf4j
 public class GutViewControllerAdvice {
 

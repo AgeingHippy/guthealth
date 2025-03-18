@@ -1,17 +1,14 @@
-package com.ageinghippy.controller.view;
+package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
-import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/food-type")
