@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Category</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="container">
+        <div id="foodCategoryDetail">
+            <p/>
+            <p/>
+            <h1>Food Category</h1>
+            <p/>
+            <p/>
+            <table>
+                <tr>
+                    <th class="small text-muted pr-4" scope="row">ID:</th>
+                    <td><span th:text="${foodCategory.id}"/></td>
+                </tr>
+                <tr>
+                    <th class="small text-muted pr-4" scope="row">Name:</th>
+                    <td><span th:text="${foodCategory.name}"/></td>
+                </tr>
+                <tr>
+                    <th class="small text-muted pr-4" scope="row">Description:</th>
+                    <td><span th:text="${foodCategory.description}"/></td>
+                </tr>
+            </table>
+            <p/>
+            <p/>
+
+        </div>
+        <div id="foodTypesDetail">
+            <h4>Food Types</h4>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="foodType : ${foodCategory.foodTypes}">
+                    <td th:text="${foodType.id}">></td>
+                    <td th:text="${foodType.name}"></td>
+                    <td th:text="${foodType.description}"></td>
+<!--                    <td>-->
+<!--                        <a th:href="@{'/food-type/edit/' + ${foodType.id}}" class="icon-link">-->
+<!--                            <i class="bi bi-pencil"></i>-->
+<!--                        </a>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <a th:href="@{'/food-type/delete/' + ${foodType.id}}" class="icon-link">-->
+<!--                            <i class="bi bi-trash"></i>-->
+<!--                        </a>-->
+<!--                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

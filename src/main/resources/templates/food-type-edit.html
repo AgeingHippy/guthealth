@@ -4,15 +4,19 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Create Food Type</title>
+    <title>Edit Food Type</title>
 </head>
 <body>
 
 <div layout:fragment="content" th:remove="tag">
 
     <div>
-        <form action="#" th:action="@{'/food-type/create'}"
+        <form th:action="@{'/food-type/update/'+${foodType.id}}"
               th:object="${foodType}" method="post">
+            <div class="mb-3">
+                <label for="Id" class="col-form-label">id:</label>
+                <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
+            </div>
             <div class="mb-3">
                 <label for="foodCategory.id" class="col-form-label">Food Category:</label>
                 <input type="text" class="form-control" id="foodCategory.id" th:field="*{foodCategory.id}"
@@ -29,6 +33,7 @@
             <div class="row">
                 <button class="col-3" type="submit">Save</button>
             </div>
+
         </form>
     </div>
 

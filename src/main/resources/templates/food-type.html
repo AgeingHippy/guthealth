@@ -4,13 +4,13 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Food Types</title>
+    <title>Edit Food Type</title>
 </head>
 <body>
 
 <div layout:fragment="content" th:remove="tag">
 
-    <p>Add or edit food types associated with food category <span th:text="${foodCategoryName}"/></p>
+    <p>Food types associated with food category <span th:text="${foodCategoryName}"/></p>
 
     <table class="table table-striped">
         <thead>
@@ -31,14 +31,14 @@
                 </a>
             </td>
             <td>
-                <a th:href="@{'/preparation-technique/delete/' + ${foodType.id}}" class="icon-link">
+                <a th:href="@{'/food-type/delete/' + ${foodType.id}}" class="icon-link">
                     <i class="bi bi-trash"></i>
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
-    <a th:href="@{'/food-category/food-type/new?foodCategoryId=' + ${foodCategoryId}}">
+    <a th:href="@{'/food-type/new?foodCategoryId=' + ${foodCategoryId}}">
         <button type="button" class="btn btn-primary">Add New</button>
     </a>
 

@@ -30,6 +30,10 @@ public class FoodTypeService {
         return dtoMapper.mapList(foodTypeRepository.findAll(), FoodTypeDTOSimple.class);
     }
 
+    public List<FoodTypeDTOSimple> getFoodTypes(Long foodCategoryId) {
+        return dtoMapper.mapList(foodTypeRepository.findAllByFoodCategory_id(foodCategoryId), FoodTypeDTOSimple.class);
+    }
+
     @Transactional
     public FoodTypeDTOComplex createFoodTypeDto(FoodTypeDTOComplex newFoodType) {
         FoodType foodType = dtoMapper.map(newFoodType, FoodType.class);
