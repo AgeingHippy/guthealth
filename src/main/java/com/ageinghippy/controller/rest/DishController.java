@@ -1,6 +1,9 @@
 package com.ageinghippy.controller.rest;
 
+import com.ageinghippy.model.dto.DishDTOComplex;
+import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.entity.Dish;
+import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.service.DishService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +23,27 @@ public class DishController {
     private final DishService dishService;
 
     @GetMapping
-    public List<Dish> getDishes() {
+    public List<DishDTOSimple> getDishes() {
         return dishService.getDishes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dish> getDish(@PathVariable Long id) {
-        Dish dish = dishService.getDish(id);
-        if (dish != null) {
-            return ResponseEntity.ok(dish);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<DishDTOComplex> getDish(@PathVariable Long id) {
+        return ResponseEntity.ok(dishService.getDish(id));
     }
 
     @PostMapping
-    public ResponseEntity<Dish> postDish(@Valid @RequestBody Dish dish) {
-        if (dish.getId() != null) {
-            throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
+    public ResponseEntity<DishDTOComplex> postDish(@Valid @RequestBody DishDTOSimple dish) {
+        if (dish.id() != null) {
+            throw new IllegalArgumentException("Dish ID cannot be specified on new record");
         }
-        dish = dishService.createDish(dish);
+        DishDTOComplex newDish = dishService.createDish(dish);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(dish.getId())
+                .buildAndExpand(newDish.id())
                 .toUri();
-        return ResponseEntity.created(location).body(dish);
+        return ResponseEntity.created(location).body(newDish);
     }
 
     @PutMapping("/{id}")
@@ -60,13 +58,8 @@ public class DishController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDish(@PathVariable Long id) {
-        Dish dish = dishService.getDish(id);
-        if (dish != null) {
-            dishService.deleteDish(dish);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        dishService.deleteDish(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

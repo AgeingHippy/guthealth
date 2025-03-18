@@ -1,5 +1,8 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.DishDTOComplex;
+import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.entity.Dish;
 import com.ageinghippy.repository.DishRepository;
 import com.ageinghippy.util.Util;
@@ -15,26 +18,41 @@ import java.util.List;
 public class DishService {
     private final DishRepository dishRepository;
     private final EntityManager entityManager;
+    private final DTOMapper dtoMapper;
 
-    public Dish getDish(Long id) {
-        return dishRepository.findById(id).orElse(null);
+    public DishDTOComplex getDish(Long id) {
+        return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<Dish> getDishes() {
-        List<Dish> dishes = dishRepository.findAll();
+    public List<DishDTOSimple> getDishes() {
+        List<DishDTOSimple> dishes = dtoMapper.mapList(dishRepository.findAll(), DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public Dish createDish(Dish dish) {
-        dish.getDishComponents().forEach(dishComponent -> dishComponent.setDish(dish));
-        return saveDish(dish);
-//        entityManager.refresh(dish);
-//        return dish;
+    public DishDTOComplex createDish(DishDTOSimple dish) {
+        Dish newDish = dtoMapper.map(dish, Dish.class);
+
+        newDish = saveDish(newDish);
+
+        return dtoMapper.map(newDish, DishDTOComplex.class);
     }
 
     @Transactional
-    public Dish saveDish(Dish dish) {
+    public DishDTOComplex createDish(DishDTOComplex dish) {
+        Dish newDish = dtoMapper.map(dish, Dish.class);
+
+        for (int i =0; i < newDish.getDishComponents().size(); i++ ) {
+            newDish.getDishComponents().get(i).setDish(newDish);
+        }
+
+        newDish = saveDish(newDish);
+
+        return dtoMapper.map(newDish, DishDTOComplex.class);
+    }
+
+    @Transactional
+    private Dish saveDish(Dish dish) {
         dish = dishRepository.save(dish);
         entityManager.flush();
         entityManager.refresh(dish);
@@ -54,13 +72,18 @@ public class DishService {
         Dish dish = dishRepository.findById(id).orElseThrow();
         dish.setName(Util.valueIfNull(updateDish.getName(), dish.getName()));
         dish.setDescription(Util.valueIfNull(updateDish.getDescription(), dish.getDescription()));
-        dish.setPreparationTechnique(Util.valueIfNull(updateDish.getPreparationTechnique(),dish.getPreparationTechnique()));
+        dish.setPreparationTechnique(Util.valueIfNull(updateDish.getPreparationTechnique(), dish.getPreparationTechnique()));
         //todo - add additional as appropriate
 
         return saveDish(dish);
     }
 
-    public void deleteDish(Dish dish) {
+    public void deleteDish(Long id) {
+        Dish dish = dishRepository.findById(id).orElseThrow();
+        deleteDish(dish);
+    }
+
+    private void deleteDish(Dish dish) {
         dishRepository.deleteById(dish.getId());
     }
 }
