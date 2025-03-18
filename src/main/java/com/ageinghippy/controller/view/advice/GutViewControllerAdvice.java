@@ -39,8 +39,20 @@ public class GutViewControllerAdvice {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
-        modelAndView.addObject("url",request.getRequestURL());
-        modelAndView.addObject("errorMessage","Data Integrity Violation");
+        modelAndView.addObject("url", request.getRequestURL());
+        modelAndView.addObject("errorMessage", "Data Integrity Violation");
+
+        return modelAndView;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView exceptionResponse(HttpServletRequest request, Exception ex) {
+        log.warn(ex.getMessage());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error");
+        modelAndView.addObject("url", request.getRequestURL());
+        modelAndView.addObject("errorMessage", ex.getMessage());
 
         return modelAndView;
     }

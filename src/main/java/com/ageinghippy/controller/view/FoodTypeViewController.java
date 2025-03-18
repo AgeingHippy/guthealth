@@ -49,7 +49,7 @@ public class FoodTypeViewController {
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteFoodType(@RequestParam Long id) {
+    public String deleteFoodType(@PathVariable Long id) {
         Long foodCategoryId = foodTypeService.getFoodType(id).foodCategory().id();
 
         foodTypeService.deleteFoodType(id);
