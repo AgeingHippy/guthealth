@@ -33,7 +33,7 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<DishDTOComplex> postDish(@Valid @RequestBody DishDTOSimple dish) {
+    public ResponseEntity<DishDTOComplex> postDish(@RequestBody DishDTOSimple dish) {
         if (dish.id() != null) {
             throw new IllegalArgumentException("Dish ID cannot be specified on new record");
         }
@@ -47,13 +47,11 @@ public class DishController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Dish> putDish(@RequestBody Dish dish, @PathVariable Long id) {
-        try {
-            dish = dishService.updateDish(id, dish);
-            return ResponseEntity.ok(dish);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<DishDTOComplex> putDish(@RequestBody DishDTOSimple dish, @PathVariable Long id) {
+        if (!id.equals(dish.id())) {
+            throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
         }
+        return ResponseEntity.ok(dishService.updateDish(id, dish));
     }
 
     @DeleteMapping("/{id}")

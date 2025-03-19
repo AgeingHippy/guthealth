@@ -1,6 +1,8 @@
 package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.*;
+import com.ageinghippy.model.entity.FoodCategory;
+import com.ageinghippy.model.entity.FoodType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -15,14 +17,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -192,7 +194,7 @@ public class DishControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         //and verify dish is not in the database
         Long count = (Long) entityManager.createQuery(
@@ -200,4 +202,130 @@ public class DishControllerIT {
                 .getSingleResult();
         assertEquals(0, count);
     }
+
+    @Test
+    void update_success() throws Exception {
+        String requestJson = """
+                {
+                  "id":3,
+                  "name":"Dish3ChangedName",
+                  "description":"Dish3 changed description",
+                  "preparationTechnique": {
+                    "code": "PrepType3"
+                  }
+                }""";
+
+        MvcResult result = mockMvc.perform(put(baseUrl + "/{id}", 3L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //verify response is updated foodType
+        DishDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), DishDTOComplex.class);
+        assertEquals(resultDto,
+                new DishDTOComplex(
+                        3L,
+                        "Dish3ChangedName",
+                        "Dish3 changed description",
+                        new PreparationTechniqueDTO("PrepType3", "Preparation type three description"),
+                        List.of(
+                                new DishComponentDTO(
+                                        9L,
+                                        new FoodTypeDTOSimple(1L, "foodType1", "Food Type one Description"),
+                                        1),
+                                new DishComponentDTO(
+                                        10L,
+                                        new FoodTypeDTOSimple(10L, "foodType10", "Food Type ten Description"),
+                                        2)
+                        )
+                )
+        );
+
+        //and verify category is in fact updated in the database
+        String fetchedName = entityManager.createQuery(
+                        "SELECT name FROM Dish WHERE id = 3")
+                .getSingleResult().toString();
+        assertEquals(fetchedName, "Dish3ChangedName");
+    }
+
+    @Test
+    void update_failure_notFound() throws Exception {
+        String requestJson = """
+                {
+                  "id":99,
+                  "name":"Dish99ChangedName"
+                }""";
+
+        mockMvc.perform(put(baseUrl + "/{id}", 99L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void update_failure_badRequest() throws Exception {
+        String requestJson = """
+                {
+                    "id":2,
+                    "name":"Dish2UpdatedName"
+                }""";
+
+        mockMvc.perform(put(baseUrl + "/{id}", 3L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        String fetchedName = entityManager.createQuery(
+                        "SELECT name FROM Dish WHERE id = 2")
+                .getSingleResult().toString();
+        assertEquals(fetchedName, "Dish2");
+    }
+
+    @Test
+    @Transactional
+    void delete_success_noChildren() throws Exception {
+
+        //WHEN the delete endpoint is called
+        mockMvc.perform(delete(baseUrl + "/{id}", 4)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        //and verify the record has been deleted from the database
+        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM Dish where id = 4").getSingleResult();
+        assertEquals(count, 0L);
+    }
+
+    @Test
+    @Transactional
+    void delete_success_hasChildren() throws Exception {
+
+        //WHEN the delete endpoint is called
+        mockMvc.perform(delete(baseUrl + "/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        //and verify the record has been deleted from the database
+        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM Dish where id = 1").getSingleResult();
+        assertEquals(count, 0L);
+
+        //verify children also deleted
+        count = (Long) entityManager.createQuery("SELECT Count(*) FROM DishComponent where dish.id = 1").getSingleResult();
+        assertEquals(count, 0L);
+    }
+
+    @Test
+    void delete_failure_notfound() throws Exception {
+        mockMvc.perform(delete(baseUrl + "/{id}", 99L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 }

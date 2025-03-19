@@ -41,8 +41,8 @@ public class PreparationTechniqueController {
 
     @PutMapping("/{code}")
     public ResponseEntity<PreparationTechniqueDTO> putPreparationTechnique(@RequestBody PreparationTechniqueDTO preparationTechnique, @PathVariable String code) {
-        if (preparationTechnique.code() != null) {
-            throw new IllegalArgumentException("Preparation Technique code cannot be specified in body");
+        if (!code.equals(preparationTechnique.code())) {
+            throw new IllegalArgumentException("The code specified in the request body must match the code specified in the url");
         }
         return ResponseEntity.ok(preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique))                ;
     }

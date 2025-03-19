@@ -110,19 +110,31 @@ class PreparationTechniqueControllerIT {
 
     @Test
     void createPreparationTechnique_failure() throws Exception {
+        String requestJson = """
+                {
+                    "code":"PrepType1",
+                    "description":"description one"
+                }""";
+
         mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"code\":\"PrepType1\",\"description\":\"description one\"}"))
+                        .content(requestJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void updatePreparationTechnique_success() throws Exception {
+        String requestJson = """
+                {
+                    "code":"PrepType1",
+                    "description":"nextDescription"
+                }""";
+
         MvcResult result =
                 mockMvc.perform(put(baseUrl + "/{code}", "PrepType1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"description\":\"nextDescription\"}"))
+                                .content(requestJson))
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
@@ -141,18 +153,30 @@ class PreparationTechniqueControllerIT {
 
     @Test
     void updatePreparationTechnique_failure_notFound() throws Exception {
+        String requestJson = """
+                {
+                    "code":"InvalidCode",
+                    "description":"name_updated"
+                }""";
+
         mockMvc.perform(put(baseUrl + "/{code}", "InvalidCode")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"description\":\"newDescription\"}"))
+                        .content(requestJson))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void updatePreparationTechnique_failure_badRequest() throws Exception {
-        mockMvc.perform(put(baseUrl + "/{code}", "PrepType1")
+        String requestJson = """
+                {
+                    "code":"PrepType1",
+                    "description":"Another updated description here"
+                }""";
+
+        mockMvc.perform(put(baseUrl + "/{code}", "PrepType2")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"code\":\"PrepType1\",\"description\":\"changedDescription\"}"))
+                        .content(requestJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 

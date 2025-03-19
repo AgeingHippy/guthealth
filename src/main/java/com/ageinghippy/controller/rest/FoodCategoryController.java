@@ -60,6 +60,9 @@ public class FoodCategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<FoodCategoryDTOComplex> putFoodCategory(@RequestBody FoodCategoryDTOSimple foodCategory, @PathVariable Long id) {
+        if (!id.equals(foodCategory.id())) {
+            throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
+        }
         return ResponseEntity.ok(foodCategoryService.updateFoodCategory(id, foodCategory));
     }
 

@@ -55,7 +55,7 @@ public class PreparationTechniqueService {
         deletePreparationTechnique(preparationTechnique);
     }
 
-    public void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
+    private void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
         preparationTechniqueRepository.delete(preparationTechnique);
     }
 }

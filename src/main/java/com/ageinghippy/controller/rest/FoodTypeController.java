@@ -55,6 +55,9 @@ public class FoodTypeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<FoodTypeDTOComplex> putFoodType(@RequestBody FoodTypeDTOComplex foodType, @PathVariable Long id) {
+        if (!id.equals(foodType.id())) {
+            throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
+        }
         try {
             foodType = foodTypeService.updateFoodType(id, foodType);
             return ResponseEntity.ok(foodType);

@@ -150,6 +150,7 @@ public class FoodCategoryControllerIT {
     void update_success() throws Exception {
         String newFoodCategoryJson = """
                 {
+                  "id":1,
                   "name":"foodCategory1_name_updated",
                   "description":"Updated description here"
                 }""";
@@ -180,6 +181,7 @@ public class FoodCategoryControllerIT {
     void update_failure_notFound() throws Exception {
         String newFoodCategoryJson = """
                 {
+                  "id":99,
                   "name":"name_updated",
                   "description":"Another updated description here"
                 }""";
@@ -195,12 +197,12 @@ public class FoodCategoryControllerIT {
     void update_failure_badRequest() throws Exception {
         String newFoodCategoryJson = """
                 {
-                    "id":2
+                    "id":2,
                     "name":"name_updated",
                     "description":"Another updated description here"
                 }""";
 
-        mockMvc.perform(put(baseUrl + "/{id}", 2L)
+        mockMvc.perform(put(baseUrl + "/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newFoodCategoryJson))
                 .andDo(print())

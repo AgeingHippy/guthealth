@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @ControllerAdvice(basePackages = {"com.ageinghippy.controller.mvc"})
 @Slf4j
@@ -47,12 +48,13 @@ public class GutViewControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView exceptionResponse(HttpServletRequest request, Exception ex) {
-        log.warn(ex.getMessage());
+        UUID uuid = UUID.randomUUID();
+        log.error(uuid + " :: " + ex.getMessage());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
         modelAndView.addObject("url", request.getRequestURL());
-        modelAndView.addObject("errorMessage", ex.getMessage());
+        modelAndView.addObject("errorMessage","Unexpected exception. Please provide the following log reference to support: " + uuid) ;
 
         return modelAndView;
     }
