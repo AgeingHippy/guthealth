@@ -34,15 +34,6 @@ public class DishService {
     }
 
     @Transactional
-    public DishDTOComplex createDish(DishDTOSimple dish) {
-        Dish newDish = dtoMapper.map(dish, Dish.class);
-
-        newDish = saveDish(newDish);
-
-        return dtoMapper.map(newDish, DishDTOComplex.class);
-    }
-
-    @Transactional
     public DishDTOComplex createDish(DishDTOComplex dish) {
         Dish newDish = dtoMapper.map(dish, Dish.class);
 

@@ -30,7 +30,7 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<DishDTOComplex> postDish(@RequestBody DishDTOSimple dish) {
+    public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish) {
         if (dish.id() != null) {
             throw new IllegalArgumentException("Dish ID cannot be specified on new record");
         }
@@ -40,27 +40,6 @@ public class DishController {
                 .path("/{id}")
                 .buildAndExpand(newDish.id())
                 .toUri();
-        return ResponseEntity.created(location).body(newDish);
-    }
-
-    /**
-     * Create a new dish along with all the set of dishComponents
-     *
-     * @param dish
-     * @return
-     */
-    @PostMapping("/full")
-    public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish) throws URISyntaxException {
-        if (dish.id() != null) {
-            throw new IllegalArgumentException("Dish ID cannot be specified on new record");
-        }
-        DishDTOComplex newDish = dishService.createDish(dish);
-        URI location = new URI(ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newDish.id())
-                .toString()
-                .replace("/full/", "/"));
         return ResponseEntity.created(location).body(newDish);
     }
 

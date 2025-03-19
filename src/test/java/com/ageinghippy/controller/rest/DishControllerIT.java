@@ -116,7 +116,7 @@ public class DishControllerIT {
     }
 
     @Test
-    void create_success() throws Exception {
+    void create_noDishComponents_success() throws Exception {
         String requestJson = """
                 {
                   "name":"newDish",
@@ -156,7 +156,7 @@ public class DishControllerIT {
     }
 
     @Test
-    void create_fullDish_success() throws Exception {
+    void create_withDishComponents_success() throws Exception {
         String requestJson = """
                 {
                   "name":"newDish2",
@@ -180,7 +180,7 @@ public class DishControllerIT {
                   ]
                 }""";
 
-        MvcResult result = mockMvc.perform(post(baseUrl + "/full")
+        MvcResult result = mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())

@@ -23,7 +23,8 @@ class DTOMapperTest {
             "verify_map_provider_FoodTypeDTOComplex",
             "verify_map_provider_DishComponentDTO",
             "verify_map_provider_DishDTOSimple",
-            "verify_map_provider_DishDTOComplex"
+            "verify_map_provider_DishDTOComplex",
+            "verify_map_provider_DishDTOComplex_noChildren"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
 
@@ -930,6 +931,48 @@ class DTOMapperTest {
                                                         .build()
                                         )
                                 )
+                                .build(),
+                        Dish.class
+                }
+        );
+    }
+
+    private static Stream<Object[]> verify_map_provider_DishDTOComplex_noChildren() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map Dish to DishDTOComplex No Children",
+                        Dish.builder()
+                                .id(1L)
+                                .name("Dish1")
+                                .description("DishDescription1")
+                                .preparationTechnique(
+                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                .dishComponents(List.of())
+                                .build(),
+                        new DishDTOComplex(1L,
+                                "Dish1",
+                                "DishDescription1",
+                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                List.of()
+                        ),
+                        DishDTOComplex.class
+                },
+                new Object[]{
+                        "Map DishDTOComplex to Dish",
+                        new DishDTOComplex(1L,
+                                "Dish1",
+                                "DishDescription1",
+                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                null
+                        ),
+                        Dish.builder()
+                                .id(1L)
+                                .name("Dish1")
+                                .description("DishDescription1")
+                                .preparationTechnique(
+                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                .dishComponents(List.of())
                                 .build(),
                         Dish.class
                 }

@@ -45,7 +45,7 @@ public class DTOMapper extends ModelMapper {
         } else if (source.getClass() == DishDTOComplex.class && destinationType == Dish.class) {
             //todo - sledgehammer solution - to refactor
             return (D) mapDishDTOComplexToDish((DishDTOComplex) source);
-        }else {
+        } else {
             return super.map(source, destinationType);
         }
     }
@@ -148,7 +148,9 @@ public class DTOMapper extends ModelMapper {
                 source.getName(),
                 source.getDescription(),
                 map(source.getPreparationTechnique(), PreparationTechniqueDTO.class),
-                mapList(source.getDishComponents(), DishComponentDTO.class));
+                source.getDishComponents() != null
+                        ? mapList(source.getDishComponents(), DishComponentDTO.class)
+                        : null);
     }
 
     private Dish mapDishDTOComplexToDish(DishDTOComplex source) {
@@ -156,8 +158,12 @@ public class DTOMapper extends ModelMapper {
                 .id(source.id())
                 .name(source.name())
                 .description(source.description())
-                .preparationTechnique(map(source.preparationTechnique(),PreparationTechnique.class))
-                .dishComponents(mapList(source.dishComponents(), DishComponent.class))
+                .preparationTechnique(map(source.preparationTechnique(), PreparationTechnique.class))
+                .dishComponents(
+                        source.dishComponents() != null
+                                ? mapList(source.dishComponents(), DishComponent.class)
+                                : List.of()
+                )
                 .build();
     }
 }
