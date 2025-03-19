@@ -1,8 +1,6 @@
 package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.*;
-import com.ageinghippy.model.entity.FoodCategory;
-import com.ageinghippy.model.entity.FoodType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
