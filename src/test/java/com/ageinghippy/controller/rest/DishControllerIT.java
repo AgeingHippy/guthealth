@@ -156,6 +156,79 @@ public class DishControllerIT {
     }
 
     @Test
+    void create_fullDish_success() throws Exception {
+        String requestJson = """
+                {
+                  "name":"newDish2",
+                  "description":"newDish2 description",
+                  "preparationTechnique": {
+                    "code": "PrepType2"
+                  },
+                  "dishComponents" : [
+                    {
+                        "foodType": {"id":1},
+                        "proportion":100
+                    },
+                    {
+                        "foodType": {"id":3},
+                        "proportion":30
+                    },
+                    {
+                        "foodType": {"id":5},
+                        "proportion":5
+                    }
+                  ]
+                }""";
+
+        MvcResult result = mockMvc.perform(post(baseUrl + "/full")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", matchesPattern(".*" + baseUrl + "/\\d+")))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        //verify response is new category
+        DishDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), DishDTOComplex.class);
+        assertNotNull(resultDto.id());
+        assertEquals(resultDto,
+                new DishDTOComplex(
+                        resultDto.id(),
+                        "newDish2",
+                        "newDish2 description",
+                        new PreparationTechniqueDTO("PrepType2", "Preparation type two description"),
+                        List.of(
+                                new DishComponentDTO(
+                                        resultDto.dishComponents().stream().filter(dc -> dc.foodType().id().equals(1L)).findFirst().orElseThrow().id(),
+                                        new FoodTypeDTOSimple(1L, "foodType1", "Food Type one Description"),
+                                        100),
+                                new DishComponentDTO(
+                                        resultDto.dishComponents().stream().filter(dc -> dc.foodType().id().equals(3L)).findFirst().orElseThrow().id(),
+                                        new FoodTypeDTOSimple(3L, "foodType3", "Food Type three Description"),
+                                        30),
+                                new DishComponentDTO(
+                                        resultDto.dishComponents().stream().filter(dc -> dc.foodType().id().equals(5L)).findFirst().orElseThrow().id(),
+                                        new FoodTypeDTOSimple(5L, "foodType5", "Food Type five Description"),
+                                        5)
+                        )
+                ));
+
+        //and verify dish is in fact inserted into the database
+        String fetchedName = entityManager.createQuery(
+                        "SELECT name FROM Dish WHERE id = " + resultDto.id())
+                .getSingleResult().toString();
+        assertEquals("newDish2", fetchedName);
+
+        //and dishComponents inserted
+        Long count = (Long) entityManager.createQuery(
+                        "SELECT Count(*) FROM DishComponent WHERE dish.id = " + resultDto.id())
+                .getSingleResult();
+        assertEquals(3, count);
+    }
+
+    @Test
     void create_failure_alreadyExists() throws Exception {
         String requestJson = """
                 {

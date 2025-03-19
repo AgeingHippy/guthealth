@@ -2,18 +2,15 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
-import com.ageinghippy.model.entity.Dish;
-import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.service.DishService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/dishes")
@@ -43,6 +40,27 @@ public class DishController {
                 .path("/{id}")
                 .buildAndExpand(newDish.id())
                 .toUri();
+        return ResponseEntity.created(location).body(newDish);
+    }
+
+    /**
+     * Create a new dish along with all the set of dishComponents
+     *
+     * @param dish
+     * @return
+     */
+    @PostMapping("/full")
+    public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish) throws URISyntaxException {
+        if (dish.id() != null) {
+            throw new IllegalArgumentException("Dish ID cannot be specified on new record");
+        }
+        DishDTOComplex newDish = dishService.createDish(dish);
+        URI location = new URI(ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newDish.id())
+                .toString()
+                .replace("/full/", "/"));
         return ResponseEntity.created(location).body(newDish);
     }
 
