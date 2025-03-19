@@ -1,5 +1,6 @@
 package com.ageinghippy.controller.rest;
 
+import com.ageinghippy.model.dto.DishComponentDTO;
 import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.service.DishComponentService;
 import jakarta.validation.Valid;
@@ -20,13 +21,13 @@ public class DishComponentController {
     private final DishComponentService dishComponentService;
 
     @GetMapping
-    public List<DishComponent> getDishComponents() {
-        return dishComponentService.getDishComponents();
+    public List<DishComponentDTO> getDishComponents(@RequestParam Long dishId) {
+        return dishComponentService.getDishComponents(dishId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DishComponent> getDishComponent(@PathVariable Long id) {
-        DishComponent dishComponent = dishComponentService.getDishComponent(id);
+    public ResponseEntity<DishComponentDTO> getDishComponent(@PathVariable Long id) {
+        DishComponentDTO dishComponent = dishComponentService.getDishComponent(id);
         if (dishComponent != null) {
             return ResponseEntity.ok(dishComponent);
         } else {
@@ -35,15 +36,15 @@ public class DishComponentController {
     }
 
     @PostMapping
-    public ResponseEntity<DishComponent> postDishComponent(@Valid @RequestBody DishComponent dishComponent) {
-        if (dishComponent.getId() != null) {
-            throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
+    public ResponseEntity<DishComponentDTO> postDishComponent(@RequestParam Long dishId, @RequestBody DishComponentDTO dishComponent) {
+        if (dishComponent.id() != null) {
+            throw new IllegalArgumentException("ID cannot be specified on new record");
         }
-        dishComponent = dishComponentService.createDishComponent(dishComponent);
+        dishComponent = dishComponentService.createDishComponent(dishId, dishComponent);
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+                .fromCurrentRequestUri()
                 .path("/{id}")
-                .buildAndExpand(dishComponent.getId())
+                .buildAndExpand(dishComponent.id())
                 .toUri();
         return ResponseEntity.created(location).body(dishComponent);
     }
@@ -63,13 +64,8 @@ public class DishComponentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDishComponent(@PathVariable Long id) {
-        DishComponent dishComponent = dishComponentService.getDishComponent(id);
-        if (dishComponent != null) {
-            dishComponentService.deleteDishComponent(dishComponent);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        dishComponentService.deleteDishComponent(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

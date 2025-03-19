@@ -45,7 +45,7 @@ public class DishComponentControllerIT {
     @Test
     @Order(1)
     void getAll() throws Exception {
-        MvcResult result = mockMvc.perform(get(baseUrl + "?dishId=3"))
+        MvcResult result = mockMvc.perform(get(baseUrl + "?dishId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -55,7 +55,7 @@ public class DishComponentControllerIT {
                 objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertEquals(resultList.size(), 4);
+        assertEquals(4, resultList.size());
         //check a portion of the contents
         assert (resultList.contains(
                 new DishComponentDTO(
@@ -113,11 +113,11 @@ public class DishComponentControllerIT {
     void create_success() throws Exception {
         String requestJson = """
                 {
-                  "foodType": {"id":4},
+                  "foodType": {"id":5},
                   "proportion":75
                 }""";
 
-        MvcResult result = mockMvc.perform(post(baseUrl)
+        MvcResult result = mockMvc.perform(post(baseUrl + "?dishId=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
@@ -130,12 +130,13 @@ public class DishComponentControllerIT {
         DishComponentDTO resultDto =
                 objectMapper.readValue(result.getResponse().getContentAsString(), DishComponentDTO.class);
         assertNotNull(resultDto.id());
-        assertEquals(resultDto,
+        assertEquals(
                 new DishComponentDTO(
                         resultDto.id(),
-                        new FoodTypeDTOSimple(4L, "foodType4", "Food Type four Description"),
-                        75
-                ));
+                        new FoodTypeDTOSimple(5L, "foodType5", "Food Type five Description"),
+                        75),
+                resultDto
+                );
 
         //and verify dishComponent is in fact inserted into the database
         int value = Integer.parseInt(entityManager.createQuery(
@@ -152,7 +153,22 @@ public class DishComponentControllerIT {
                   "proportion":99
                 }""";
 
-        mockMvc.perform(post(baseUrl)
+        mockMvc.perform(post(baseUrl + "?dishId=1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create_failure_invalidDish() throws Exception {
+        String requestJson = """
+                {
+                  "foodType": {"id":1},
+                  "proportion":101
+                }""";
+
+        mockMvc.perform(post(baseUrl + "?dishId=99")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
