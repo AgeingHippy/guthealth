@@ -29,13 +29,13 @@ public class FoodCategoryViewController {
         return "/food-category";
     }
 
-    @GetMapping("/mvc/{id}")
+    @GetMapping("/view/{id}")
     public String showSpecificFoodCategoryView(Model model, @PathVariable Long id) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(id);
 
         model.addAttribute("foodCategory", foodCategory);
 
-        return "food-category-mvc";
+        return "food-category-view";
     }
 
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dish - edit</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="container">
+        <p/>
+        <h1>Dish</h1>
+        <p/>
+
+        <div id="dishDetail">
+            <form th:action="@{'/dish/update/' + ${dish.id}}"
+                  th:object="${dish}" method="post">
+                <div class="mb-3">
+                    <label for="id" class="col-form-label">ID:</label>
+                    <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="col-form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="col-form-label">Description:</label>
+                    <input type="text" class="form-control" id="description" th:field="*{description}">
+                </div>
+                <div class="mb-3">
+                    <label for="preparationTechnique.code" class="col-form-label">Preparation Technique:</label>
+                    <input type="text" class="form-control" id="preparationTechnique.code"
+                           th:field="*{preparationTechnique.code}">
+                </div>
+                <button class="col-3" type="submit">Save</button>
+            </form>
+        </div>
+
+        <p/>
+        <h4>Dish Components</h4>
+        <p/>
+
+        <div id="dishComponentsDetail">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Food Type</th>
+                        <th>Proportion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="dishComponent : ${dish.dishComponents}">
+                        <td th:text="${dishComponent.id}">></td>
+                        <td th:text="${dishComponent.foodType.name}"></td>
+                        <td th:text="${dishComponent.proportion}"></td>
+                        <td>
+                            <a th:href="@{'/dish-component/edit/' + ${dishComponent.id}}" class="icon-link">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{'/dish-component/delete/' + ${dishComponent.id}}" class="icon-link">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{'/dish-component/new?dishId=' + ${dish.id}}">
+                <button type="button" class="btn btn-primary">Add New</button>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
