@@ -33,9 +33,11 @@ public class DishComponentService {
 
     @Transactional
     public DishComponentDTO createDishComponent(Long dishId, DishComponentDTO dishComponent) {
-        DishComponent newDishComponent = dtoMapper.map(dishComponent,DishComponent.class);
+        DishComponent newDishComponent = dtoMapper.map(dishComponent, DishComponent.class);
 
         newDishComponent.setDish(dishRepository.findById(dishId).orElseThrow());
+        newDishComponent.setFoodType(foodTypeRepository.findById(dishComponent.foodType().id()).orElseThrow());
+
         newDishComponent = saveDishComponent(newDishComponent);
 
         return dtoMapper.map(newDishComponent, DishComponentDTO.class);
@@ -58,16 +60,19 @@ public class DishComponentService {
      * @return the updated {@code DishComponent}
      * @throws java.util.NoSuchElementException if the DishComponent with the provided id does not exist
      */
-    public DishComponent updateDishComponent(Long id, DishComponent updateDishComponent) {
+    @Transactional
+    public DishComponentDTO updateDishComponent(Long id, DishComponentDTO updateDishComponent) {
         DishComponent dishComponent = dishComponentRepository.findById(id).orElseThrow();
-        dishComponent.setProportion(Util.valueIfNull(updateDishComponent.getProportion(), dishComponent.getProportion()));
-        if (updateDishComponent.getFoodType().getId() != null) {
-            dishComponent.setFoodType(foodTypeRepository.findById(updateDishComponent.getFoodType().getId()).orElseThrow());
+
+        dishComponent.setProportion(Util.valueIfNull(updateDishComponent.proportion(), dishComponent.getProportion()));
+        if (updateDishComponent.foodType().id() != null) {
+            dishComponent.setFoodType(foodTypeRepository.findById(updateDishComponent.foodType().id()).orElseThrow());
         }
 
-        return saveDishComponent(dishComponent);
+        return dtoMapper.map(saveDishComponent(dishComponent), DishComponentDTO.class);
     }
 
+    @Transactional
     public void deleteDishComponent(Long id) {
         DishComponent dishComponent = dishComponentRepository.findById(id).orElseThrow();
         deleteDishComponent(dishComponent);

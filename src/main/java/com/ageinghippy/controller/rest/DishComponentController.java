@@ -50,8 +50,8 @@ public class DishComponentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishComponent> putDishComponent(@RequestBody DishComponent dishComponent, @PathVariable Long id) {
-        if (!id.equals(dishComponent.getId())) {
+    public ResponseEntity<DishComponentDTO> putDishComponent(@RequestBody DishComponentDTO dishComponent, @PathVariable Long id) {
+        if (!id.equals(dishComponent.id())) {
             throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
         }
         try {

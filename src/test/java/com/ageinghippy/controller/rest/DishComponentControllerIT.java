@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -136,12 +137,12 @@ public class DishComponentControllerIT {
                         new FoodTypeDTOSimple(5L, "foodType5", "Food Type five Description"),
                         75),
                 resultDto
-                );
+        );
 
         //and verify dishComponent is in fact inserted into the database
-        int value = Integer.parseInt(entityManager.createQuery(
+        Integer value = (Integer) entityManager.createQuery(
                         "SELECT proportion FROM DishComponent WHERE id = " + resultDto.id())
-                .getSingleResult().toString());
+                .getSingleResult();
         assertEquals(75, value);
     }
 
@@ -195,19 +196,19 @@ public class DishComponentControllerIT {
         //verify response is updated foodType
         DishComponentDTO resultDto =
                 objectMapper.readValue(result.getResponse().getContentAsString(), DishComponentDTO.class);
-        assertEquals(resultDto,
+        assertEquals(
                 new DishComponentDTO(
                         resultDto.id(),
-                        new FoodTypeDTOSimple(3L, "foodType15", "Food Type fifteen Description"),
-                        101
-                )
+                        new FoodTypeDTOSimple(15L, "foodType15", "Food Type fifteen Description"),
+                        101),
+                resultDto
         );
 
         //and verify category is in fact updated in the database
-        String fetchedName = entityManager.createQuery(
-                        "SELECT name FROM Dish WHERE id = 3")
-                .getSingleResult().toString();
-        assertEquals(fetchedName, "Dish3ChangedName");
+        Long id = (Long) entityManager.createQuery(
+                        "SELECT foodType.id FROM DishComponent WHERE id = 3")
+                .getSingleResult();
+        assertEquals(15L, id);
     }
 
     @Test
@@ -245,5 +246,28 @@ public class DishComponentControllerIT {
                         "SELECT foodType.id FROM DishComponent WHERE id = 1")
                 .getSingleResult();
         assertEquals(1L, id);
+    }
+
+    @Test
+    @Transactional
+    void delete_success() throws Exception {
+
+        //WHEN the delete endpoint is called
+        mockMvc.perform(delete(baseUrl + "/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        //and verify the record has been deleted from the database
+        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM DishComponent where id = 1").getSingleResult();
+        assertEquals(count, 0L);
+    }
+
+    @Test
+    void delete_failure_notfound() throws Exception {
+        mockMvc.perform(delete(baseUrl + "/{id}", 99L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
