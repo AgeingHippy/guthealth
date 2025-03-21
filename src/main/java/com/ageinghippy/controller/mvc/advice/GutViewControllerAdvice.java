@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.mvc.advice;
 
-import com.ageinghippy.controller.rest.advice.ResponseErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,16 +18,30 @@ public class GutViewControllerAdvice {
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseErrorMessage noSuchElementExceptionResponse(NoSuchElementException ex) {
+    public ModelAndView noSuchElementExceptionResponse(HttpServletRequest request,
+                                                       NoSuchElementException ex) {
         log.warn(ex.getMessage());
-        return new ResponseErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error");
+        modelAndView.addObject("url", request.getRequestURL());
+        modelAndView.addObject("errorMessage", ex.getMessage());
+
+        return modelAndView;
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseErrorMessage noSuchElementExceptionResponse(IllegalArgumentException ex) {
+    public ModelAndView noSuchElementExceptionResponse(HttpServletRequest request,
+                                                       IllegalArgumentException ex) {
         log.warn(ex.getMessage());
-        return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, ex.getMessage());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error");
+        modelAndView.addObject("url", request.getRequestURL());
+        modelAndView.addObject("errorMessage", ex.getMessage());
+
+        return modelAndView;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
