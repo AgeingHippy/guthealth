@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Preparation Technique</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+    <p/>
+    <p/>
+    <p/>
+    <p/>
+    <p>This describes how the food was prepared such as Boiled, Pan Fried, Roasted etc. We expect minimal changes to
+        this dataset once it is created.</p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="preparationTechnique : ${preparationTechniques}">
+            <td th:text="${preparationTechnique.code}"></td>
+            <td th:text="${preparationTechnique.description}"></td>
+            <td>
+                <a th:href="@{'/preparation-technique/edit/' + ${preparationTechnique.code}}" class="icon-link">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{'/preparation-technique/delete/' + ${preparationTechnique.code}}" class="icon-link">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{'/preparation-technique/new'}">
+        <button type="button" class="btn btn-primary">Add New</button>
+    </a>
+
+
+</div>
+
+</body>
+</html>

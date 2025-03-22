@@ -1,7 +1,8 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.MyMapper;
-import com.ageinghippy.model.dto.FoodTypeDTO;
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.FoodTypeDTOComplex;
+import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
@@ -18,43 +19,35 @@ import java.util.List;
 public class FoodTypeService {
     private final FoodTypeRepository foodTypeRepository;
     private final FoodCategoryRepository foodCategoryRepository;
-    private final MyMapper myMapper;
+    private final DTOMapper dtoMapper;
     private final EntityManager entityManager;
 
-    public FoodType getFoodType(Long id) {
-        return foodTypeRepository.findById(id).orElse(null);
+    public FoodTypeDTOComplex getFoodType(Long id) {
+        return dtoMapper.map(foodTypeRepository.findById(id).orElseThrow(),FoodTypeDTOComplex.class);
     }
 
-    public FoodTypeDTO getFoodTypeDto(Long id) {
-        return myMapper.map(foodTypeRepository.findById(id).orElseThrow(),FoodTypeDTO.class);
+    public List<FoodTypeDTOSimple> getFoodTypes() {
+        return dtoMapper.mapList(foodTypeRepository.findAll(), FoodTypeDTOSimple.class);
     }
 
-    public List<FoodType> getFoodTypes() {
-        return foodTypeRepository.findAll();
-    }
-
-    @Transactional
-    public FoodTypeDTO createFoodTypeDto(FoodTypeDTO newFoodType) {
-        FoodType foodType = myMapper.map(newFoodType, FoodType.class);
-
-//        foodType.setFoodCategory(foodCategoryRepository.findById(foodType.getFoodCategory().getId()).orElseThrow());
-
-        return myMapper.map(saveFoodType(foodType),FoodTypeDTO.class);
+    public List<FoodTypeDTOSimple> getFoodTypes(Long foodCategoryId) {
+        return dtoMapper.mapList(foodTypeRepository.findAllByFoodCategory_id(foodCategoryId), FoodTypeDTOSimple.class);
     }
 
     @Transactional
-    public FoodType createFoodType(FoodType foodType) {
-        foodType.setFoodCategory(foodCategoryRepository.findById(foodType.getFoodCategory().getId()).orElseThrow());
-        return saveFoodType(foodType);
+    public FoodTypeDTOComplex createFoodTypeDto(FoodTypeDTOComplex newFoodType) {
+        FoodType foodType = dtoMapper.map(newFoodType, FoodType.class);
+
+        return dtoMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
     }
 
     @Transactional
-    public FoodType saveFoodType(FoodType foodType) {
-        foodType = foodTypeRepository.save(foodType);
-        entityManager.flush();
-        entityManager.refresh(foodType);
+    public FoodTypeDTOComplex createFoodType(FoodTypeDTOComplex foodType) {
+        FoodType newFoodType = dtoMapper.map(foodType, FoodType.class);
 
-        return foodType;
+        newFoodType = saveFoodType(newFoodType );
+
+        return dtoMapper.map(newFoodType,FoodTypeDTOComplex.class);
     }
 
     /**
@@ -65,19 +58,34 @@ public class FoodTypeService {
      * @return the updated {@code FoodType}
      * @throws java.util.NoSuchElementException if the FoodType with the provided id does not exist
      */
-    public FoodType updateFoodType(Long id, FoodType updateFoodType) {
+    @Transactional
+    public FoodTypeDTOComplex updateFoodType(Long id, FoodTypeDTOComplex updateFoodType) {
         FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
 
-        foodType.setName(Util.valueIfNull(updateFoodType.getName(), foodType.getName()));
-        foodType.setDescription(Util.valueIfNull(updateFoodType.getDescription(), foodType.getDescription()));
-        if (updateFoodType.getFoodCategory() != null && updateFoodType.getFoodCategory().getId() != null) {
-            foodType.setFoodCategory(foodCategoryRepository.findById(updateFoodType.getFoodCategory().getId()).orElseThrow());
+        foodType.setName(Util.valueIfNull(updateFoodType.name(), foodType.getName()));
+        foodType.setDescription(Util.valueIfNull(updateFoodType.description(), foodType.getDescription()));
+        if (updateFoodType.foodCategory() != null && updateFoodType.foodCategory().id() != null) {
+            foodType.setFoodCategory(foodCategoryRepository.findById(updateFoodType.foodCategory().id()).orElseThrow());
         }
 
-        return saveFoodType(foodType);
+        foodType = saveFoodType(foodType);
+
+        return dtoMapper.map(foodType, FoodTypeDTOComplex.class);
     }
 
-    public void deleteFoodType(FoodType foodType) {
+    public void deleteFoodType(Long id) {
+        deleteFoodType(foodTypeRepository.findById(id).orElseThrow());
+    }
+
+    private void deleteFoodType(FoodType foodType) {
         foodTypeRepository.deleteById(foodType.getId());
+    }
+
+    private FoodType saveFoodType(FoodType foodType) {
+        foodType = foodTypeRepository.save(foodType);
+        entityManager.flush();
+        entityManager.refresh(foodType);
+
+        return foodType;
     }
 }

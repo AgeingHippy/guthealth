@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.MyMapper;
+import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
@@ -8,7 +8,6 @@ import com.ageinghippy.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,25 +15,25 @@ import java.util.List;
 public class PreparationTechniqueService {
 
     private final PreparationTechniqueRepository preparationTechniqueRepository;
-    private final MyMapper myMapper;
+    private final DTOMapper dtoMapper;
 
     public PreparationTechniqueDTO getPreparationTechnique(String code) {
-        return myMapper.map(preparationTechniqueRepository.findById(code).orElseThrow(), PreparationTechniqueDTO.class);
+        return dtoMapper.map(preparationTechniqueRepository.findById(code).orElseThrow(), PreparationTechniqueDTO.class);
     }
 
     public List<PreparationTechniqueDTO> getPreparationTechniques() {
-        return myMapper.mapList(preparationTechniqueRepository.findAll(), PreparationTechniqueDTO.class);
+        return dtoMapper.mapList(preparationTechniqueRepository.findAll(), PreparationTechniqueDTO.class);
     }
 
     public PreparationTechniqueDTO createPreparationTechnique(PreparationTechniqueDTO preparationTechnique) {
-        PreparationTechnique newPreparationTechnique = myMapper.map(preparationTechnique, PreparationTechnique.class);
+        PreparationTechnique newPreparationTechnique = dtoMapper.map(preparationTechnique, PreparationTechnique.class);
 
         if (preparationTechniqueRepository.findById(newPreparationTechnique.getCode()).orElse(null) != null) {
             throw new IllegalArgumentException("Preparation Technique with code '" + newPreparationTechnique.getCode() + "' already exists");
         }
         newPreparationTechnique = savePreparationTechnique(newPreparationTechnique);
 
-        return myMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
+        return dtoMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
     }
 
     private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
@@ -48,7 +47,7 @@ public class PreparationTechniqueService {
                 Util.valueIfNull(updatePreparationTechnique.description(), preparationTechnique.getDescription()));
         preparationTechnique = savePreparationTechnique(preparationTechnique);
 
-        return myMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
+        return dtoMapper.map(preparationTechnique, PreparationTechniqueDTO.class);
     }
 
     public void deletePreparationTechnique(String code) {
@@ -56,7 +55,7 @@ public class PreparationTechniqueService {
         deletePreparationTechnique(preparationTechnique);
     }
 
-    public void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
+    private void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
         preparationTechniqueRepository.delete(preparationTechnique);
     }
 }

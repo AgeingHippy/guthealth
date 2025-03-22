@@ -1,0 +1,219 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0" version="26.1.1">
+  <diagram name="Page-1" id="S4T5xd1xq51bLWwuChDO">
+    <mxGraphModel dx="1896" dy="676" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HXQjEC1orE4litxf04rp-2" value="index" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-3" value="preparation-technique&lt;div&gt;View list of preparation techniques&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="250" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-4" value="preparation-technique-new&lt;div&gt;Create new preparation technique&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="200" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-5" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-3" target="HXQjEC1orE4litxf04rp-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="540" as="sourcePoint" />
+            <mxPoint x="210" y="490" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-6" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-4" target="HXQjEC1orE4litxf04rp-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="405" as="sourcePoint" />
+            <mxPoint x="250" y="405" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-7" value="&lt;div&gt;preparation-technique-edit&lt;div&gt;Update given preparation technique&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="300" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-8" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-3" target="HXQjEC1orE4litxf04rp-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="370" as="sourcePoint" />
+            <mxPoint x="330" y="320" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="280" />
+              <mxPoint x="240" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-9" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-7" target="HXQjEC1orE4litxf04rp-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="480" as="sourcePoint" />
+            <mxPoint x="30" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-10" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.183;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-3" target="HXQjEC1orE4litxf04rp-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="540" as="sourcePoint" />
+            <mxPoint x="210" y="490" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-20" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-11" value="delete preparation technique" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="HXQjEC1orE4litxf04rp-10">
+          <mxGeometry x="0.3729" y="-28" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-12" value="food-category&lt;br&gt;&lt;div&gt;View list of food categories&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="490" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-13" value="food-category-new&lt;div&gt;Create new food-category&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-14" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-12" target="HXQjEC1orE4litxf04rp-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="780" as="sourcePoint" />
+            <mxPoint x="210" y="730" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-15" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-13" target="HXQjEC1orE4litxf04rp-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="645" as="sourcePoint" />
+            <mxPoint x="250" y="645" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-16" value="&lt;div&gt;food-category-edit&lt;div&gt;Update given food category&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="540" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-17" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-12" target="HXQjEC1orE4litxf04rp-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="610" as="sourcePoint" />
+            <mxPoint x="330" y="560" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="520" />
+              <mxPoint x="240" y="555" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-18" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-16" target="HXQjEC1orE4litxf04rp-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="720" as="sourcePoint" />
+            <mxPoint x="30" y="740" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-19" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.183;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-12" target="HXQjEC1orE4litxf04rp-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="610" as="sourcePoint" />
+            <mxPoint x="450" y="560" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-50" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-20" value="delete food category" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="HXQjEC1orE4litxf04rp-19">
+          <mxGeometry x="0.3729" y="-28" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-21" value="food-type&lt;div&gt;View list of food types for given food category&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="390" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-22" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-13" target="HXQjEC1orE4litxf04rp-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="515" as="sourcePoint" />
+            <mxPoint x="250" y="465" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="510" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-23" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-21" target="HXQjEC1orE4litxf04rp-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="510" as="sourcePoint" />
+            <mxPoint x="390" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="520" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-24" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.204;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-21" target="HXQjEC1orE4litxf04rp-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="680" y="480" as="sourcePoint" />
+            <mxPoint x="544" y="482" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="680" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-25" value="delete food type" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="HXQjEC1orE4litxf04rp-24">
+          <mxGeometry x="0.3729" y="-28" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-26" value="food-type-new&lt;div&gt;Create new food type for given food category&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="320" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-27" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-21" target="HXQjEC1orE4litxf04rp-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="810" y="320" as="sourcePoint" />
+            <mxPoint x="880" y="270" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="840" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-28" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.996;entryY=0.383;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-26" target="HXQjEC1orE4litxf04rp-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="860" y="390" as="sourcePoint" />
+            <mxPoint x="790" y="440" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="840" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-29" value="To add dropdown for food category select" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#FFF4C3;" vertex="1" parent="1">
+          <mxGeometry x="990" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-30" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0;entryDx=60;entryDy=80;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-26" target="HXQjEC1orE4litxf04rp-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="370" as="sourcePoint" />
+            <mxPoint x="450" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-31" value="food-type-edit&lt;div&gt;Update given food type&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="440" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-32" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1.004;entryY=0.9;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-31" target="HXQjEC1orE4litxf04rp-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="890" y="375" as="sourcePoint" />
+            <mxPoint x="799" y="423" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="840" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HXQjEC1orE4litxf04rp-33" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXQjEC1orE4litxf04rp-21" target="HXQjEC1orE4litxf04rp-31">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="800" y="415" as="sourcePoint" />
+            <mxPoint x="890" y="345" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="840" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

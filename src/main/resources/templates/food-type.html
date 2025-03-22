@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Type</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <p>Food types associated with food category <span th:text="${foodCategoryName}"/></p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="foodType : ${foodTypes}">
+            <td th:text="${foodType.id}">></td>
+            <td th:text="${foodType.name}"></td>
+            <td th:text="${foodType.description}"></td>
+            <td>
+                <a th:href="@{'/food-type/edit/' + ${foodType.id}}" class="icon-link">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{'/food-type/delete/' + ${foodType.id}}" class="icon-link">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{'/food-type/new?foodCategoryId=' + ${foodCategoryId}}">
+        <button type="button" class="btn btn-primary">Add New</button>
+    </a>
+
+</div>
+
+</body>
+</html>

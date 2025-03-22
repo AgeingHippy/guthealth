@@ -1,10 +1,15 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.DishDTOComplex;
+import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.entity.Dish;
 import com.ageinghippy.repository.DishRepository;
+import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,32 +17,46 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DishService {
     private final DishRepository dishRepository;
+    private final PreparationTechniqueRepository preparationTechniqueRepository;
     private final EntityManager entityManager;
+    private final DTOMapper dtoMapper;
 
-    public Dish getDish(Long id) {
-        return dishRepository.findById(id).orElse(null);
+    public DishDTOComplex getDish(Long id) {
+        return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<Dish> getDishes() {
-        List<Dish> dishes = dishRepository.findAll();
+    public List<DishDTOSimple> getDishes() {
+        List<DishDTOSimple> dishes = dtoMapper.mapList(dishRepository.findAll(), DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public Dish createDish(Dish dish) {
-        dish.getDishComponents().forEach(dishComponent -> dishComponent.setDish(dish));
-        return saveDish(dish);
-//        entityManager.refresh(dish);
-//        return dish;
+    public DishDTOComplex createDish(DishDTOComplex dish) {
+        Dish newDish = dtoMapper.map(dish, Dish.class);
+
+        for (int i = 0; i < newDish.getDishComponents().size(); i++) {
+            newDish.getDishComponents().get(i).setDish(newDish);
+        }
+
+        newDish = saveDish(newDish);
+
+        return dtoMapper.map(newDish, DishDTOComplex.class);
     }
 
     @Transactional
-    public Dish saveDish(Dish dish) {
+    private Dish saveDish(Dish dish) {
+
+        //verify specified preparationTechnique exists
+        preparationTechniqueRepository.findById(dish.getPreparationTechnique().getCode()).orElseThrow();
+
         dish = dishRepository.save(dish);
+
         entityManager.flush();
         entityManager.refresh(dish);
+
         return dish;
     }
 
@@ -50,17 +69,27 @@ public class DishService {
      * @throws java.util.NoSuchElementException if the Dish with the provided id does not exist
      */
     @Transactional
-    public Dish updateDish(Long id, Dish updateDish) {
-        Dish dish = dishRepository.findById(id).orElseThrow();
-        dish.setName(Util.valueIfNull(updateDish.getName(), dish.getName()));
-        dish.setDescription(Util.valueIfNull(updateDish.getDescription(), dish.getDescription()));
-        dish.setPreparationTechnique(Util.valueIfNull(updateDish.getPreparationTechnique(),dish.getPreparationTechnique()));
-        //todo - add additional as appropriate
+    public DishDTOComplex updateDish(Long id, DishDTOSimple updateDish) {
 
-        return saveDish(dish);
+        Dish dish = dishRepository.findById(id).orElseThrow();
+        dish.setName(Util.valueIfNull(updateDish.name(), dish.getName()));
+        dish.setDescription(Util.valueIfNull(updateDish.description(), dish.getDescription()));
+        if (updateDish.preparationTechnique() != null && updateDish.preparationTechnique().code() != null) {
+            dish.setPreparationTechnique(
+                    preparationTechniqueRepository.findById(updateDish.preparationTechnique().code()).orElseThrow());
+        }
+
+        dish = saveDish(dish);
+
+        return dtoMapper.map(dish, DishDTOComplex.class);
     }
 
-    public void deleteDish(Dish dish) {
+    public void deleteDish(Long id) {
+        Dish dish = dishRepository.findById(id).orElseThrow();
+        deleteDish(dish);
+    }
+
+    private void deleteDish(Dish dish) {
         dishRepository.deleteById(dish.getId());
     }
 }

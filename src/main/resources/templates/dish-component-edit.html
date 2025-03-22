@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Dish Component</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div>
+
+        <p/>
+        <p> New dish component for <span th:text="${dish.name}"></span></p>
+        <p/>
+
+        <form th:action="@{'/dish-component/update/' +${dishComponent.id} + '?dishId=' + ${dish.id}}"
+              method="post"
+              th:object="${dishComponent}">
+            <div class="mb-3">
+                <label for="foodType.id" class="col-form-label">FoodType:</label>
+                <input type="text" class="form-control" id="foodType.id" th:field="*{foodType.id}" required="true">
+            </div>
+            <div class="mb-3">
+                <label for="proportion" class="col-form-label">Proportion:</label>
+                <input type="number"  min="0" step="1" class="form-control" id="proportion"
+                       th:field="*{proportion}" required="true">
+            </div>
+            <div class="row">
+                <button class="col-3" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+</body>
+</html>

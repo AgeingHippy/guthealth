@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Food Category</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div>
+        <form action="#" th:action="@{'/food-category/update/' + ${foodCategory.id}}"
+              th:object="${foodCategory}" method="post">
+            <div class="mb-3">
+                <label for="id" class="col-form-label">ID:</label>
+                <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}"  required="true">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="col-form-label">Description:</label>
+                <input type="text" class="form-control" id="description" th:field="*{description}"  required="true">
+            </div>
+            <div class="row">
+                <button class="col-3" type="submit">Save</button>
+                <button class="col-3" type="submit"
+                        th:formaction="@{'/food-category/update/' + ${foodCategory.id} + '?addFoodTypes=true'}">Save and Add Food Types
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+</body>
+</html>
