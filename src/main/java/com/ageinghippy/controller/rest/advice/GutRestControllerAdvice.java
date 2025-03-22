@@ -41,7 +41,8 @@ public class GutRestControllerAdvice {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseErrorMessage exceptionResponse(Exception ex) {
         UUID uuid = UUID.randomUUID();
-        log.error(uuid + " :: " + ex.getMessage());
+        log.error(uuid + " :: " + ex.getCause());
+        ex.printStackTrace();
         return new ResponseErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error. Log reference: " + uuid);
     }
 

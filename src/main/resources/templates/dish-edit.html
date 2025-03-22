@@ -62,12 +62,12 @@
                         <td th:text="${dishComponent.foodType.name}"></td>
                         <td th:text="${dishComponent.proportion}"></td>
                         <td>
-                            <a th:href="@{'/dish-component/edit/' + ${dishComponent.id}}" class="icon-link">
+                            <a th:href="@{'/dish-component/edit/' + ${dishComponent.id} + '?dishId=' + ${dish.id}}" class="icon-link">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>
                         <td>
-                            <a th:href="@{'/dish-component/delete/' + ${dishComponent.id}}" class="icon-link">
+                            <a th:href="@{'/dish-component/delete/' + ${dishComponent.id} + '?dishId=' + ${dish.id}}" class="icon-link">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>

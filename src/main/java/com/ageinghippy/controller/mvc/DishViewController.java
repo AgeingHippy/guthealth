@@ -1,7 +1,9 @@
 package com.ageinghippy.controller.mvc;
 
+import com.ageinghippy.model.dto.DishComponentDTO;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
+import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.DishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ public class DishViewController {
     public String showAllDishes(Model model) {
         List<DishDTOSimple> dishes = dishService.getDishes();
 
-        model.addAttribute("dishes",dishes);
+        model.addAttribute("dishes", dishes);
 
         return "/dish";
     }
@@ -31,25 +33,41 @@ public class DishViewController {
     public String showDish(Model model, @PathVariable Long id) {
         DishDTOComplex dish = dishService.getDish(id);
 
-        model.addAttribute("dish",dish);
+        model.addAttribute("dish", dish);
 
         return "/dish-view";
+    }
+
+    @GetMapping("/new")
+    public String showDishNewView(Model model) {
+        model.addAttribute("dish",
+                new DishDTOSimple(null, null, null,
+                        new PreparationTechniqueDTO(null, null)));
+
+        return "/dish-new";
+    }
+
+    @PostMapping("/create")
+    public String createDish(@ModelAttribute DishDTOComplex dish) {
+        Long id = dishService.createDish(dish).id();
+
+        return "redirect:/dish/edit/" + id;
     }
 
     @GetMapping("/edit/{id}")
     public String showDishEditView(Model model, @PathVariable Long id) {
         DishDTOComplex dish = dishService.getDish(id);
 
-        model.addAttribute("dish",dish);
+        model.addAttribute("dish", dish);
 
         return "/dish-edit";
     }
 
     @PostMapping("/update/{id}")
     public String updateDish(@ModelAttribute DishDTOSimple dish, @PathVariable Long id) {
-        dishService.updateDish(id,dish);
+        dishService.updateDish(id, dish);
 
-        return "redirect:/dish/edit/"+id;
+        return "redirect:/dish/edit/" + id;
     }
 
     @RequestMapping("/delete/{id}")
