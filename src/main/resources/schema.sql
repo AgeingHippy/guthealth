@@ -1,32 +1,33 @@
 --
+-- Table structure for table `user_meta`
+--
+CREATE TABLE IF NOT EXISTS `user_meta` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `bio` VARCHAR(500) NULL,
+  PRIMARY KEY (`id`)
+);
+
+--
 -- Table structure for table `user`
 --
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(16) NOT NULL,
   `password` VARCHAR(32) NOT NULL,
+  `user_meta_id` INT NOT NULL,
   `account_non_expired` TINYINT NOT NULL DEFAULT 1,
   `account_non_locked` TINYINT NOT NULL DEFAULT 1,
   `credentials_non_expired` TINYINT NOT NULL DEFAULT 1,
   `enabled` TINYINT NOT NULL DEFAULT 1,
   `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`));
-
---
--- Table structure for table `user_meta`
---
-CREATE TABLE IF NOT EXISTS `user_meta` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `bio` VARCHAR(500) NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_user_meta_user1_idx` (`user_id`),
+  KEY `fk_user_meta_user1_idx` (`user_meta_id`),
   CONSTRAINT `fk_user_meta_user1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `user` (`id`)
-);
+    FOREIGN KEY (`user_meta_id`)
+    REFERENCES `user_meta` (`id`)
+  );
 
 --
 -- Table structure for table `role`
