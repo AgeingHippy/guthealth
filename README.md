@@ -6,14 +6,18 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 
 # Implemented
 - Spring Data JPA
-
-# Currently phase:
 - Implementing basic CRUD REST APIs for the various entities (DTOs exposed as Java Record)
-- Spring Web MVC / Thymeleaf Templates
+- Spring Web MVC / Thymeleaf Templates (Basic CRUD) (currently excludes Meal data)
+- 
+# Currently phase:
+- Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication
+
+
 
 # Future Phases showcasing (In no particular order)
+- Meal MVC
+- Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
 - File Load using API
-- Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication
 - Data caching
 - Addition of Gut Health itself (Data Structure, API, UI etc.)
 - Third party API integration
