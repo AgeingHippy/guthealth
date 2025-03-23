@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,6 +35,13 @@ public class GutRestControllerAdvice {
     public ResponseErrorMessage integrityViolationResponse(Exception ex) {
         log.warn(ex.getMessage());
         return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, "Data Integrity Violation");
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ResponseErrorMessage authorizationDeniedExceptionResponse(Exception ex) {
+        log.warn(ex.getMessage());
+        return new ResponseErrorMessage(HttpStatus.FORBIDDEN, "Forbidden: You do not have permission to access the specified resource");
     }
 
 

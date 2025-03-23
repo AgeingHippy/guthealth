@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `principle_roles` (
   KEY `fk_principle_roles_principle1_idx` (`principle_id`),
   KEY `fk_principle_roles_role1_idx` (`role_id`),
   UNIQUE KEY `principle_roles_uk` (`principle_id`, `role_id`),
-  CONSTRAINT `fk_principle_roles_user1`
+  CONSTRAINT `fk_principle_roles_principle1`
     FOREIGN KEY (`principle_id`)
     REFERENCES `principle` (`id`),
   CONSTRAINT `fk_principle_roles_role1`
@@ -108,12 +108,15 @@ DROP TABLE IF EXISTS `dish`;
 
 CREATE TABLE `dish` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `principle_id` int NOT NULL,
   `name` varchar(45) NOT NULL,
   `description` varchar(200) NOT NULL,
   `preparation_technique_code` varchar(20) NOT NULL COMMENT 'Manner of preparation. e.g. roast, fry, grill, poach, unprepared',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_dish_name` (`name`),
+  UNIQUE KEY `uk_dish_name` (`principle_id`, `name`),
+  KEY `fk_dish_principle1_idx` (`principle_id`),
   KEY `fk_dish_preparation_technique1_idx` (`preparation_technique_code`),
+  CONSTRAINT `fk_dish_principle1` FOREIGN KEY (`principle_id`) REFERENCES `principle` (`id`),
   CONSTRAINT `fk_dish_preparation_technique1` FOREIGN KEY (`preparation_technique_code`) REFERENCES `preparation_technique` (`code`)
 );
 

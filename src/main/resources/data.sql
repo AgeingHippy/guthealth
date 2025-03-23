@@ -10,6 +10,66 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
+-- ROLE
+
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+
+INSERT INTO `role`
+    ( id, authority )
+VALUES
+    ( 1, 'ROLE_ADMIN'),
+    ( 2, 'ROLE_USER'),
+    ( 3, 'ROLE_GUEST');
+
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+ALTER TABLE `role` AUTO_INCREMENT=34;
+
+--
+-- USER-META
+--
+
+/*!40000 ALTER TABLE `user_meta` DISABLE KEYS */;
+
+INSERT INTO user_meta
+    ( id, name, email, bio)
+VALUES
+    ( 1, 'Bob','bob@home.com','Likes building'),
+    ( 2, 'Bill','bill@home.com',null),
+    ( 3, 'Betty','betty@home.com','Does the boop');
+
+/*!40000 ALTER TABLE `user_meta` ENABLE KEYS */;
+ALTER TABLE `user_meta` AUTO_INCREMENT=4;
+
+--
+-- PRINCIPLE
+--
+/*!40000 ALTER TABLE `principle` DISABLE KEYS */;
+
+INSERT INTO principle
+    (id, username, password, user_meta_id)
+VALUES
+    (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', 1),
+    (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', 2),
+    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', 3);
+
+/*!40000 ALTER TABLE `principle` ENABLE KEYS */;
+ALTER TABLE `principle` AUTO_INCREMENT=4;
+
+--
+-- PRINCIPLE_ROLES
+--
+
+/*!40000 ALTER TABLE `principle_roles` DISABLE KEYS */;
+
+INSERT INTO principle_roles
+    (principle_id, role_id)
+VALUES
+    (1,1),
+    (2,2),
+    (3,3);
+
+/*!40000 ALTER TABLE `principle_roles` ENABLE KEYS */;
+
 --
 -- Dumping data for table `preparation_technique`
 --
@@ -80,12 +140,12 @@ ALTER TABLE `food_type` AUTO_INCREMENT=16;
 /*!40000 ALTER TABLE `dish` DISABLE KEYS */;
 INSERT
 INTO `dish`
-    (id, name, description, preparation_technique_code)
+    (id, principle_id, name, description, preparation_technique_code)
 VALUES
-    (1,'Dish1','Dish one Description','PrepType1'),
-    (2,'Dish2','Dish two Description','PrepType1'),
-    (3,'Dish3','Dish three Description','PrepType2'),
-    (4,'Dish4','Dish four Description','PrepType3');
+    (1,2,'Dish1','Dish one Description','PrepType1'),
+    (2,2,'Dish2','Dish two Description','PrepType1'),
+    (3,2,'Dish3','Dish three Description','PrepType2'),
+    (4,2,'Dish4','Dish four Description','PrepType3');
 /*!40000 ALTER TABLE `dish` ENABLE KEYS */;
 
 ALTER TABLE `dish` AUTO_INCREMENT=5;

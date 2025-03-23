@@ -19,8 +19,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/js/**", "/css/**", "/img/**", "/webjars/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
-                        .requestMatchers("/api/**").permitAll() //todo -> .hasAuthority("ROLE_ADMIN") once tests fixed
                         .requestMatchers("/register").anonymous()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

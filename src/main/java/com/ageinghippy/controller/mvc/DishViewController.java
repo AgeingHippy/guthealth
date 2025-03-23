@@ -7,6 +7,7 @@ import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.DishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +49,8 @@ public class DishViewController {
     }
 
     @PostMapping("/create")
-    public String createDish(@ModelAttribute DishDTOComplex dish) {
-        Long id = dishService.createDish(dish).id();
+    public String createDish(@ModelAttribute DishDTOComplex dish, Authentication authentication) {
+        Long id = dishService.createDish(dish,authentication).id();
 
         return "redirect:/dish/edit/" + id;
     }
