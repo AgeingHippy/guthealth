@@ -1,8 +1,9 @@
 package com.ageinghippy.model.entity;
 
-import com.ageinghippy.enums.RoleEnum;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,13 +19,10 @@ import org.springframework.security.core.GrantedAuthority;
 public class Role implements GrantedAuthority {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private RoleEnum role;
+    @NotNull
+    private String authority;
 
-    @Override
-    public String getAuthority() {
-        return role.name();
-    }
 }

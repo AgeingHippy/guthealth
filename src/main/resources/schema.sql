@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
 --
 -- Table structure for table `user`
 --
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE TABLE IF NOT EXISTS `principle` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(16) NOT NULL,
-  `password` VARCHAR(32) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
   `user_meta_id` INT NOT NULL,
   `account_non_expired` TINYINT NOT NULL DEFAULT 1,
   `account_non_locked` TINYINT NOT NULL DEFAULT 1,
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `enabled` TINYINT NOT NULL DEFAULT 1,
   `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `fk_user_meta_user1_idx` (`user_meta_id`),
-  CONSTRAINT `fk_user_meta_user1`
+  KEY `fk_user_meta_principle1_idx` (`user_meta_id`),
+  CONSTRAINT `fk_user_meta_principle1`
     FOREIGN KEY (`user_meta_id`)
     REFERENCES `user_meta` (`id`)
   );
@@ -41,16 +41,16 @@ CREATE TABLE IF NOT EXISTS `role` (
 --
 -- Table structure for table `user_role`
 --
-CREATE TABLE IF NOT EXISTS `user_roles` (
-  `user_id` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `principle_roles` (
+  `principle_id` INT NOT NULL,
   `role_id` INT NOT NULL,
-  KEY `fk_user_roles_user1_idx` (`user_id`),
-  KEY `fk_user_roles_role1_idx` (`role_id`),
-  UNIQUE KEY `user_roles_uk` (`user_id`, `role_id`),
-  CONSTRAINT `fk_user_roles_user1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `user` (`id`),
-  CONSTRAINT `fk_user_roles_role1`
+  KEY `fk_principle_roles_principle1_idx` (`principle_id`),
+  KEY `fk_principle_roles_role1_idx` (`role_id`),
+  UNIQUE KEY `principle_roles_uk` (`principle_id`, `role_id`),
+  CONSTRAINT `fk_principle_roles_user1`
+    FOREIGN KEY (`principle_id`)
+    REFERENCES `principle` (`id`),
+  CONSTRAINT `fk_principle_roles_role1`
     FOREIGN KEY (`role_id`)
     REFERENCES `role` (`id`)
 );

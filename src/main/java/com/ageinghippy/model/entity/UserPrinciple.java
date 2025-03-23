@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 @Entity
-@Table(name="user")
+@Table(name = "principle")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class UserPrinciple implements UserDetails {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -41,24 +41,26 @@ public class UserPrinciple implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     private UserMeta userMeta;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "principle_roles",
+            joinColumns = @JoinColumn(name = "principle_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> authorities;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean isAccountNonExpired = true;
+    private boolean accountNonExpired = true;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean isAccountNonLocked = true;
+    private boolean accountNonLocked = true;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean isCredentialsNonExpired = true;
+    private boolean credentialsNonExpired = true;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean isEnabled = true;
+    private boolean enabled = true;
 
 }
