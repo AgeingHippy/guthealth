@@ -1,22 +1,65 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+--
+-- Table structure for table `user`
+--
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(16) NOT NULL,
+  `password` VARCHAR(32) NOT NULL,
+  `account_non_expired` TINYINT NOT NULL DEFAULT 1,
+  `account_non_locked` TINYINT NOT NULL DEFAULT 1,
+  `credentials_non_expired` TINYINT NOT NULL DEFAULT 1,
+  `enabled` TINYINT NOT NULL DEFAULT 1,
+  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
 
+--
+-- Table structure for table `user_meta`
+--
+CREATE TABLE IF NOT EXISTS `user_meta` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `bio` VARCHAR(500) NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_user_meta_user1_idx` (`user_id`),
+  CONSTRAINT `fk_user_meta_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `user` (`id`)
+);
+
+--
+-- Table structure for table `role`
+--
+CREATE TABLE IF NOT EXISTS `role` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `authority` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role_uk1` (`authority`));
+
+--
+-- Table structure for table `user_role`
+--
+CREATE TABLE IF NOT EXISTS `user_roles` (
+  `user_id` INT NOT NULL,
+  `role_id` INT NOT NULL,
+  KEY `fk_user_roles_user1_idx` (`user_id`),
+  KEY `fk_user_roles_role1_idx` (`role_id`),
+  UNIQUE KEY `user_roles_uk` (`user_id`, `role_id`),
+  CONSTRAINT `fk_user_roles_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `user` (`id`),
+  CONSTRAINT `fk_user_roles_role1`
+    FOREIGN KEY (`role_id`)
+    REFERENCES `role` (`id`)
+);
 
 --
 -- Table structure for table `preparation_technique`
 --
 
 DROP TABLE IF EXISTS `preparation_technique`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `preparation_technique` (
   `code` varchar(20) NOT NULL,
   `description` varchar(200) DEFAULT NULL,
@@ -125,14 +168,6 @@ CREATE TABLE `meal_component` (
   CONSTRAINT `fk_meal_component_preparation_technique1` FOREIGN KEY (`preparation_technique_code`) REFERENCES `preparation_technique` (`code`)
 );
 
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 
 
