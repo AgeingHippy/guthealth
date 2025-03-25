@@ -2,6 +2,7 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.DishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class DishController {
 
     @GetMapping
     public List<DishDTOSimple> getDishes(Authentication authentication) {
-        return dishService.getDishes();
+        return dishService.getDishes((UserPrinciple) authentication.getPrincipal());
     }
 
     @GetMapping("/{id}")
@@ -37,7 +38,7 @@ public class DishController {
         if (dish.id() != null) {
             throw new IllegalArgumentException("Dish ID cannot be specified on new record");
         }
-        DishDTOComplex newDish = dishService.createDish(dish, authentication);
+        DishDTOComplex newDish = dishService.createDish(dish, (UserPrinciple) authentication.getPrincipal());
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

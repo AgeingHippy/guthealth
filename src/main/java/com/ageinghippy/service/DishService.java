@@ -30,16 +30,18 @@ public class DishService {
         return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<DishDTOSimple> getDishes() {
-        List<DishDTOSimple> dishes = dtoMapper.mapList(dishRepository.findAll(), DishDTOSimple.class);
+    public List<DishDTOSimple> getDishes(UserPrinciple principle) {
+        List<DishDTOSimple> dishes = dtoMapper.mapList(
+                dishRepository.findAllByPrinciple(principle),
+                DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public DishDTOComplex createDish(DishDTOComplex dish, Authentication authentication) {
+    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple principle) {
         Dish newDish = dtoMapper.map(dish, Dish.class);
 
-        newDish.setPrinciple((UserPrinciple) authentication.getPrincipal());
+        newDish.setPrinciple(principle);
 
         for (int i = 0; i < newDish.getDishComponents().size(); i++) {
             newDish.getDishComponents().get(i).setDish(newDish);
