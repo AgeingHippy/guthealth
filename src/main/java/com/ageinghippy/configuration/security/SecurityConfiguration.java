@@ -17,9 +17,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/js/**", "/css/**", "/img/**", "/webjars/**").permitAll()
+                        .requestMatchers("/js/**", "/css/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
-                        .requestMatchers("/register").anonymous()
+                        .requestMatchers("/", "/home", "/index").permitAll()
+                        .requestMatchers("/user/new", "/user/create").anonymous()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )

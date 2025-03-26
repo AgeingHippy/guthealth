@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Register User</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div id="registerUser">
+        <form th:action="@{'/user/create'}"
+              th:object="${user}" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name:</span>
+                <input type="text" class="form-control" id="userMeta.name"
+                       th:field="*{userMeta.name}" required>
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Email:</span>
+                <input type="email" class="form-control" id="userMeta.email"
+                       th:field="*{userMeta.email}">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Bio:</span>
+                <input type="text" class="form-control" id="userMeta.bio"
+                       th:field="*{userMeta.bio}">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Username:</span>
+                <input type="text" class="form-control" id="id"
+                       th:field="*{username}" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Password:</span>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+            <button class="col-3" type="submit">Save</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
