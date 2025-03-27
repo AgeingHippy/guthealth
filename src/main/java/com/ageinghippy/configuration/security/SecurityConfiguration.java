@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(oauth -> oauth.defaultSuccessUrl("/index"))
                 .formLogin(Customizer.withDefaults());
 
         http.headers().frameOptions().disable(); //todo remove - for h2 access!!!
