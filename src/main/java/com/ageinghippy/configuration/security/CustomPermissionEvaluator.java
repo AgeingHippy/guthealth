@@ -1,10 +1,11 @@
 package com.ageinghippy.configuration.security;
 
-import com.ageinghippy.model.entity.Dish;
-import com.ageinghippy.model.entity.DishComponent;
-import com.ageinghippy.model.entity.UserPrinciple;
+import com.ageinghippy.model.dto.FoodTypeDTOComplex;
+import com.ageinghippy.model.entity.*;
 import com.ageinghippy.repository.DishComponentRepository;
 import com.ageinghippy.repository.DishRepository;
+import com.ageinghippy.repository.FoodCategoryRepository;
+import com.ageinghippy.repository.FoodTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,8 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private final DishRepository dishRepository;
     private final DishComponentRepository dishComponentRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
+    private final FoodTypeRepository foodTypeRepository;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -65,9 +68,16 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                     if (dishComponent.isEmpty()) {return true;}
                     return dishComponent.get().getDish().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-//                case "":
-//
-//                    break;
+                case "FoodCategory":
+                    Optional<FoodCategory> foodCategory = foodCategoryRepository.findById(Long.parseLong(targetId.toString()));
+                    if (foodCategory.isEmpty()) {return true;}
+                    return foodCategory.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+
+                case "FoodType":
+                    Optional<FoodType> foodType = foodTypeRepository.findById(Long.parseLong(targetId.toString()));
+                    if (foodType.isEmpty()) {return true;}
+                    return foodType.get().getFoodCategory().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+
                 default:
 
                     break;

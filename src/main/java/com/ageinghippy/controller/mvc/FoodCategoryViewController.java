@@ -2,9 +2,12 @@ package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,8 @@ public class FoodCategoryViewController {
     private final FoodTypeService foodTypeService;
 
     @GetMapping("")
-    public String showFoodCategories(Model model) {
-        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories();
+    public String showFoodCategories(Model model, Authentication authentication) {
+        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories((UserPrinciple) authentication.getPrincipal());
 
         model.addAttribute("foodCategories", foodCategories);
 
@@ -30,6 +33,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/view/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','read')")
     public String showSpecificFoodCategoryView(Model model, @PathVariable Long id) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(id);
 
@@ -40,6 +44,7 @@ public class FoodCategoryViewController {
 
 
     @RequestMapping("/delete/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','delete')")
     public String deleteFoodCategory(@PathVariable Long id) {
         foodCategoryService.deleteFoodCategory(id);
 
@@ -47,6 +52,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String showNewFoodCategoryView(Model model) {
         model.addAttribute("foodCategory", new FoodCategoryDTOSimple(null, null, null));
 
@@ -54,18 +60,22 @@ public class FoodCategoryViewController {
     }
 
     @PostMapping("/create")
-    public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory, @RequestParam Optional<Boolean> addFoodTypes) {
-        Long id = foodCategoryService.createFoodCategory(foodCategory).id();
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
+                                     @RequestParam Optional<Boolean> addFoodTypes,
+                                     Authentication authentication) {
+        Long id = foodCategoryService.createFoodCategory(foodCategory,(UserPrinciple) authentication.getPrincipal()).id();
 
         //todo - redirect to edit to allow addition of new food types?
         if (addFoodTypes.orElseGet(() -> false)) {
-            return "redirect:/food-type?foodCategoryId="+id;
+            return "redirect:/food-type?foodCategoryId=" + id;
         } else {
             return "redirect:/food-category";
         }
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
     public String showEditFoodCategoryView(Model model, @PathVariable Long id) {
         FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.getFoodCategory(id);
         //todo - do I want to use dtoComplex for new and edited food categories?
@@ -79,13 +89,14 @@ public class FoodCategoryViewController {
     }
 
     @PostMapping("/update/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
     public String updateFoodCategory(@PathVariable Long id, @ModelAttribute FoodCategoryDTOSimple foodCategory,
                                      @RequestParam(required = false) Optional<Boolean> addFoodTypes) {
         foodCategoryService.updateFoodCategory(id, foodCategory);
 
         //todo - redirect to edit to allow addition of new food types?
         if (addFoodTypes.orElseGet(() -> false)) {
-            return "redirect:/food-type?foodCategoryId="+id;
+            return "redirect:/food-type?foodCategoryId=" + id;
         } else {
             return "redirect:/food-category";
         }

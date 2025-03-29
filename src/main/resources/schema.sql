@@ -76,10 +76,12 @@ DROP TABLE IF EXISTS `food_category`;
 
 CREATE TABLE `food_category` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `principle_id` int NOT NULL,
   `name` varchar(45) NOT NULL,
   `description` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_food_category_name` (`name`)
+  CONSTRAINT `fk_food_category_principle1` FOREIGN KEY (`principle_id`) REFERENCES `principle` (`id`),
+  UNIQUE KEY `uk_food_category_name` (`principle_id`, `name`)
 );
 
 
@@ -95,7 +97,7 @@ CREATE TABLE `food_type` (
   `name` varchar(45) NOT NULL,
   `description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_food_type_name` (`name`),
+  UNIQUE KEY `uk_food_type_name` (`food_category_id`,`name`),
   KEY `fk_food_type_food_category1_idx` (`food_category_id`),
   CONSTRAINT `fk_food_type_food_category1` FOREIGN KEY (`food_category_id`) REFERENCES `food_category` (`id`)
 );

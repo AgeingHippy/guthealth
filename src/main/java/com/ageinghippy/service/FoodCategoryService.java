@@ -5,10 +5,12 @@ import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +27,14 @@ public class FoodCategoryService {
         return dTOMapper.map(foodCategoryRepository.findById(id).orElseThrow(), FoodCategoryDTOComplex.class);
     }
 
-    public List<FoodCategoryDTOSimple> getFoodCategories() {
-        return dTOMapper.mapList(foodCategoryRepository.findAll(), FoodCategoryDTOSimple.class);
+    public List<FoodCategoryDTOSimple> getFoodCategories(UserPrinciple principle) {
+        return dTOMapper.mapList(foodCategoryRepository.findAllByPrinciple(principle), FoodCategoryDTOSimple.class);
     }
 
     @Transactional
-    public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOSimple foodCategory) {
+    public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOSimple foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
+        newFoodCategory.setPrinciple(principle);
 
         newFoodCategory = saveFoodCategory(newFoodCategory);
 
@@ -40,8 +43,9 @@ public class FoodCategoryService {
 
     //todo - prototype method
     @Transactional
-    public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOComplex foodCategory) {
+    public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOComplex foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
+        newFoodCategory.setPrinciple(principle);
 
         //need to assign foodCategory explicitly
         //todo - assign in mapper?

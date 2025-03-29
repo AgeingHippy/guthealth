@@ -92,13 +92,13 @@ VALUES
 /*!40000 ALTER TABLE `food_category` DISABLE KEYS */;
 INSERT
 INTO `food_category`
-    (id, name, description)
+    (id, principle_id, name, description)
 VALUES
-	(1,'foodCategory1_name','Food Category one description'),
-	(2,'foodCategory2_name','Food Category two description'),
-	(3,'foodCategory3_name','Food Category three description'),
-	(4,'foodCategory4_name','Food Category four description'),
-	(5,'foodCategory5_name','Food Category five description');
+	(1,2,'foodCategory1_name','Food Category one description'),
+	(2,2,'foodCategory2_name','Food Category two description'),
+	(3,2,'foodCategory3_name','Food Category three description'),
+	(4,2,'foodCategory4_name','Food Category four description'),
+	(5,2,'foodCategory5_name','Food Category five description');
 /*!40000 ALTER TABLE `food_category` ENABLE KEYS */;
 
 ALTER TABLE food_category AUTO_INCREMENT = 6;
