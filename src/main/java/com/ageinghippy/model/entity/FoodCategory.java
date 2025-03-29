@@ -1,5 +1,6 @@
 package com.ageinghippy.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -35,6 +36,11 @@ public class FoodCategory implements Serializable {
     @OneToMany(mappedBy = "foodCategory", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties("foodCategory")
     List<FoodType> foodTypes;
+
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private UserPrinciple principle;
 
     @Override
     public String toString() {

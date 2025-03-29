@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -45,6 +46,7 @@ public class DishComponentControllerIT {
 
     @Test
     @Order(1)
+    @WithUserDetails("basic")
     void getAll() throws Exception {
         MvcResult result = mockMvc.perform(get(baseUrl + "?dishId=1"))
                 .andDo(print())
@@ -83,6 +85,7 @@ public class DishComponentControllerIT {
 
     @Test
     @Order(2)
+    @WithUserDetails("basic")
     void getOne_success() throws Exception {
         Long id = 3L;
         MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", id))
@@ -103,6 +106,7 @@ public class DishComponentControllerIT {
 
     @Test
     @Order(3)
+    @WithUserDetails("basic")
     void getOne_notFound() throws Exception {
         Long id = 99L;
         mockMvc.perform(get(baseUrl + "/{id}", id))
@@ -111,6 +115,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_success() throws Exception {
         String requestJson = """
                 {
@@ -147,6 +152,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_failure_invalidFoodType() throws Exception {
         String requestJson = """
                 {
@@ -162,6 +168,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_failure_invalidDish() throws Exception {
         String requestJson = """
                 {
@@ -177,6 +184,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_success() throws Exception {
         String requestJson = """
                 {
@@ -212,6 +220,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_failure_notFound() throws Exception {
         String requestJson = """
                 {
@@ -228,6 +237,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_failure_badRequest() throws Exception {
         String requestJson = """
                 {
@@ -250,6 +260,7 @@ public class DishComponentControllerIT {
 
     @Test
     @Transactional
+    @WithUserDetails("basic")
     void delete_success() throws Exception {
 
         //WHEN the delete endpoint is called
@@ -264,6 +275,7 @@ public class DishComponentControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void delete_failure_notfound() throws Exception {
         mockMvc.perform(delete(baseUrl + "/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON))

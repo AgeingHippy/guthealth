@@ -4,12 +4,14 @@ import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.entity.Dish;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.DishRepository;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +30,18 @@ public class DishService {
         return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<DishDTOSimple> getDishes() {
-        List<DishDTOSimple> dishes = dtoMapper.mapList(dishRepository.findAll(), DishDTOSimple.class);
+    public List<DishDTOSimple> getDishes(UserPrinciple principle) {
+        List<DishDTOSimple> dishes = dtoMapper.mapList(
+                dishRepository.findAllByPrinciple(principle),
+                DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public DishDTOComplex createDish(DishDTOComplex dish) {
+    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple principle) {
         Dish newDish = dtoMapper.map(dish, Dish.class);
+
+        newDish.setPrinciple(principle);
 
         for (int i = 0; i < newDish.getDishComponents().size(); i++) {
             newDish.getDishComponents().get(i).setDish(newDish);

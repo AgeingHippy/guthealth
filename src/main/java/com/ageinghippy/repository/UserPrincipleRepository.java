@@ -1,14 +1,13 @@
 package com.ageinghippy.repository;
 
-import com.ageinghippy.model.entity.Dish;
 import com.ageinghippy.model.entity.UserPrinciple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface DishRepository extends JpaRepository<Dish, Long> {
+public interface UserPrincipleRepository extends JpaRepository<UserPrinciple, Long> {
 
-    List<Dish> findAllByPrinciple(UserPrinciple principle);
+    Optional<UserPrinciple> findByUsername(String username);
 }

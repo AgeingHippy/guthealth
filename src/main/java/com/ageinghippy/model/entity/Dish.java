@@ -1,5 +1,6 @@
 package com.ageinghippy.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,6 +37,11 @@ public class Dish implements Serializable {
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("dish")
     private List<DishComponent> dishComponents;
+
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private UserPrinciple principle;
 
     @Override
     public String toString() {

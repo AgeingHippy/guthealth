@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,6 +45,7 @@ public class DishControllerIT {
 
     @Test
     @Order(1)
+    @WithUserDetails("basic")
     void getAll() throws Exception {
         MvcResult result = mockMvc.perform(get(baseUrl))
                 .andDo(print())
@@ -73,6 +75,7 @@ public class DishControllerIT {
 
     @Test
     @Order(2)
+    @WithUserDetails("basic")
     void getOne_success() throws Exception {
         Long id = 3L;
         MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", id))
@@ -106,6 +109,7 @@ public class DishControllerIT {
 
     @Test
     @Order(3)
+    @WithUserDetails("basic")
     void getOne_notFound() throws Exception {
         Long id = 99L;
         mockMvc.perform(get(baseUrl + "/{id}", id))
@@ -114,6 +118,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_noDishComponents_success() throws Exception {
         String requestJson = """
                 {
@@ -151,9 +156,16 @@ public class DishControllerIT {
                         "SELECT name FROM Dish WHERE id = " + resultDto.id())
                 .getSingleResult().toString();
         assertEquals(fetchedName, "newDish");
+
+        //and verify dish has been created with principle_id = 2 ('basic' user)
+        Long principleId = (Long) entityManager.createQuery(
+                        "SELECT principle.id FROM Dish WHERE id = " + resultDto.id())
+                .getSingleResult();
+        assertEquals(2,principleId);
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_withDishComponents_success() throws Exception {
         String requestJson = """
                 {
@@ -227,6 +239,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_failure_alreadyExists() throws Exception {
         String requestJson = """
                 {
@@ -251,6 +264,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void create_failure_invalidPreparationTechnique() throws Exception {
         String requestJson = """
                 {
@@ -275,6 +289,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_success() throws Exception {
         String requestJson = """
                 {
@@ -323,6 +338,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_failure_notFound() throws Exception {
         String requestJson = """
                 {
@@ -338,6 +354,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void update_failure_badRequest() throws Exception {
         String requestJson = """
                 {
@@ -359,6 +376,7 @@ public class DishControllerIT {
 
     @Test
     @Transactional
+    @WithUserDetails("basic")
     void delete_success_noChildren() throws Exception {
 
         //WHEN the delete endpoint is called
@@ -374,6 +392,7 @@ public class DishControllerIT {
 
     @Test
     @Transactional
+    @WithUserDetails("basic")
     void delete_success_hasChildren() throws Exception {
 
         //WHEN the delete endpoint is called
@@ -392,6 +411,7 @@ public class DishControllerIT {
     }
 
     @Test
+    @WithUserDetails("basic")
     void delete_failure_notfound() throws Exception {
         mockMvc.perform(delete(baseUrl + "/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON))

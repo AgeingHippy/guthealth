@@ -4,6 +4,7 @@ import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@WithUserDetails("basic")
 public class FoodCategoryControllerIT {
 
     @Autowired
@@ -61,11 +64,11 @@ public class FoodCategoryControllerIT {
         List<String> foodCategoryNames = resultList.stream().map(FoodCategoryDTOSimple::name).toList();
 
         assertEquals(resultList.size(), 5);
-        assert (resultList.contains(new FoodCategoryDTOSimple(1L,"foodCategory1_name","Food Category one description")));
-        assert (resultList.contains(new FoodCategoryDTOSimple(2L,"foodCategory2_name","Food Category two description")));
-        assert (resultList.contains(new FoodCategoryDTOSimple(3L,"foodCategory3_name","Food Category three description")));
-        assert (resultList.contains(new FoodCategoryDTOSimple(4L,"foodCategory4_name","Food Category four description")));
-        assert (resultList.contains(new FoodCategoryDTOSimple(5L,"foodCategory5_name","Food Category five description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(1L, "foodCategory1_name", "Food Category one description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(2L, "foodCategory2_name", "Food Category two description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(3L, "foodCategory3_name", "Food Category three description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(4L, "foodCategory4_name", "Food Category four description")));
+        assert (resultList.contains(new FoodCategoryDTOSimple(5L, "foodCategory5_name", "Food Category five description")));
     }
 
     @Test
@@ -82,7 +85,7 @@ public class FoodCategoryControllerIT {
                 objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
 
         assertEquals(resultDto.name(), "foodCategory3_name");
-        assertEquals(resultDto.foodTypes().size(),4);
+        assertEquals(resultDto.foodTypes().size(), 4);
     }
 
     @Test
@@ -116,7 +119,7 @@ public class FoodCategoryControllerIT {
                 objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
         assertNotNull(resultDto.id());
         assertEquals(resultDto.name(), "anotherCategory");
-        assertEquals(resultDto.foodTypes().size(),0);
+        assertEquals(resultDto.foodTypes().size(), 0);
 
         //and verify category is in fact inserted into the database
         String fetchedName = entityManager.createQuery(
@@ -165,10 +168,10 @@ public class FoodCategoryControllerIT {
         //verify response is new category
         FoodCategoryDTOComplex resultDto =
                 objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
-        assertEquals(resultDto.id(),1L);
+        assertEquals(resultDto.id(), 1L);
         assertEquals(resultDto.name(), "foodCategory1_name_updated");
         assertEquals(resultDto.description(), "Updated description here");
-        assertEquals(resultDto.foodTypes().size(),5);
+        assertEquals(resultDto.foodTypes().size(), 5);
 
         //and verify category is in fact updated in the database
         String fetchedName = entityManager.createQuery(
@@ -217,13 +220,7 @@ public class FoodCategoryControllerIT {
     @Test
     @Transactional
     void delete_success() throws Exception {
-        //given a specific record exists in the database
-        entityManager.persist(FoodCategory.builder()
-                .name("testName")
-                .description("testDesc")
-                .build());
-
-        Long foodCategoryId = (Long) entityManager.createQuery("SELECT id FROM FoodCategory where name = 'testName'").getSingleResult();
+        Long foodCategoryId = (Long) entityManager.createQuery("SELECT id FROM FoodCategory where name = 'foodCategory5_name'").getSingleResult();
 
         //WHEN the delete endpoint is called
         mockMvc.perform(delete(baseUrl + "/{id}", foodCategoryId)
@@ -232,8 +229,8 @@ public class FoodCategoryControllerIT {
                 .andExpect(status().isNoContent());
 
         //and verify the record has been deleted from the database
-        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM FoodCategory where name = 'testName'").getSingleResult();
-        assertEquals(count,0L);
+        Long count = (Long) entityManager.createQuery("SELECT Count(*) FROM FoodCategory where name = 'foodCategory5_name'").getSingleResult();
+        assertEquals(count, 0L);
     }
 
     @Test

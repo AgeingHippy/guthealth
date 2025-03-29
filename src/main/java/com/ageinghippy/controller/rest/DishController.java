@@ -2,9 +2,12 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.DishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,21 +22,23 @@ public class DishController {
     private final DishService dishService;
 
     @GetMapping
-    public List<DishDTOSimple> getDishes() {
-        return dishService.getDishes();
+    public List<DishDTOSimple> getDishes(Authentication authentication) {
+        return dishService.getDishes((UserPrinciple) authentication.getPrincipal());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Dish','read')")
     public ResponseEntity<DishDTOComplex> getDish(@PathVariable Long id) {
         return ResponseEntity.ok(dishService.getDish(id));
     }
 
     @PostMapping
-    public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish, Authentication authentication) {
         if (dish.id() != null) {
             throw new IllegalArgumentException("Dish ID cannot be specified on new record");
         }
-        DishDTOComplex newDish = dishService.createDish(dish);
+        DishDTOComplex newDish = dishService.createDish(dish, (UserPrinciple) authentication.getPrincipal());
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -43,6 +48,7 @@ public class DishController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Dish','edit')")
     public ResponseEntity<DishDTOComplex> putDish(@RequestBody DishDTOSimple dish, @PathVariable Long id) {
         if (!id.equals(dish.id())) {
             throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
@@ -51,6 +57,7 @@ public class DishController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Dish','delete')")
     public ResponseEntity<String> deleteDish(@PathVariable Long id) {
         dishService.deleteDish(id);
         return ResponseEntity.noContent().build();
