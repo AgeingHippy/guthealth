@@ -6,6 +6,7 @@ import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class FoodTypeViewController {
     private final FoodCategoryService foodCategoryService;
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','read')")
     public String showFoodTypesView(Model model, @RequestParam Long foodCategoryId) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(foodCategoryId);
 
@@ -30,7 +32,8 @@ public class FoodTypeViewController {
     }
 
     @GetMapping("/new")
-    public String showNewFoodTypeView(Model model, @RequestParam(required = false) Long foodCategoryId) {
+    @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','edit')")
+    public String showNewFoodTypeView(Model model, @RequestParam Long foodCategoryId) {
         FoodTypeDTOComplex foodType =
                 new FoodTypeDTOComplex(
                         null,
@@ -46,6 +49,7 @@ public class FoodTypeViewController {
     }
 
     @RequestMapping("/delete/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','delete')")
     public String deleteFoodType(@PathVariable Long id) {
         Long foodCategoryId = foodTypeService.getFoodType(id).foodCategory().id();
 
@@ -55,6 +59,7 @@ public class FoodTypeViewController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(#foodType.foodCategory.id,'FoodCategory','edit')")
     public String createFoodType(@ModelAttribute FoodTypeDTOComplex foodType) {
         foodType = foodTypeService.createFoodType(foodType);
 
@@ -64,6 +69,7 @@ public class FoodTypeViewController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','edit')")
     public String showFoodTypeEditView(Model model, @PathVariable Long id) {
         FoodTypeDTOComplex foodType = foodTypeService.getFoodType(id);
         model.addAttribute("foodType",foodType);
@@ -72,6 +78,7 @@ public class FoodTypeViewController {
     }
 
     @PostMapping("/update/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','edit')")
     public String updateFoodType(@ModelAttribute FoodTypeDTOComplex foodType, @RequestParam Long id) {
         foodType = foodTypeService.updateFoodType(id, foodType);
 

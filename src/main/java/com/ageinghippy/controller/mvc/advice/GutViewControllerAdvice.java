@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,10 +31,10 @@ public class GutViewControllerAdvice {
         return modelAndView;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler({IllegalArgumentException.class, MissingServletRequestParameterException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ModelAndView noSuchElementExceptionResponse(HttpServletRequest request,
-                                                       IllegalArgumentException ex) {
+                                                       Exception ex) {
         log.warn(ex.getMessage());
 
         ModelAndView modelAndView = new ModelAndView();

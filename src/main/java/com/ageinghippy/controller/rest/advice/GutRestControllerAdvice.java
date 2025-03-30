@@ -5,6 +5,7 @@ import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,9 +24,10 @@ public class GutRestControllerAdvice {
         return new ResponseErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler({IllegalArgumentException.class,
+            MissingServletRequestParameterException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseErrorMessage illegalArgumentExceptionResponse(IllegalArgumentException ex) {
+    public ResponseErrorMessage badRequestResponse(Exception ex) {
         log.warn(ex.getMessage());
         return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, ex.getMessage());
     }

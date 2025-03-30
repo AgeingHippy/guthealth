@@ -52,7 +52,7 @@ public class FoodTypeControllerIT {
     @Test
     @Order(1)
     void getAll() throws Exception {
-        MvcResult result = mockMvc.perform(get(baseUrl))
+        MvcResult result = mockMvc.perform(get(baseUrl +"?foodCategoryId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -62,27 +62,25 @@ public class FoodTypeControllerIT {
                 objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertEquals(resultList.size(), 15);
+        assertEquals(resultList.size(), 5);
         //check a portion of the contents
         assert (resultList.contains(new FoodTypeDTOSimple(1L, "foodType1", "Food Type one Description")));
         assert (resultList.contains(new FoodTypeDTOSimple(2L, "foodType2", "Food Type two Description")));
         assert (resultList.contains(new FoodTypeDTOSimple(3L, "foodType3", "Food Type three Description")));
         assert (resultList.contains(new FoodTypeDTOSimple(4L, "foodType4", "Food Type four Description")));
         assert (resultList.contains(new FoodTypeDTOSimple(5L, "foodType5", "Food Type five Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(6L, "foodType6", "Food Type six Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(7L, "foodType7", "Food Type seven Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(8L, "foodType8", "Food Type eight Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(9L, "foodType9", "Food Type nine Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(10L, "foodType10", "Food Type ten Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(11L, "foodType11", "Food Type eleven Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(12L, "foodType12", "Food Type twelve Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(13L, "foodType13", "Food Type thirteen Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(14L, "foodType14", "Food Type fourteen Description")));
-        assert (resultList.contains(new FoodTypeDTOSimple(15L, "foodType15", "Food Type fifteen Description")));
     }
 
     @Test
     @Order(2)
+    void getAll_failure() throws Exception {
+        mockMvc.perform(get(baseUrl))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(3)
     void getOne_success() throws Exception {
         Long id = 3L;
         MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", id))
@@ -103,7 +101,7 @@ public class FoodTypeControllerIT {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void getOne_notFound() throws Exception {
         Long id = 99L;
         mockMvc.perform(get(baseUrl + "/{id}", id))
