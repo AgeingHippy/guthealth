@@ -11,9 +11,10 @@ import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class DishService {
     private final PreparationTechniqueRepository preparationTechniqueRepository;
     private final EntityManager entityManager;
     private final DTOMapper dtoMapper;
+    private final Validator validator;
 
     public DishDTOComplex getDish(Long id) {
         return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
@@ -57,6 +59,9 @@ public class DishService {
 
         //verify specified preparationTechnique exists
         preparationTechniqueRepository.findById(dish.getPreparationTechnique().getCode()).orElseThrow();
+
+        //validate
+        validator.validateObject(dish);
 
         dish = dishRepository.save(dish);
 
