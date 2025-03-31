@@ -98,10 +98,11 @@ VALUES
 	(2,2,'foodCategory2_name','Food Category two description'),
 	(3,2,'foodCategory3_name','Food Category three description'),
 	(4,2,'foodCategory4_name','Food Category four description'),
-	(5,2,'foodCategory5_name','Food Category five description');
+	(5,2,'foodCategory5_name','Food Category five description'),
+	(6,1,'foodCategory6_name','Food Category six description');
 /*!40000 ALTER TABLE `food_category` ENABLE KEYS */;
 
-ALTER TABLE food_category AUTO_INCREMENT = 6;
+ALTER TABLE food_category AUTO_INCREMENT = 7;
 
 --
 -- Dumping data for table `food_type`
@@ -126,12 +127,13 @@ VALUES
     (12,4,'foodType12','Food Type twelve Description'),
     (13,4,'foodType13','Food Type thirteen Description'),
     (14,4,'foodType14','Food Type fourteen Description'),
-    (15,4,'foodType15','Food Type fifteen Description');
+    (15,4,'foodType15','Food Type fifteen Description'),
+    (16,6,'foodType16','Food Type sixteen Description');
 
 
 /*!40000 ALTER TABLE `food_type` ENABLE KEYS */;
 
-ALTER TABLE `food_type` AUTO_INCREMENT=16;
+ALTER TABLE `food_type` AUTO_INCREMENT=17;
 
 --
 -- Dumping data for table `dish`

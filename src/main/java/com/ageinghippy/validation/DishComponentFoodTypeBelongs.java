@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target( ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DishComponentFoodTypeBelongs {
-    String message() default "record owner remains consistent";
+    String message() default "A specified foodType belongs to a different user";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

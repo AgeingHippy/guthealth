@@ -9,14 +9,15 @@ import com.ageinghippy.repository.DishRepository;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
+import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -60,8 +61,11 @@ public class DishService {
         //verify specified preparationTechnique exists
         preparationTechniqueRepository.findById(dish.getPreparationTechnique().getCode()).orElseThrow();
 
-        //validate
-        validator.validateObject(dish);
+        //validate dish
+        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(dish);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException("constraintViolations", constraintViolations);
+        }
 
         dish = dishRepository.save(dish);
 

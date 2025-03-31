@@ -1,5 +1,6 @@
 package com.ageinghippy.controller.rest.advice;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,6 +38,14 @@ public class GutRestControllerAdvice {
     public ResponseErrorMessage integrityViolationResponse(Exception ex) {
         log.warn(ex.getMessage());
         return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, "Data Integrity Violation");
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseErrorMessage constraintViolationExceptionResponse(ConstraintViolationException ex) {
+        log.warn(ex.getMessage());
+        //todo - make response more informative
+        return new ResponseErrorMessage(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
