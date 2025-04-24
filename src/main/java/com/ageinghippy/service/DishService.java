@@ -1,5 +1,6 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
@@ -33,18 +34,18 @@ public class DishService {
         return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<DishDTOSimple> getDishes(UserPrinciple principle) {
+    public List<DishDTOSimple> getDishes(UserPrinciple userPrinciple) {
         List<DishDTOSimple> dishes = dtoMapper.mapList(
-                dishRepository.findAllByPrinciple(principle),
+                dishRepository.findAllByPrinciple(userPrinciple),
                 DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple principle) {
+    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple userPrinciple) {
         Dish newDish = dtoMapper.map(dish, Dish.class);
 
-        newDish.setPrinciple(principle);
+        newDish.setPrinciple(userPrinciple);
 
         for (int i = 0; i < newDish.getDishComponents().size(); i++) {
             newDish.getDishComponents().get(i).setDish(newDish);

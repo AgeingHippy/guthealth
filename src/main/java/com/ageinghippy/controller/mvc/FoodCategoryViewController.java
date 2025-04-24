@@ -1,8 +1,8 @@
 package com.ageinghippy.controller.mvc;
 
+import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,8 @@ public class FoodCategoryViewController {
 
     @GetMapping("")
     public String showFoodCategories(Model model, Authentication authentication) {
-        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories((UserPrinciple) authentication.getPrincipal());
+        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories(customUserPrincipal.getUserPrinciple());
 
         model.addAttribute("foodCategories", foodCategories);
 
@@ -64,7 +65,8 @@ public class FoodCategoryViewController {
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
                                      @RequestParam Optional<Boolean> addFoodTypes,
                                      Authentication authentication) {
-        Long id = foodCategoryService.createFoodCategory(foodCategory,(UserPrinciple) authentication.getPrincipal()).id();
+        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+        Long id = foodCategoryService.createFoodCategory(foodCategory,customUserPrincipal.getUserPrinciple()).id();
 
         //todo - redirect to edit to allow addition of new food types?
         if (addFoodTypes.orElseGet(() -> false)) {

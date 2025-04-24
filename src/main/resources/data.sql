@@ -46,11 +46,11 @@ ALTER TABLE `user_meta` AUTO_INCREMENT=4;
 /*!40000 ALTER TABLE `principle` DISABLE KEYS */;
 
 INSERT INTO principle
-    (id, username, password, user_meta_id)
+    (id, username, password, oauth2_provider, user_meta_id)
 VALUES
-    (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', 1),
-    (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', 2),
-    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', 3);
+    (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', null, 1),
+    (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', null, 2),
+    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', null, 3);
 
 /*!40000 ALTER TABLE `principle` ENABLE KEYS */;
 ALTER TABLE `principle` AUTO_INCREMENT=4;

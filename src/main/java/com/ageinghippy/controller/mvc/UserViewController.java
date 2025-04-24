@@ -27,7 +27,7 @@ public class UserViewController {
 
     @PostMapping("/create")
     public String createNewUser(@ModelAttribute UserPrinciple userPrinciple, Model model) {
-        userPrinciple = userPrincipleService.createUser(userPrinciple);
+        userPrinciple = userPrincipleService.createPasswordUser(userPrinciple);
 
         model.addAttribute("username",userPrinciple.getUsername());
 
