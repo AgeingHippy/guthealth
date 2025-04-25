@@ -1,9 +1,11 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.RoleRepository;
 import com.ageinghippy.repository.UserMetaRepository;
 import com.ageinghippy.repository.UserPrincipleRepository;
+import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +38,13 @@ public class UserPrincipleService {
     }
 
     @Transactional
+    public UserPrinciple updatePassword(UserPrinciple userPrinciple, String password) {
+        userPrinciple.setPassword(passwordEncoder.encode(password));
+
+        return saveUserPrinciple(userPrinciple);
+    }
+
+    @Transactional
     public UserPrinciple createOauth2User(UserPrinciple userPrinciple) {
 
         return createUser(userPrinciple);
@@ -45,12 +54,25 @@ public class UserPrincipleService {
     public UserPrinciple createUser(UserPrinciple userPrinciple) {
         userPrinciple.setAuthorities(List.of(roleRepository.findByAuthority("ROLE_USER").orElseThrow()));
 
+        return saveUserPrinciple(userPrinciple);
+    }
+
+    private UserPrinciple saveUserPrinciple(UserPrinciple userPrinciple) {
         userMetaRepository.save(userPrinciple.getUserMeta());
         userPrincipleRepository.save(userPrinciple);
 
         entityManager.flush();
-        entityManager.refresh(userPrinciple);
+        entityManager.refresh(entityManager.merge(userPrinciple));
 
         return userPrinciple;
+    }
+
+    @Transactional
+    public UserPrinciple updateUserMeta(UserPrinciple userPrinciple, UserMeta userMeta) {
+        userPrinciple.getUserMeta().setName(Util.valueIfNull(userMeta.getName(), userPrinciple.getUserMeta().getName()));
+        userPrinciple.getUserMeta().setEmail(Util.valueIfNull(userMeta.getEmail(), userPrinciple.getUserMeta().getEmail()));
+        userPrinciple.getUserMeta().setBio(Util.valueIfNull(userMeta.getBio(), userPrinciple.getUserMeta().getBio()));
+
+        return saveUserPrinciple(userPrinciple);
     }
 }

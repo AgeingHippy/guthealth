@@ -34,10 +34,14 @@
                         </a>
                     </li>
                     <li th:if="${#authorization.expression('isAuthenticated()')}">
-                        <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">
+                        <a th:href="@{/logout}">
                             <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
                         </a>
-                        <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>
+                        <a th:href="@{/user/profile}">
+                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Profile
+                        </a>
+
+<!--                        <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>-->
                     </li>
                 </ul>
 
