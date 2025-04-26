@@ -3,9 +3,9 @@
 --
 CREATE TABLE IF NOT EXISTS `user_meta` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `bio` VARCHAR(500) NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255),
+  `bio` VARCHAR(500),
   PRIMARY KEY (`id`)
 );
 
@@ -14,8 +14,9 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
 --
 CREATE TABLE IF NOT EXISTS `principle` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(16) NOT NULL,
-  `password` VARCHAR(100) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(100),
+  `oauth2_provider` VARCHAR(100),
   `user_meta_id` INT NOT NULL,
   `account_non_expired` TINYINT NOT NULL DEFAULT 1,
   `account_non_locked` TINYINT NOT NULL DEFAULT 1,
@@ -148,9 +149,12 @@ DROP TABLE IF EXISTS `meal`;
 
 CREATE TABLE `meal` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `principle_id` int NOT NULL,
+  `description` varchar(200),
   `date` date NOT NULL,
   `time` time NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_meal_principle_idx` (`principle_id`)
 );
 
 --

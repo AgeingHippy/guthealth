@@ -1,5 +1,6 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
@@ -9,13 +10,15 @@ import com.ageinghippy.repository.DishRepository;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
+import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,23 +28,24 @@ public class DishService {
     private final PreparationTechniqueRepository preparationTechniqueRepository;
     private final EntityManager entityManager;
     private final DTOMapper dtoMapper;
+    private final Validator validator;
 
     public DishDTOComplex getDish(Long id) {
         return dtoMapper.map(dishRepository.findById(id).orElseThrow(), DishDTOComplex.class);
     }
 
-    public List<DishDTOSimple> getDishes(UserPrinciple principle) {
+    public List<DishDTOSimple> getDishes(UserPrinciple userPrinciple) {
         List<DishDTOSimple> dishes = dtoMapper.mapList(
-                dishRepository.findAllByPrinciple(principle),
+                dishRepository.findAllByPrinciple(userPrinciple),
                 DishDTOSimple.class);
         return dishes;
     }
 
     @Transactional
-    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple principle) {
+    public DishDTOComplex createDish(DishDTOComplex dish, UserPrinciple userPrinciple) {
         Dish newDish = dtoMapper.map(dish, Dish.class);
 
-        newDish.setPrinciple(principle);
+        newDish.setPrinciple(userPrinciple);
 
         for (int i = 0; i < newDish.getDishComponents().size(); i++) {
             newDish.getDishComponents().get(i).setDish(newDish);
@@ -57,6 +61,12 @@ public class DishService {
 
         //verify specified preparationTechnique exists
         preparationTechniqueRepository.findById(dish.getPreparationTechnique().getCode()).orElseThrow();
+
+        //validate dish
+        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(dish);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException("constraintViolations", constraintViolations);
+        }
 
         dish = dishRepository.save(dish);
 

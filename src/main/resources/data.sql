@@ -46,11 +46,11 @@ ALTER TABLE `user_meta` AUTO_INCREMENT=4;
 /*!40000 ALTER TABLE `principle` DISABLE KEYS */;
 
 INSERT INTO principle
-    (id, username, password, user_meta_id)
+    (id, username, password, oauth2_provider, user_meta_id)
 VALUES
-    (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', 1),
-    (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', 2),
-    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', 3);
+    (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', null, 1),
+    (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', null, 2),
+    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', null, 3);
 
 /*!40000 ALTER TABLE `principle` ENABLE KEYS */;
 ALTER TABLE `principle` AUTO_INCREMENT=4;
@@ -98,10 +98,11 @@ VALUES
 	(2,2,'foodCategory2_name','Food Category two description'),
 	(3,2,'foodCategory3_name','Food Category three description'),
 	(4,2,'foodCategory4_name','Food Category four description'),
-	(5,2,'foodCategory5_name','Food Category five description');
+	(5,2,'foodCategory5_name','Food Category five description'),
+	(6,1,'foodCategory6_name','Food Category six description');
 /*!40000 ALTER TABLE `food_category` ENABLE KEYS */;
 
-ALTER TABLE food_category AUTO_INCREMENT = 6;
+ALTER TABLE food_category AUTO_INCREMENT = 7;
 
 --
 -- Dumping data for table `food_type`
@@ -126,12 +127,13 @@ VALUES
     (12,4,'foodType12','Food Type twelve Description'),
     (13,4,'foodType13','Food Type thirteen Description'),
     (14,4,'foodType14','Food Type fourteen Description'),
-    (15,4,'foodType15','Food Type fifteen Description');
+    (15,4,'foodType15','Food Type fifteen Description'),
+    (16,6,'foodType16','Food Type sixteen Description');
 
 
 /*!40000 ALTER TABLE `food_type` ENABLE KEYS */;
 
-ALTER TABLE `food_type` AUTO_INCREMENT=16;
+ALTER TABLE `food_type` AUTO_INCREMENT=17;
 
 --
 -- Dumping data for table `dish`
@@ -184,13 +186,13 @@ ALTER TABLE `dish_component` AUTO_INCREMENT=28;
 /*!40000 ALTER TABLE `meal` DISABLE KEYS */;
 INSERT
 INTO `meal`
-    (id, date, time)
+    (id, principle_id, date, time)
 VALUES
-    (1,'2024-12-02','20:15:00'),
-    (2,'2024-12-20','13:30:00'),
-    (3,'2024-12-03','21:30:00'),
-    (4,'2024-12-08','13:00:00'),
-    (5,'2024-12-08','14:00:00');
+    (1, 2,'2024-12-02','20:15:00'),
+    (2, 2,'2024-12-20','13:30:00'),
+    (3, 2,'2024-12-03','21:30:00'),
+    (4, 2,'2024-12-08','13:00:00'),
+    (5, 2,'2024-12-08','14:00:00');
 /*!40000 ALTER TABLE `meal` ENABLE KEYS */;
 
 ALTER TABLE `meal`AUTO_INCREMENT=6;

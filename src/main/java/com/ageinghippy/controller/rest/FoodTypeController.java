@@ -22,7 +22,7 @@ public class FoodTypeController {
 
     @GetMapping
     //todo - is there value in this call? - content could become overwhelming and meaningless.... Add foodCategoryId path parameter?
-    public List<FoodTypeDTOSimple> getFoodTypes(@PathVariable(required = false) Long foodCategoryId) {
+    public List<FoodTypeDTOSimple> getFoodTypes(@RequestParam(required = true) Long foodCategoryId) {
         List<FoodTypeDTOSimple> foodTypes;
         if (foodCategoryId != null) {
             foodTypes = foodTypeService.getFoodTypes(foodCategoryId);

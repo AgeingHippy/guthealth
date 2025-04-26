@@ -1,5 +1,6 @@
 package com.ageinghippy.model.entity;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class UserMeta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
 
     private String email;

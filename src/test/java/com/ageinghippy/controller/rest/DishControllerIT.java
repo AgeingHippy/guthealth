@@ -240,6 +240,40 @@ public class DishControllerIT {
 
     @Test
     @WithUserDetails("basic")
+    void create_withDishComponents_failure_invalidFoodTypeOwner() throws Exception {
+        //foodType16 belongs to a different user
+        String requestJson = """
+                {
+                  "name":"newDish3",
+                  "description":"newDish3 description",
+                  "preparationTechnique": {
+                    "code": "PrepType2"
+                  },
+                  "dishComponents" : [
+                    {
+                        "foodType": {"id":1},
+                        "proportion":100
+                    },
+                    {
+                        "foodType": {"id":3},
+                        "proportion":30
+                    },
+                    {
+                        "foodType": {"id":16},
+                        "proportion":5
+                    }
+                  ]
+                }""";
+
+        mockMvc.perform(post(baseUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithUserDetails("basic")
     void create_failure_alreadyExists() throws Exception {
         String requestJson = """
                 {

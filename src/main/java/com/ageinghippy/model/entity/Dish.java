@@ -1,5 +1,6 @@
 package com.ageinghippy.model.entity;
 
+import com.ageinghippy.validation.DishComponentFoodTypeBelongs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@DishComponentFoodTypeBelongs
 public class Dish implements Serializable {
 
     @Serial

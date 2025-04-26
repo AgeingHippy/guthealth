@@ -19,6 +19,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
+                        .requestMatchers("/test/**").permitAll() //todo remove!!!
                         .requestMatchers("/", "/home", "/index").permitAll()
                         .requestMatchers("/user/new", "/user/create").anonymous()
                         .requestMatchers("/api/**").authenticated()

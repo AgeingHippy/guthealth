@@ -19,10 +19,12 @@ public class UserPrinciple implements UserDetails {
     public UserPrinciple(
             String username,
             String password,
+            String oauth2Provider,
             List<Role> authorities,
             UserMeta userMeta) {
         this.username = username;
         this.password = password;
+        this.oauth2Provider = oauth2Provider;
         this.authorities = authorities;
         this.userMeta = userMeta;
     }
@@ -34,9 +36,13 @@ public class UserPrinciple implements UserDetails {
     @NotNull
     private String username;
 
-    @NotNull
+    //todo - add custom validation that exactly one of password and oauthProvider must be not null
     @JsonIgnore
     private String password;
+
+    @JsonIgnore
+    @Column(name = "oauth2_provider")
+    private String oauth2Provider;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     private UserMeta userMeta;
