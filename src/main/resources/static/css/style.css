@@ -1,3 +1,17 @@
 span.input-group-text {
     width: 150px;
 }
+
+.center {
+    display :grid;
+    place-items: center;
+}
+
+.body-content {
+    width: 50%;
+    min-width: 600px;
+}
+
+.full-width {
+    width:100%;
+}
