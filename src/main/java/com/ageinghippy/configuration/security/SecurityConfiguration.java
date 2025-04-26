@@ -21,13 +21,19 @@ public class SecurityConfiguration {
                         .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
                         .requestMatchers("/test/**").permitAll() //todo remove!!!
                         .requestMatchers("/", "/home", "/index").permitAll()
-                        .requestMatchers("/user/new", "/user/create").anonymous()
+                        .requestMatchers("/user/new", "/user/create", "/login").anonymous()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .oauth2Login(oauth -> oauth.defaultSuccessUrl("/index"))
-                .formLogin(Customizer.withDefaults());
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/user/profile")
+                        .permitAll())
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/user/profile")
+                        .permitAll());
 
         http.headers().frameOptions().disable(); //todo remove - for h2 access!!!
 

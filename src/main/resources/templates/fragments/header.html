@@ -7,7 +7,8 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" th:href="@{/index}">
-                    <img th:src="@{/images/gutHealth.jpg}" alt="guthealth logo" width="30" height="30" class="rounded-pill"/>
+                    <img th:src="@{/images/gutHealth.jpg}" alt="guthealth logo" width="30" height="30"
+                         class="rounded-pill"/>
                 </a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
@@ -28,20 +29,14 @@
                 </ul>
 
                 <ul class="nav navbar-nav ms-auto">
-                    <li th:if="${#authorization.expression('!isAuthenticated()')}">
-                        <a href="/login" th:href="@{/login}">
-                            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;Sign in
-                        </a>
+                    <li th:if="${#authorization.expression('!isAuthenticated()')}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}">Sign in</a>
                     </li>
-                    <li th:if="${#authorization.expression('isAuthenticated()')}">
-                        <a th:href="@{/logout}">
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
-                        </a>
-                        <a th:href="@{/user/profile}">
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Profile
-                        </a>
-
-<!--                        <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>-->
+                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    </li>
+                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item">
+                        <a class="nav-link" th:href="@{/user/profile}">Profile</a>
                     </li>
                 </ul>
 
