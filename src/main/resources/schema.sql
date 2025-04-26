@@ -149,9 +149,12 @@ DROP TABLE IF EXISTS `meal`;
 
 CREATE TABLE `meal` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `principle_id` int NOT NULL,
+  `description` varchar(200),
   `date` date NOT NULL,
   `time` time NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_meal_principle_idx` (`principle_id`)
 );
 
 --

@@ -186,13 +186,13 @@ ALTER TABLE `dish_component` AUTO_INCREMENT=28;
 /*!40000 ALTER TABLE `meal` DISABLE KEYS */;
 INSERT
 INTO `meal`
-    (id, date, time)
+    (id, principle_id, date, time)
 VALUES
-    (1,'2024-12-02','20:15:00'),
-    (2,'2024-12-20','13:30:00'),
-    (3,'2024-12-03','21:30:00'),
-    (4,'2024-12-08','13:00:00'),
-    (5,'2024-12-08','14:00:00');
+    (1, 2,'2024-12-02','20:15:00'),
+    (2, 2,'2024-12-20','13:30:00'),
+    (3, 2,'2024-12-03','21:30:00'),
+    (4, 2,'2024-12-08','13:00:00'),
+    (5, 2,'2024-12-08','14:00:00');
 /*!40000 ALTER TABLE `meal` ENABLE KEYS */;
 
 ALTER TABLE `meal`AUTO_INCREMENT=6;

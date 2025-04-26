@@ -58,11 +58,16 @@ public class UserPrincipleService {
     }
 
     private UserPrinciple saveUserPrinciple(UserPrinciple userPrinciple) {
+        boolean newUser = userPrinciple.getId() == null;
         userMetaRepository.save(userPrinciple.getUserMeta());
         userPrincipleRepository.save(userPrinciple);
 
         entityManager.flush();
-        entityManager.refresh(entityManager.merge(userPrinciple));
+        if (!newUser) {
+            entityManager.refresh(entityManager.merge(userPrinciple));
+        } else {
+            entityManager.refresh(userPrinciple);
+        }
 
         return userPrinciple;
     }

@@ -40,8 +40,8 @@ public class DataLoader implements CommandLineRunner {
                             .build());
             UserPrinciple basicUser = userPrincipleRepository.save(
                     UserPrinciple.builder()
-                            .username("user")
-                            .password(passwordEncoder.encode("user"))
+                            .username("basic")
+                            .password(passwordEncoder.encode("basic"))
                             .authorities(List.of(userRole))
                             .userMeta(UserMeta.builder().name("Bill").email("bill@home.com").build())
                             .build());
