@@ -30,8 +30,10 @@
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Preparation Technique:</span>
-                    <input type="text" class="form-control" id="preparationTechnique.code"
-                           th:field="*{preparationTechnique.code}" required>
+                    <select class="form-select" id="preparationTechnique.code"
+                            th:field="*{preparationTechnique.code}" required>
+<!--                        <option value=""></option>-->
+                    </select>
                     <div class="invalid-feedback">This field is required</div>
                 </div>
                 <button class="col-3" type="submit">Save</button>
@@ -39,6 +41,16 @@
         </div>
 
     </div>
+
+    <script type="text/javascript"  th:inline="javascript">
+        /*<![CDATA[*/
+            let preparationTechniqueList = /*[[${preparationTechniques}]]*/ [];
+        /*]]>*/
+
+        window.onload = function () {
+            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false);
+        }
+    </script>
 
 </div>
 

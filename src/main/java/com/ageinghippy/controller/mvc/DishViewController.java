@@ -5,6 +5,9 @@ import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.DishService;
+import com.ageinghippy.service.PreparationTechniqueService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +24,7 @@ import java.util.List;
 @Slf4j
 public class DishViewController {
     private final DishService dishService;
+    private final PreparationTechniqueService preparationTechniqueService;
 
     @GetMapping
     public String showAllDishes(Model model, Authentication authentication) {
@@ -44,10 +48,13 @@ public class DishViewController {
 
     @GetMapping("/new")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    public String showDishNewView(Model model) {
+    public String showDishNewView(Model model) throws JsonProcessingException {
         model.addAttribute("dish",
                 new DishDTOSimple(null, null, null,
                         new PreparationTechniqueDTO(null, null)));
+
+        model.addAttribute("preparationTechniques",
+                preparationTechniqueService.getPreparationTechniques());
 
         return "/dish-new";
     }
@@ -67,6 +74,9 @@ public class DishViewController {
         DishDTOComplex dish = dishService.getDish(id);
 
         model.addAttribute("dish", dish);
+        model.addAttribute("preparationTechniques",
+                preparationTechniqueService.getPreparationTechniques());
+
 
         return "/dish-edit";
     }
