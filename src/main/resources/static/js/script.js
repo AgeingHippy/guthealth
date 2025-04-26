@@ -6,7 +6,8 @@ function buildSelectOptions(
   collection, //Array containing list of objects to use to populate dropdown
   valueProp,  //name of the object property to assign to value when selected
   textProp,   //name of property to display in dropdown
-  allowNull   //allow null selection - create first selection as empty string
+  allowNull,  //allow null selection - create first selection as empty string
+  preselectedValue //current selected value, if any
 ) {
   let select = document.getElementById(selectId);
   let selection = [];
@@ -22,6 +23,9 @@ function buildSelectOptions(
     let item = document.createElement("option");
     item.setAttribute("value", element[valueProp]);
     item.innerText = element[textProp];
+    if (element[valueProp] == preselectedValue) {
+      item.setAttribute("selected","");
+    }
     selection.push(item);
   });
 
