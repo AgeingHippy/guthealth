@@ -56,4 +56,5 @@ public class UserViewController {
 
         return "redirect:/user/profile";
     }
+
 }

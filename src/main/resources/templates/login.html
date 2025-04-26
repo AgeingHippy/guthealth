@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="">
+        <div th:if="${param.error}" class="alert alert-error">
+            Invalid username and password.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            You have been logged out.
+        </div>
+
+        <div id="basic-login" class="content">
+            <h2>Please sign in</h2>
+            <form id="basic-login-form" class="login-form"
+                  th:action="@{/login}"
+                  method="post">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Username:</span>
+                    <input type="text" class="form-control"
+                           id="username" name="username"
+                           autocomplete="off"
+                           required>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Password:</span>
+                    <input type="password" class="form-control"
+                           id="password" name="password"
+                           autocomplete="off"
+                           required>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary full-width text-center">Log In</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="oauth2-login">
+            <h2>Login with OAuth 2.0</h2>
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <td>
+                        <a href="/oauth2/authorization/github"  class="btn btn-secondary full-width text-center">GitHub</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="/oauth2/authorization/google" class="btn btn-secondary full-width text-center">Google</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="register-new-user">
+            <a th:href="@{/user/new}">Register new User</a>
+        </div>
+
+    </div>
+
+
+</div>
+
+</body>
+</html>

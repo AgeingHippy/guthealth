@@ -21,5 +21,11 @@ public class ApplicationViewController {
         return "/index";
     }
 
+    @GetMapping("/login")
+    public String signIn(Model model) {
+
+        return "/login";
+    }
+
 
 }
