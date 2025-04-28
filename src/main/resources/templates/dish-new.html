@@ -42,13 +42,15 @@
 
     </div>
 
-    <script type="text/javascript"  th:inline="javascript">
-        /*<![CDATA[*/
-            let preparationTechniqueList = /*[[${preparationTechniques}]]*/ [];
-        /*]]>*/
+    <script>
+
+        async function initialisePreparationTechniqueSelect() {
+            const preparationTechniqueList = await fetchSelectOptions(preparationTechniquesUri);
+            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false);
+        }
 
         window.onload = function () {
-            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false);
+            initialisePreparationTechniqueSelect();
         }
     </script>
 

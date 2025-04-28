@@ -1,6 +1,6 @@
-//
+//###########################################################################
 //          Build selection options for a dropdown list
-//
+//###########################################################################
 function buildSelectOptions(
   selectId,   //id of HTML select component
   collection, //Array containing list of objects to use to populate dropdown
@@ -31,3 +31,13 @@ function buildSelectOptions(
 
   select.replaceChildren(...selection);
 }
+
+//###########################################################################
+//            Fetch a collection of data from the server and return
+//###########################################################################
+async function fetchSelectOptions(uri) {
+    let response = await fetch(uri);
+    let resultSet = await response.json();
+    return resultSet;
+}
+
