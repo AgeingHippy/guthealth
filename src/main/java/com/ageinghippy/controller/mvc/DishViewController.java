@@ -5,7 +5,6 @@ import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.DishService;
-import com.ageinghippy.service.PreparationTechniqueService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

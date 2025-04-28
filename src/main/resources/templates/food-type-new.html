@@ -13,23 +13,44 @@
     <div>
         <form action="#" th:action="@{'/food-type/create'}"
               th:object="${foodType}" method="post">
-            <div class="mb-3">
-                <label for="foodCategory.id" class="col-form-label">Food Category:</label>
-                <input type="text" class="form-control" id="foodCategory.id" th:field="*{foodCategory.id}"
-                       required="true">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Food Category:</span>
+                <select class="form-select" id="foodCategory.id"
+                        th:field="*{foodCategory.id}" required>
+<!--                        <option value=""></option>-->
+                </select>
+                <div class="invalid-feedback">This field is required</div>
             </div>
-            <div class="mb-3">
-                <label for="name" class="col-form-label">Name:</label>
-                <input type="text" class="form-control" id="name" th:field="*{name}" required="true">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name:</span>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <div class="invalid-feedback">This field is required</div>
             </div>
-            <div class="mb-3">
-                <label for="description" class="col-form-label">Description:</label>
-                <input type="text" class="form-control" id="description" th:field="*{description}" required="true">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Description:</span>
+                <input type="text" class="form-control" id="description" th:field="*{description}" required>
+                <div class="invalid-feedback">This field is required</div>
             </div>
+
             <div class="row">
                 <button class="col-3" type="submit">Save</button>
             </div>
         </form>
+
+        <script>
+            async function initialiseFoodCategorySelect() {
+                const selectedFoodCategory = "[[${foodType.foodCategory.id}]]";
+                const foodCategoriesList = await fetchSelectOptions(foodCategoriesUri);
+                buildSelectOptions("foodCategory.id",foodCategoriesList, "id","name",false,selectedFoodCategory);
+            }
+
+            window.onload = function () {
+                initialiseFoodCategorySelect();
+            }
+        </script>
+
     </div>
 
 
