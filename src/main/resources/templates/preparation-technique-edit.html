@@ -11,17 +11,23 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div>
+        <h1>Preparation Technique</h1>
         <form action="#" th:action="@{'/preparation-technique/update/' + ${preparationTechnique.code}}"
               th:object="${preparationTechnique}" method="post">
-            <div class="mb-3">
-                <label for="code" class="col-form-label">Code:</label>
-                <input type="text" class="form-control" id="code" th:field="*{code}" readonly>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Code:</span>
+                <input type="text" class="form-control"
+                       id="code" th:field="*{code}"
+                       required>
             </div>
-            <div class="mb-3">
-                <label for="description" class="col-form-label">Description:</label>
-                <input type="text" class="form-control" id="description" th:field="*{description}"  required="true">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Description:</span>
+                <input type="text" class="form-control"
+                       id="description" th:field="*{description}"
+                       required>
             </div>
-            <button type="submit">Save</button>
+            <button type="submit" class="col-3 btn btn-primary">Save</button>
         </form>
     </div>
 

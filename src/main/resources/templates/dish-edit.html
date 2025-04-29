@@ -34,11 +34,13 @@
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Preparation Technique:</span>
-                    <input type="text" class="form-control" id="preparationTechnique.code"
-                           th:field="*{preparationTechnique.code}" required>
+                    <select class="form-select" id="preparationTechnique.code"
+                            th:field="*{preparationTechnique.code}" required>
+                        <!--                        <option value=""></option>-->
+                    </select>
                     <div class="invalid-feedback">This field is required</div>
                 </div>
-                <button class="col-3" type="submit">Save</button>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </form>
         </div>
 
@@ -75,10 +77,23 @@
                 </tbody>
             </table>
             <a th:href="@{'/dish-component/new?dishId=' + ${dish.id}}">
-                <button type="button" class="btn btn-primary">Add New</button>
+                <button type="button" class="col-3 btn btn-primary">Add New</button>
             </a>
         </div>
     </div>
+
+    <script>
+
+        async function initialisePreparationTechniqueSelect() {
+            let preSelected = "[[${dish.preparationTechnique.code}]]";
+            const preparationTechniqueList = await fetchSelectOptions(preparationTechniquesUri);
+            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false,preSelected);
+        }
+
+        window.onload = function () {
+            initialisePreparationTechniqueSelect();
+        }
+    </script>
 
 </div>
 

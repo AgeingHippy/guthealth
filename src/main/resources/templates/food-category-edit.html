@@ -10,28 +10,65 @@
 
 <div layout:fragment="content" th:remove="tag">
 
-    <div>
+    <div id="food-category-detail">
+        <p/>
+        <h4>Food Category</h4>
+        <p/>
         <form action="#" th:action="@{'/food-category/update/' + ${foodCategory.id}}"
               th:object="${foodCategory}" method="post">
-            <div class="mb-3">
-                <label for="id" class="col-form-label">ID:</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">ID:</span>
                 <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
             </div>
-            <div class="mb-3">
-                <label for="name" class="col-form-label">Name:</label>
-                <input type="text" class="form-control" id="name" th:field="*{name}"  required="true">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name:</span>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <div class="invalid-feedback">This field is required</div>
             </div>
-            <div class="mb-3">
-                <label for="description" class="col-form-label">Description:</label>
-                <input type="text" class="form-control" id="description" th:field="*{description}"  required="true">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Description:</span>
+                <input type="text" class="form-control" id="description" th:field="*{description}" required>
+                <div class="invalid-feedback">This field is required</div>
             </div>
-            <div class="row">
-                <button class="col-3" type="submit">Save</button>
-                <button class="col-3" type="submit"
-                        th:formaction="@{'/food-category/update/' + ${foodCategory.id} + '?addFoodTypes=true'}">Save and Add Food Types
-                </button>
+            <div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </div>
         </form>
+
+        <div id="food-types">
+            <p/>
+            <h4>Food Types</h4>
+            <p/>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="foodType : ${foodCategory.foodTypes}">
+                    <td th:text="${foodType.id}">></td>
+                    <td th:text="${foodType.name}"></td>
+                    <td th:text="${foodType.description}"></td>
+                    <td>
+                        <a th:href="@{'/food-type/edit/' + ${foodType.id}}" class="icon-link">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a th:href="@{'/food-type/delete/' + ${foodType.id}}" class="icon-link">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a th:href="@{'/food-type/new?foodCategoryId=' + ${foodCategory.id}}">
+                <button type="button" class="col-3 btn btn-primary">Add New</button>
+            </a>
+        </div>
     </div>
 
 

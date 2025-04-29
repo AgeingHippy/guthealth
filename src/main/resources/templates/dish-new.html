@@ -12,7 +12,7 @@
 
     <div class="container">
         <p/>
-        <h1>Dish</h1>
+        <h1>Create new Dish</h1>
         <p/>
 
         <div id="dishDetail">
@@ -30,15 +30,29 @@
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Preparation Technique:</span>
-                    <input type="text" class="form-control" id="preparationTechnique.code"
-                           th:field="*{preparationTechnique.code}" required>
+                    <select class="form-select" id="preparationTechnique.code"
+                            th:field="*{preparationTechnique.code}" required>
+<!--                        <option value=""></option>-->
+                    </select>
                     <div class="invalid-feedback">This field is required</div>
                 </div>
-                <button class="col-3" type="submit">Save</button>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </form>
         </div>
 
     </div>
+
+    <script>
+
+        async function initialisePreparationTechniqueSelect() {
+            const preparationTechniqueList = await fetchSelectOptions(preparationTechniquesUri);
+            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false);
+        }
+
+        window.onload = function () {
+            initialisePreparationTechniqueSelect();
+        }
+    </script>
 
 </div>
 

@@ -154,7 +154,8 @@ CREATE TABLE `meal` (
   `date` date NOT NULL,
   `time` time NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_meal_principle_idx` (`principle_id`)
+  KEY `fk_meal_principle1_idx` (`principle_id`),
+  CONSTRAINT `fk_meal_principle1` FOREIGN KEY (`principle_id`) REFERENCES `principle` (`id`)
 );
 
 --

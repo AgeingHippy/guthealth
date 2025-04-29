@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/food-category")
@@ -63,45 +62,30 @@ public class FoodCategoryViewController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
-                                     @RequestParam Optional<Boolean> addFoodTypes,
                                      Authentication authentication) {
         CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        Long id = foodCategoryService.createFoodCategory(foodCategory,customUserPrincipal.getUserPrinciple()).id();
+        Long id = foodCategoryService.createFoodCategory(foodCategory, customUserPrincipal.getUserPrinciple()).id();
 
-        //todo - redirect to edit to allow addition of new food types?
-        if (addFoodTypes.orElseGet(() -> false)) {
-            return "redirect:/food-type?foodCategoryId=" + id;
-        } else {
-            return "redirect:/food-category";
-        }
+        return "redirect:/food-category/edit/" + id;
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
     public String showEditFoodCategoryView(Model model, @PathVariable Long id) {
         FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.getFoodCategory(id);
-        //todo - do I want to use dtoComplex for new and edited food categories?
-        model.addAttribute("foodCategory",
-                new FoodCategoryDTOSimple(
-                        foodCategoryDTOComplex.id(),
-                        foodCategoryDTOComplex.name(),
-                        foodCategoryDTOComplex.description()));
+
+        model.addAttribute("foodCategory", foodCategoryDTOComplex);
 
         return "/food-category-edit";
     }
 
     @PostMapping("/update/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
-    public String updateFoodCategory(@PathVariable Long id, @ModelAttribute FoodCategoryDTOSimple foodCategory,
-                                     @RequestParam(required = false) Optional<Boolean> addFoodTypes) {
+    public String updateFoodCategory(@PathVariable Long id,
+                                     @ModelAttribute FoodCategoryDTOSimple foodCategory) {
         foodCategoryService.updateFoodCategory(id, foodCategory);
 
-        //todo - redirect to edit to allow addition of new food types?
-        if (addFoodTypes.orElseGet(() -> false)) {
-            return "redirect:/food-type?foodCategoryId=" + id;
-        } else {
-            return "redirect:/food-category";
-        }
+        return "redirect:/food-category/edit/" + id;
     }
 
 

@@ -1,5 +1,5 @@
 span.input-group-text {
-    width: 150px;
+    width: 190px;
 }
 
 .center {
@@ -10,6 +10,7 @@ span.input-group-text {
 .body-content {
     width: 50%;
     min-width: 600px;
+    min-height: 600px;
 }
 
 .full-width {
