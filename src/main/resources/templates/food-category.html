@@ -10,6 +10,8 @@
 
 <div layout:fragment="content" th:remove="tag">
     <p/>
+    <h4>Food Categories</h4>
+    <p/>
     <p>This is used to break the food into various categories such as Dairy, Protein, Grains, Fruits and Vegetables etc.
         but it is user configurable. Again, we expect minimal modifications once the dataset is created.</p>
 
@@ -45,7 +47,7 @@
         </tbody>
     </table>
     <a th:href="@{'/food-category/new'}">
-        <button type="button" class="btn btn-primary">Add New</button>
+        <button type="button" class="col-3 btn btn-primary">Add New</button>
     </a>
 
 </div>

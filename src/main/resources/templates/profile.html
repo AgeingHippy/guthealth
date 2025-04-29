@@ -13,8 +13,17 @@
     <div id="authentication-type">
         <div id="authentication-type-basic"
              th:unless="${userPrinciple.oauth2Provider} != null">
-            <p>Username: <span th:text="${userPrinciple.username}"></span></p>
-            <button type="button" id="button-show-password-div" href="#">Change Password</button>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name:</span>
+                <input type="text" class="form-control" id="userPrinciple.username" name="userPrinciple.username"
+                       th:value="*{userPrinciple.username}" disabled>
+            </div>
+
+            <div>
+                <button type="button" class="col-3 btn btn-warning" id="button-show-password-div" href="#">Change Password</button>
+            </div>
+            <br>
+
             <div id="div-change-password" hidden>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Password:</span>
@@ -25,7 +34,10 @@
                     <input type="password" id="repeat-new-password" class="password form-control"
                            name="repeat-new-password">
                 </div>
-                <button type="button" id="button-submit-password">Submit Password</button>
+                <div>
+                    <button type="button" class="col-3 btn btn-primary" id="button-submit-password">Submit Password</button>
+                </div>
+
             </div>
         </div>
         <div id="authentication-type-oauth2"
@@ -55,7 +67,10 @@
                 <input type="text" class="form-control" id="bio" name="bio"
                        th:value="*{bio}">
             </div>
-            <button id="button-submit" class="col-3" type="submit">Save</button>
+            <div>
+                <button id="button-submit" class="col-3 btn btn-primary" type="submit">Save</button>
+            </div>
+
         </form>
     </div>
 

@@ -21,6 +21,7 @@ public class FoodTypeViewController {
 
     @GetMapping("")
     @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','read')")
+    //ToDo - May wish to remove this or redirect to food-category/edit
     public String showFoodTypesView(Model model, @RequestParam Long foodCategoryId) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(foodCategoryId);
 
@@ -44,7 +45,6 @@ public class FoodTypeViewController {
         model.addAttribute("foodCategoryId", foodCategoryId);
         model.addAttribute("foodType", foodType);
 
-
         return "/food-type-new";
     }
 
@@ -55,7 +55,7 @@ public class FoodTypeViewController {
 
         foodTypeService.deleteFoodType(id);
 
-        return "redirect:/food-type?foodCategoryId=" + foodCategoryId;
+        return "redirect:/food-category/edit/" + foodCategoryId;
     }
 
     @PostMapping("/create")
@@ -63,9 +63,7 @@ public class FoodTypeViewController {
     public String createFoodType(@ModelAttribute FoodTypeDTOComplex foodType) {
         foodType = foodTypeService.createFoodType(foodType);
 
-
-        ///todo - need to keep track of and redirect to calling page in some way...
-        return "redirect:/food-type?foodCategoryId=" + foodType.foodCategory().id();
+        return "redirect:/food-category/edit/" + foodType.foodCategory().id();
     }
 
     @GetMapping("/edit/{id}")
@@ -82,8 +80,7 @@ public class FoodTypeViewController {
     public String updateFoodType(@ModelAttribute FoodTypeDTOComplex foodType, @RequestParam Long id) {
         foodType = foodTypeService.updateFoodType(id, foodType);
 
-        //todo - need to keep track of and redirect to calling page in some way...
-        return "redirect:/food-type?foodCategoryId=" + foodType.foodCategory().id();
+        return "redirect:/food-category/edit/" + foodType.foodCategory().id();
     }
 
 }

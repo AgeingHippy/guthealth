@@ -11,6 +11,9 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div>
+        <p/>
+        <h4>Edit Food Type</h4>
+        <p/>
         <form th:action="@{'/food-type/update/'+${foodType.id}}"
               th:object="${foodType}" method="post">
 
@@ -37,8 +40,8 @@
                 <div class="invalid-feedback">This field is required</div>
             </div>
 
-            <div class="row">
-                <button class="col-3" type="submit">Save</button>
+            <div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </div>
 
         </form>

@@ -11,7 +11,7 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div>
-        <h1>Preparation Technique</h1>
+        <h1>Add new Preparation Technique</h1>
         <form action="#" th:action="@{'/preparation-technique/create'}"
               th:object="${preparationTechnique}" method="post">
 
@@ -27,7 +27,7 @@
                        id="description" th:field="*{description}"
                        required>
             </div>
-            <button type="submit">Save</button>
+            <button type="submit" class="col-3 btn btn-primary">Save</button>
         </form>
     </div>
 

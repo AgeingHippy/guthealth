@@ -11,8 +11,12 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div>
+        <p/>
+        <h4>Create new Food Type</h4>
+        <p/>
         <form action="#" th:action="@{'/food-type/create'}"
-              th:object="${foodType}" method="post">
+              th:object="${foodType}" method="post"
+              onsubmit="document.getElementById('foodCategory.id').disabled = false;">
 
             <div class="input-group mb-3">
                 <span class="input-group-text">Food Category:</span>
@@ -34,8 +38,8 @@
                 <div class="invalid-feedback">This field is required</div>
             </div>
 
-            <div class="row">
-                <button class="col-3" type="submit">Save</button>
+            <div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </div>
         </form>
 
@@ -44,6 +48,9 @@
                 const selectedFoodCategory = "[[${foodType.foodCategory.id}]]";
                 const foodCategoriesList = await fetchSelectOptions(foodCategoriesUri);
                 buildSelectOptions("foodCategory.id",foodCategoriesList, "id","name",false,selectedFoodCategory);
+                if (selectedFoodCategory) {
+                    document.getElementById("foodCategory.id").disabled = true;
+                }
             }
 
             window.onload = function () {
