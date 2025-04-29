@@ -8,9 +8,10 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Spring Data JPA
 - Implementing basic CRUD REST APIs for the various entities (DTOs exposed as Java Record)
 - Spring Web MVC / Thymeleaf Templates (Basic CRUD) (currently excludes Meal data)
-- 
+- Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication including custom login form and profile edit form
+
 # Currently phase:
-- Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication
+- Updating views to standard view and modifying data capture to include dropdown select where relevant
 
 
 
