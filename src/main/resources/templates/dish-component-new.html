@@ -19,19 +19,59 @@
         <form th:action="@{'/dish-component/create?dishId=' + ${dish.id}}"
               method="post"
               th:object="${dishComponent}">
-            <div class="mb-3">
-                <label for="foodType.id" class="col-form-label">FoodType:</label>
-                <input type="text" class="form-control" id="foodType.id" th:field="*{foodType.id}" required="true">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Food Category:</span>
+                <select class="form-select" id="foodCategory.id"
+                        name="foodCategory.id">
+<!--                        <option value=""></option>-->
+                </select>
             </div>
-            <div class="mb-3">
-                <label for="proportion" class="col-form-label">Proportion:</label>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Food Type:</span>
+                <select class="form-select" id="foodType.id"
+                        th:field="*{foodType.id}" required>
+<!--                        <option value=""></option>-->
+                </select>
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Proportion:</span>
                 <input type="number"  min="0" step="1" class="form-control" id="proportion"
                        th:field="*{proportion}" required="true">
+                <div class="invalid-feedback">This field is required</div>
             </div>
-            <div class="row">
-                <button class="col-3" type="submit">Save</button>
+
+            <div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
             </div>
         </form>
+
+        <script>
+            async function changeFoodCategory() {
+                let foodCategoryId = document.getElementById("foodCategory.id").value;
+                let foodTypes = [];
+                if (foodCategoryId) {
+                    foodTypes = await fetchSelectOptions(`${foodTypesUri}?foodCategoryId=${foodCategoryId}`);
+                }
+                buildSelectOptions("foodType.id", foodTypes, "id", "description", true);
+            }
+
+             async function initialiseFoodCategorySelect() {
+                let foodCategories = await fetchSelectOptions(foodCategoriesUri);
+                buildSelectOptions("foodCategory.id",foodCategories, "id","description",true);
+            }
+
+            window.onload = function () {
+                initialiseFoodCategorySelect();
+            }
+
+            document.getElementById("foodCategory.id").addEventListener("change", changeFoodCategory);
+
+        </script>
+
     </div>
 
 

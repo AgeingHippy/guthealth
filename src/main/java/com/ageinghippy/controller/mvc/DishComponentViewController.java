@@ -1,9 +1,11 @@
 package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.DishComponentDTO;
+import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.service.DishComponentService;
 import com.ageinghippy.service.DishService;
+import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import java.util.List;
 public class DishComponentViewController {
     private final DishComponentService dishComponentService;
     private final DishService dishService;
+    private final FoodTypeService foodTypeService;
 
     @GetMapping("")
     public String getAllDishComponents(Model model, @PathVariable Long dishId) {
@@ -45,8 +48,12 @@ public class DishComponentViewController {
 
     @GetMapping("/edit/{id}")
     public String showEditDishComponentView(Model model, @PathVariable Long id, @RequestParam Long dishId) {
-        model.addAttribute("dishComponent", dishComponentService.getDishComponent(id));
+        DishComponentDTO dishComponentDTO = dishComponentService.getDishComponent(id);
+        FoodTypeDTOComplex foodTypeDTOComplex = foodTypeService.getFoodType(dishComponentDTO.foodType().id());
+
+        model.addAttribute("dishComponent", dishComponentDTO);
         model.addAttribute("dish", dishService.getDish(dishId));
+        model.addAttribute("foodCategoryId",foodTypeDTOComplex.foodCategory().id());
 
         return "/dish-component-edit";
     }
