@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.rest;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.entity.UserPrinciple;
@@ -24,8 +23,7 @@ public class FoodCategoryController {
 
     @GetMapping
     public List<FoodCategoryDTOSimple> getFoodCategories(Authentication authentication) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        return foodCategoryService.getFoodCategories(customUserPrincipal.getUserPrinciple());
+        return foodCategoryService.getFoodCategories((UserPrinciple) authentication.getPrincipal());
     }
 
     @GetMapping("/{id}")
@@ -42,8 +40,8 @@ public class FoodCategoryController {
             throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
         }
 
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.createFoodCategory(foodCategory, customUserPrincipal.getUserPrinciple());
+        FoodCategoryDTOComplex foodCategoryDTOComplex =
+                foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal());
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -60,8 +58,8 @@ public class FoodCategoryController {
         if (foodCategory.id() != null) {
             throw new IllegalArgumentException("Food Category ID cannot be specified on new record");
         }
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.createFoodCategory(foodCategory, customUserPrincipal.getUserPrinciple());
+        FoodCategoryDTOComplex foodCategoryDTOComplex =
+                foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal());
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

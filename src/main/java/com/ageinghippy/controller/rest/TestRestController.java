@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.rest;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.entity.UserPrinciple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,7 @@ public class TestRestController {
     public String getTest(Authentication authentication) {
         String userName = "Unknown User";
         if (authentication != null) {
-            UserPrinciple userPrinciple = ((CustomUserPrincipal) authentication.getPrincipal()).getUserPrinciple();
+            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
             userName = userPrinciple.getUsername();
         }
 

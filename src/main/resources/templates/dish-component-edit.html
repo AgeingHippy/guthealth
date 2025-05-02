@@ -13,7 +13,7 @@
     <div>
 
         <p/>
-        <p> New dish component for <span th:text="${dish.name}"></span></p>
+        <p> Edit dish component for <span th:text="${dish.name}"></span></p>
         <p/>
 
         <form th:action="@{'/dish-component/update/' +${dishComponent.id} + '?dishId=' + ${dish.id}}"
@@ -56,17 +56,17 @@
                 if (foodCategoryId) {
                     foodTypes = await fetchSelectOptions(`${foodTypesUri}?foodCategoryId=${foodCategoryId}`);
                 }
-                buildSelectOptions("foodType.id", foodTypes, "id", "description", true);
+                buildSelectOptions("foodType.id", foodTypes, "id", "name", true);
             }
 
              async function initialiseFoodCategorySelect(currentFoodCategoryId) {
                 let foodCategories = await fetchSelectOptions(foodCategoriesUri);
-                buildSelectOptions("foodCategory.id",foodCategories, "id","description",false,currentFoodCategoryId);
+                buildSelectOptions("foodCategory.id",foodCategories, "id","name",false,currentFoodCategoryId);
             }
 
             async function initialiseFoodTypeSelect(currentFoodCategoryId, currentFoodTypeId) {
                 let foodTypes = await fetchSelectOptions(`${foodTypesUri}?foodCategoryId=${currentFoodCategoryId}`);
-                buildSelectOptions("foodType.id",foodTypes, "id","description",false,currentFoodTypeId);
+                buildSelectOptions("foodType.id",foodTypes, "id","name",false,currentFoodTypeId);
             }
 
 

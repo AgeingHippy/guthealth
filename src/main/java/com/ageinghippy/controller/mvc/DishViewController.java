@@ -1,9 +1,9 @@
 package com.ageinghippy.controller.mvc;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.DishService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,7 @@ public class DishViewController {
 
     @GetMapping
     public String showAllDishes(Model model, Authentication authentication) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        List<DishDTOSimple> dishes = dishService.getDishes(customUserPrincipal.getUserPrinciple());
+        List<DishDTOSimple> dishes = dishService.getDishes((UserPrinciple) authentication.getPrincipal());
 
         model.addAttribute("dishes", dishes);
 
@@ -56,8 +55,7 @@ public class DishViewController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String createDish(@ModelAttribute DishDTOComplex dish, Authentication authentication) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        Long id = dishService.createDish(dish, customUserPrincipal.getUserPrinciple()).id();
+        Long id = dishService.createDish(dish, (UserPrinciple) authentication.getPrincipal()).id();
 
         return "redirect:/dish/edit/" + id;
     }

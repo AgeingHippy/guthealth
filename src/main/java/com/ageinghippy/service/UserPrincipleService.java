@@ -33,6 +33,7 @@ public class UserPrincipleService {
     @Transactional
     public UserPrinciple createPasswordUser(UserPrinciple userPrinciple) {
         userPrinciple.setPassword(passwordEncoder.encode(userPrinciple.getPassword()));
+        assert(userPrinciple.getOauth2Provider() == null);
 
         return createUser(userPrinciple);
     }
@@ -46,6 +47,8 @@ public class UserPrincipleService {
 
     @Transactional
     public UserPrinciple createOauth2User(UserPrinciple userPrinciple) {
+        assert(userPrinciple.getPassword() == null);
+        assert(userPrinciple.getOauth2Provider() != null);
 
         return createUser(userPrinciple);
     }

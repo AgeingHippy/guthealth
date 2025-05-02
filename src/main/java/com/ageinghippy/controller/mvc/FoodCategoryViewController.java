@@ -1,8 +1,8 @@
 package com.ageinghippy.controller.mvc;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodCategoryService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,7 @@ public class FoodCategoryViewController {
 
     @GetMapping("")
     public String showFoodCategories(Model model, Authentication authentication) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories(customUserPrincipal.getUserPrinciple());
+        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories((UserPrinciple) authentication.getPrincipal());
 
         model.addAttribute("foodCategories", foodCategories);
 
@@ -63,8 +62,7 @@ public class FoodCategoryViewController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
                                      Authentication authentication) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        Long id = foodCategoryService.createFoodCategory(foodCategory, customUserPrincipal.getUserPrinciple()).id();
+        Long id = foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal()).id();
 
         return "redirect:/food-category/edit/" + id;
     }

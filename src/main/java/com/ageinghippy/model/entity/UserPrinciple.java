@@ -5,8 +5,11 @@ import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "principle")
@@ -14,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserPrinciple implements UserDetails {
+public class UserPrinciple implements UserDetails, OAuth2User {
 
     public UserPrinciple(
             String username,
@@ -69,4 +72,17 @@ public class UserPrinciple implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Transient
+    @Builder.Default
+    private Map<String, Object> attributes = Collections.emptyMap();;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String getName() {
+        return this.username;
+    }
 }

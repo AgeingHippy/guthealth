@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.mvc;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
@@ -37,17 +36,15 @@ public class UserViewController {
 
     @GetMapping("/profile")
     public String showProfile(Authentication authentication, Model model) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
 
-        model.addAttribute("userPrinciple", customUserPrincipal.getUserPrinciple());
+        model.addAttribute("userPrinciple", (UserPrinciple) authentication.getPrincipal());
 
         return "profile.html";
     }
 
     @PostMapping("/userMeta/{id}")
     public String updateProfile(Authentication authentication, @PathVariable Long id, @ModelAttribute UserMeta userMeta) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        UserPrinciple userPrinciple = customUserPrincipal.getUserPrinciple();
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
         if (!Objects.equals(id, userPrinciple.getUserMeta().getId())) {
             throw new IllegalArgumentException("UserMeta ID mismatch");
         }

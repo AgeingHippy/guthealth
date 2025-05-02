@@ -1,7 +1,5 @@
 package com.ageinghippy.configuration.security;
 
-import com.ageinghippy.model.CustomUserPrincipal;
-import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.entity.*;
 import com.ageinghippy.repository.DishComponentRepository;
 import com.ageinghippy.repository.DishRepository;
@@ -56,7 +54,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             return true;
         } else {
             //we need to determine whether the user is the owner of the entity
-            UserPrinciple userPrinciple = ((CustomUserPrincipal) authentication.getPrincipal()).getUserPrinciple();
+            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
 
             switch (targetType) {
                 case "Dish" :

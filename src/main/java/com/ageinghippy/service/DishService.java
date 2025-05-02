@@ -1,6 +1,5 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Set;

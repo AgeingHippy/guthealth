@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.rest;
 
-import com.ageinghippy.model.CustomUserPrincipal;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
 import groovy.util.logging.Slf4j;
@@ -16,11 +15,10 @@ public class UserController {
     private final UserPrincipleService userPrincipleService;
 
     @PostMapping("/password")
-    public String updatePassword(Authentication authentication,@RequestBody String password) {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        UserPrinciple userPrinciple = customUserPrincipal.getUserPrinciple();
+    public String updatePassword(Authentication authentication, @RequestBody String password) {
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
 
-        userPrincipleService.updatePassword(userPrinciple,password);
+        userPrincipleService.updatePassword(userPrinciple, password);
 
         return "Password successfully updated";
     }

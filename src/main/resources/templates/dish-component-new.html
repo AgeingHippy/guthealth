@@ -56,12 +56,12 @@
                 if (foodCategoryId) {
                     foodTypes = await fetchSelectOptions(`${foodTypesUri}?foodCategoryId=${foodCategoryId}`);
                 }
-                buildSelectOptions("foodType.id", foodTypes, "id", "description", true);
+                buildSelectOptions("foodType.id", foodTypes, "id", "name", true);
             }
 
              async function initialiseFoodCategorySelect() {
                 let foodCategories = await fetchSelectOptions(foodCategoriesUri);
-                buildSelectOptions("foodCategory.id",foodCategories, "id","description",true);
+                buildSelectOptions("foodCategory.id",foodCategories, "id","name",true);
             }
 
             window.onload = function () {
