@@ -9,10 +9,15 @@ import com.ageinghippy.repository.FoodTypeRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,32 +27,25 @@ public class FoodTypeService {
     private final DTOMapper dtoMapper;
     private final EntityManager entityManager;
 
+    private final CacheManager cacheManager;
+
     public FoodTypeDTOComplex getFoodType(Long id) {
-        return dtoMapper.map(foodTypeRepository.findById(id).orElseThrow(),FoodTypeDTOComplex.class);
+        return dtoMapper.map(foodTypeRepository.findById(id).orElseThrow(), FoodTypeDTOComplex.class);
     }
 
-    public List<FoodTypeDTOSimple> getFoodTypes() {
-        return dtoMapper.mapList(foodTypeRepository.findAll(), FoodTypeDTOSimple.class);
-    }
-
+    @Cacheable(value = "foodType", key = "'foodCategoryId=' + #foodCategoryId")
     public List<FoodTypeDTOSimple> getFoodTypes(Long foodCategoryId) {
         return dtoMapper.mapList(foodTypeRepository.findAllByFoodCategory_id(foodCategoryId), FoodTypeDTOSimple.class);
     }
 
     @Transactional
-    public FoodTypeDTOComplex createFoodTypeDto(FoodTypeDTOComplex newFoodType) {
-        FoodType foodType = dtoMapper.map(newFoodType, FoodType.class);
-
-        return dtoMapper.map(saveFoodType(foodType), FoodTypeDTOComplex.class);
-    }
-
-    @Transactional
+    @CacheEvict(value = "foodType", key = "'foodCategoryId=' + #foodType.foodCategory.id")
     public FoodTypeDTOComplex createFoodType(FoodTypeDTOComplex foodType) {
         FoodType newFoodType = dtoMapper.map(foodType, FoodType.class);
 
-        newFoodType = saveFoodType(newFoodType );
+        newFoodType = saveFoodType(newFoodType);
 
-        return dtoMapper.map(newFoodType,FoodTypeDTOComplex.class);
+        return dtoMapper.map(newFoodType, FoodTypeDTOComplex.class);
     }
 
     /**
@@ -59,12 +57,16 @@ public class FoodTypeService {
      * @throws java.util.NoSuchElementException if the FoodType with the provided id does not exist
      */
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "foodType", key = "'foodCategoryId=' + #updateFoodType.foodCategory.id")})
+//            @CacheEvict(value = "foodType", key = "'foodCategoryId=' + @foodTypeRepository.findById(#id).orElseThrow().foodCategory.id")})
     public FoodTypeDTOComplex updateFoodType(Long id, FoodTypeDTOComplex updateFoodType) {
         FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
 
         foodType.setName(Util.valueIfNull(updateFoodType.name(), foodType.getName()));
         foodType.setDescription(Util.valueIfNull(updateFoodType.description(), foodType.getDescription()));
         if (updateFoodType.foodCategory() != null && updateFoodType.foodCategory().id() != null) {
+            Objects.requireNonNull(cacheManager.getCache("foodType")).evictIfPresent("foodCategoryId=" + foodType.getFoodCategory().getId());
             foodType.setFoodCategory(foodCategoryRepository.findById(updateFoodType.foodCategory().id()).orElseThrow());
         }
 
@@ -73,14 +75,21 @@ public class FoodTypeService {
         return dtoMapper.map(foodType, FoodTypeDTOComplex.class);
     }
 
+//    @CacheEvict(value = "foodType", key = "'foodCategoryId=' + @foodTypeRepository.findById(#id).orElseThrow().getFoodCategory().getId()")
     public void deleteFoodType(Long id) {
-        deleteFoodType(foodTypeRepository.findById(id).orElseThrow());
+        FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
+
+        deleteFoodType(foodType);
+
+        Objects.requireNonNull(cacheManager.getCache("foodType"))
+                .evictIfPresent("foodCategoryId=" + foodType.getFoodCategory().getId());
     }
 
     private void deleteFoodType(FoodType foodType) {
         foodTypeRepository.deleteById(foodType.getId());
     }
 
+    @CacheEvict(value = "foodType", key = "'foodCategoryId=' + #foodType.foodCategory.id")
     private FoodType saveFoodType(FoodType foodType) {
         foodType = foodTypeRepository.save(foodType);
         entityManager.flush();

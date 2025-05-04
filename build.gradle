@@ -39,6 +39,8 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' //:3.4.0'
     implementation 'org.webjars:bootstrap:5.3.3'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.hazelcast:hazelcast:5.5.0'
 
     compileOnly 'org.projectlombok:lombok'
 

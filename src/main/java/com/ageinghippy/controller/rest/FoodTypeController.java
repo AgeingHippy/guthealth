@@ -21,16 +21,8 @@ public class FoodTypeController {
     private final FoodTypeService foodTypeService;
 
     @GetMapping
-     public List<FoodTypeDTOSimple> getFoodTypes(@RequestParam(required = true) Long foodCategoryId) {
-        List<FoodTypeDTOSimple> foodTypes;
-        if (foodCategoryId != null) {
-            foodTypes = foodTypeService.getFoodTypes(foodCategoryId);
-        }
-        else {
-            foodTypes = foodTypeService.getFoodTypes();
-        }
-
-        return foodTypes;
+    public List<FoodTypeDTOSimple> getFoodTypes(@RequestParam(required = true) Long foodCategoryId) {
+        return foodTypeService.getFoodTypes(foodCategoryId);
     }
 
     @GetMapping("/{id}")
