@@ -1,4 +1,7 @@
 package com.ageinghippy.model.dto;
 
-public record DishDTOSimple(Long id, String name, String description, PreparationTechniqueDTO preparationTechnique) {
+import java.io.Serializable;
+
+public record DishDTOSimple(Long id, String name, String description,
+                            PreparationTechniqueDTO preparationTechnique) implements Serializable {
 }

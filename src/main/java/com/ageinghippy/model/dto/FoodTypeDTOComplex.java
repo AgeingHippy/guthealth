@@ -1,4 +1,7 @@
 package com.ageinghippy.model.dto;
 
-public record FoodTypeDTOComplex(Long id, FoodCategoryDTOSimple foodCategory, String name, String description) {
+import java.io.Serializable;
+
+public record FoodTypeDTOComplex(Long id, FoodCategoryDTOSimple foodCategory, String name,
+                                 String description) implements Serializable {
 }

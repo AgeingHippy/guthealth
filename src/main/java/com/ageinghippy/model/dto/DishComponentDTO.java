@@ -1,4 +1,6 @@
 package com.ageinghippy.model.dto;
 
-public record DishComponentDTO(Long id, FoodTypeDTOSimple foodType, Integer proportion) {
+import java.io.Serializable;
+
+public record DishComponentDTO(Long id, FoodTypeDTOSimple foodType, Integer proportion) implements Serializable {
 }
