@@ -10,11 +10,15 @@ import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,16 +26,20 @@ public class FoodCategoryService {
     private final FoodCategoryRepository foodCategoryRepository;
     private final DTOMapper dTOMapper;
     private final EntityManager entityManager;
+    private final CacheManager cacheManager;
 
+    @Cacheable(value = "foodCategory",key="#id")
     public FoodCategoryDTOComplex getFoodCategory(Long id) {
         return dTOMapper.map(foodCategoryRepository.findById(id).orElseThrow(), FoodCategoryDTOComplex.class);
     }
 
+    @Cacheable(value="foodCategoryList",key="'principleId='+#principle.getId()")
     public List<FoodCategoryDTOSimple> getFoodCategories(UserPrinciple principle) {
         return dTOMapper.mapList(foodCategoryRepository.findAllByPrinciple(principle), FoodCategoryDTOSimple.class);
     }
 
     @Transactional
+    @CacheEvict(value="foodCategoryList",key="'principleId='+#principle.getId()")
     public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOSimple foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
         newFoodCategory.setPrinciple(principle);
@@ -43,6 +51,7 @@ public class FoodCategoryService {
 
     //todo - prototype method
     @Transactional
+    @CacheEvict(value="foodCategoryList",key="'principleId='+#principle.getId()")
     public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOComplex foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
         newFoodCategory.setPrinciple(principle);
@@ -60,7 +69,6 @@ public class FoodCategoryService {
         return dTOMapper.map(newFoodCategory, FoodCategoryDTOComplex.class);
     }
 
-    @Transactional
     private FoodCategory saveFoodCategory(FoodCategory foodCategory) {
         foodCategory = foodCategoryRepository.save(foodCategory);
         entityManager.flush();
@@ -85,14 +93,23 @@ public class FoodCategoryService {
 
         foodCategory = saveFoodCategory(foodCategory);
 
+        evictFoodCategoryListCacheForCurrentUser();
+
         return dTOMapper.map(foodCategory, FoodCategoryDTOComplex.class);
     }
 
-    public void deleteFoodCategory(FoodCategory foodCategory) {
+    private void deleteFoodCategory(FoodCategory foodCategory) {
         foodCategoryRepository.deleteById(foodCategory.getId());
     }
 
+    @Transactional
     public void deleteFoodCategory(Long id) {
         deleteFoodCategory(foodCategoryRepository.findById(id).orElseThrow());
+        evictFoodCategoryListCacheForCurrentUser();
+    }
+
+    private void evictFoodCategoryListCacheForCurrentUser() {
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Objects.requireNonNull(cacheManager.getCache("foodCategoryList")).evictIfPresent("principleId=" + userPrinciple.getId());
     }
 }
