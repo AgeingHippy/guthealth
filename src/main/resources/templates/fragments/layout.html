@@ -23,6 +23,13 @@
 <th:block th:replace="~{fragments/header :: header}"/>
 <div class="container center">
     <div class="body-content">
+        <div class="center alert alert-success" th:if="${successMessage}">
+            <span class="center" th:text="${successMessage}"></span>
+        </div>
+
+        <div class="center alert alert-danger" th:if="${errorMessage}">
+            <span class="center" th:text="${errorMessage}"></span>
+        </div>
         <th:block layout:fragment="content"/>
     </div>
 </div>

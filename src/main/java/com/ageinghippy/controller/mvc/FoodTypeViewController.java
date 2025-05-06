@@ -60,7 +60,7 @@ public class FoodTypeViewController {
             foodTypeService.deleteFoodType(id);
             redirectAttributes.addFlashAttribute("successMessage", "FoodType deleted successfully.");
         } catch (Exception e) {
-            String errorMessage = "FoodType delete failed." + "\n" + e.getClass();
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodType delete failed.";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
 
@@ -76,7 +76,7 @@ public class FoodTypeViewController {
             redirectAttributes.addFlashAttribute("successMessage", "FoodType created successfully.");
             return "redirect:/food-category/edit/" + foodType.foodCategory().id();
         } catch (Exception e) {
-            String errorMessage = "FoodType creation failed." + "\n" + e.getClass();
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodType creation failed.";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             redirectAttributes.addFlashAttribute("foodType", foodType);
             return "redirect:/food-type/new?foodCategoryId=" + foodType.foodCategory().id();
@@ -105,7 +105,7 @@ public class FoodTypeViewController {
             redirectAttributes.addFlashAttribute("successMessage", "FoodType updated successfully.");
             return "redirect:/food-category/edit/" + foodType.foodCategory().id();
         } catch (Exception e) {
-            String errorMessage = "FoodType update failed." + "\n" + e.getClass();
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodType update failed.";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             redirectAttributes.addFlashAttribute("foodType", foodType);
             return "redirect:/food-type/edit/" + foodType.foodCategory().id();
