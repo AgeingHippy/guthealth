@@ -5,10 +5,13 @@ import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,9 @@ public class PreparationTechniqueService {
         PreparationTechnique newPreparationTechnique = dtoMapper.map(preparationTechnique, PreparationTechnique.class);
 
         if (preparationTechniqueRepository.findById(newPreparationTechnique.getCode()).orElse(null) != null) {
-            throw new IllegalArgumentException("Preparation Technique with code '" + newPreparationTechnique.getCode() + "' already exists");
+            throw new ConstraintViolationException(
+                    "Preparation Technique with code '" + newPreparationTechnique.getCode() + "' already exists",
+                    null);
         }
         newPreparationTechnique = savePreparationTechnique(newPreparationTechnique);
 
