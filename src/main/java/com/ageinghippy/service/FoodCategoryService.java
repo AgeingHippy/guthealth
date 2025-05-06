@@ -29,6 +29,7 @@ public class FoodCategoryService {
     private final CacheManager cacheManager;
 
     @Cacheable(value = "foodCategory",key="#id")
+    //todo - evict this foodCategory when adding/updating related foodTypes
     public FoodCategoryDTOComplex getFoodCategory(Long id) {
         return dTOMapper.map(foodCategoryRepository.findById(id).orElseThrow(), FoodCategoryDTOComplex.class);
     }
@@ -93,7 +94,7 @@ public class FoodCategoryService {
 
         foodCategory = saveFoodCategory(foodCategory);
 
-        evictFoodCategoryListCacheForCurrentUser();
+        evictFoodCategoryListCacheForCurrentPrinciple();
 
         return dTOMapper.map(foodCategory, FoodCategoryDTOComplex.class);
     }
@@ -105,10 +106,10 @@ public class FoodCategoryService {
     @Transactional
     public void deleteFoodCategory(Long id) {
         deleteFoodCategory(foodCategoryRepository.findById(id).orElseThrow());
-        evictFoodCategoryListCacheForCurrentUser();
+        evictFoodCategoryListCacheForCurrentPrinciple();
     }
 
-    private void evictFoodCategoryListCacheForCurrentUser() {
+    private void evictFoodCategoryListCacheForCurrentPrinciple() {
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Objects.requireNonNull(cacheManager.getCache("foodCategoryList")).evictIfPresent("principleId=" + userPrinciple.getId());
     }
