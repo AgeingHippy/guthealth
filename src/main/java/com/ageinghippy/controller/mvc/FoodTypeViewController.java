@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/food-type")
@@ -35,52 +36,81 @@ public class FoodTypeViewController {
     @GetMapping("/new")
     @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','edit')")
     public String showNewFoodTypeView(Model model, @RequestParam Long foodCategoryId) {
-        FoodTypeDTOComplex foodType =
-                new FoodTypeDTOComplex(
-                        null,
-                        new FoodCategoryDTOSimple(foodCategoryId, null, null),
-                        null,
-                        null);
+        if (!model.containsAttribute("foodType")) {
+            FoodTypeDTOComplex foodType =
+                    new FoodTypeDTOComplex(
+                            null,
+                            new FoodCategoryDTOSimple(foodCategoryId, null, null),
+                            null,
+                            null);
+            model.addAttribute("foodType", foodType);
+        }
 
         model.addAttribute("foodCategoryId", foodCategoryId);
-        model.addAttribute("foodType", foodType);
 
         return "/food-type-new";
     }
 
     @RequestMapping("/delete/{id}")
     @PreAuthorize("hasPermission(#id,'FoodType','delete')")
-    public String deleteFoodType(@PathVariable Long id) {
+    public String deleteFoodType(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Long foodCategoryId = foodTypeService.getFoodType(id).foodCategory().id();
 
-        foodTypeService.deleteFoodType(id);
+        try {
+            foodTypeService.deleteFoodType(id);
+            redirectAttributes.addFlashAttribute("successMessage", "FoodType deleted successfully.");
+        } catch (Exception e) {
+            String errorMessage = "FoodType delete failed." + "\n" + e.getClass();
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        }
 
         return "redirect:/food-category/edit/" + foodCategoryId;
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasPermission(#foodType.foodCategory.id,'FoodCategory','edit')")
-    public String createFoodType(@ModelAttribute FoodTypeDTOComplex foodType) {
-        foodType = foodTypeService.createFoodType(foodType);
+    public String createFoodType(@ModelAttribute FoodTypeDTOComplex foodType, RedirectAttributes redirectAttributes) {
 
-        return "redirect:/food-category/edit/" + foodType.foodCategory().id();
+        try {
+            foodType = foodTypeService.createFoodType(foodType);
+            redirectAttributes.addFlashAttribute("successMessage", "FoodType created successfully.");
+            return "redirect:/food-category/edit/" + foodType.foodCategory().id();
+        } catch (Exception e) {
+            String errorMessage = "FoodType creation failed." + "\n" + e.getClass();
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("foodType", foodType);
+            return "redirect:/food-type/new?foodCategoryId=" + foodType.foodCategory().id();
+        }
+
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasPermission(#id,'FoodType','edit')")
     public String showFoodTypeEditView(Model model, @PathVariable Long id) {
-        FoodTypeDTOComplex foodType = foodTypeService.getFoodType(id);
-        model.addAttribute("foodType",foodType);
+
+        if (!model.containsAttribute("foodType")) {
+            FoodTypeDTOComplex foodType = foodTypeService.getFoodType(id);
+            model.addAttribute("foodType", foodType);
+        }
 
         return "/food-type-edit";
     }
 
     @PostMapping("/update/{id}")
     @PreAuthorize("hasPermission(#id,'FoodType','edit')")
-    public String updateFoodType(@ModelAttribute FoodTypeDTOComplex foodType, @RequestParam Long id) {
-        foodType = foodTypeService.updateFoodType(id, foodType);
+    public String updateFoodType(@ModelAttribute FoodTypeDTOComplex foodType, @RequestParam Long id, RedirectAttributes redirectAttributes) {
 
-        return "redirect:/food-category/edit/" + foodType.foodCategory().id();
+        try {
+            foodType = foodTypeService.updateFoodType(id, foodType);
+            redirectAttributes.addFlashAttribute("successMessage", "FoodType updated successfully.");
+            return "redirect:/food-category/edit/" + foodType.foodCategory().id();
+        } catch (Exception e) {
+            String errorMessage = "FoodType update failed." + "\n" + e.getClass();
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("foodType", foodType);
+            return "redirect:/food-type/edit/" + foodType.foodCategory().id();
+        }
+
     }
 
 }

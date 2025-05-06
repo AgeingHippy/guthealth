@@ -13,11 +13,13 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - FoodType and FoodCategory caching using Hazelcast cache
 - 
 # Currently phase:
-
+- better exception feedback on views
 
 
 
 # Future Phases showcasing (In no particular order)
+- [] On Insert trigger to enforce uniqueness of FoodType name per FoodCategory Principle User
+- - Currently the implementation enforces uniqueness of FoodType within a category. We require different users to be able to create a FoodType of the same name but FoodType does not contain the principle so simple referential integrity cannot be applied here.
 - [] Meal MVC
 - [x] Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
 - File Load using API
