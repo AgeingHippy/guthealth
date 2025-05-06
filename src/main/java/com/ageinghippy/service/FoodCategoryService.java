@@ -29,7 +29,6 @@ public class FoodCategoryService {
     private final CacheManager cacheManager;
 
     @Cacheable(value = "foodCategory",key="#id")
-    //todo - evict this foodCategory when adding/updating related foodTypes
     public FoodCategoryDTOComplex getFoodCategory(Long id) {
         return dTOMapper.map(foodCategoryRepository.findById(id).orElseThrow(), FoodCategoryDTOComplex.class);
     }
@@ -86,6 +85,7 @@ public class FoodCategoryService {
      * @throws java.util.NoSuchElementException if the food category with the provided id does not exist
      */
     @Transactional
+    @CacheEvict(value = "foodCategory",key="#id")
     public FoodCategoryDTOComplex updateFoodCategory(Long id, FoodCategoryDTOSimple updateFoodCategory) {
 
         FoodCategory foodCategory = foodCategoryRepository.findById(id).orElseThrow();
@@ -104,6 +104,7 @@ public class FoodCategoryService {
     }
 
     @Transactional
+    @CacheEvict(value = "foodCategory",key="#id")
     public void deleteFoodCategory(Long id) {
         deleteFoodCategory(foodCategoryRepository.findById(id).orElseThrow());
         evictFoodCategoryListCacheForCurrentPrinciple();

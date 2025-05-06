@@ -9,17 +9,19 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Implementing basic CRUD REST APIs for the various entities (DTOs exposed as Java Record)
 - Spring Web MVC / Thymeleaf Templates (Basic CRUD) (currently excludes Meal data)
 - Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication including custom login form and profile edit form
-
-# Currently phase:
 - Updating views to standard view and modifying data capture to include dropdown select where relevant
+- FoodType and FoodCategory caching using Hazelcast cache
+- 
+# Currently phase:
+
 
 
 
 # Future Phases showcasing (In no particular order)
-- Meal MVC
-- Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
+- [] Meal MVC
+- [x] Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
 - File Load using API
-- Data caching
+- [x] Data caching
 - Addition of Gut Health itself (Data Structure, API, UI etc.)
 - Third party API integration
 - Android UI

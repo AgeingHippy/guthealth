@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,10 @@ public class FoodTypeService {
     }
 
     @Transactional
-    @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #foodType.foodCategory.id")
+    @Caching( evict = {
+            @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #foodType.foodCategory.id"),
+            @CacheEvict(value = "foodCategory",key="#foodType.foodCategory.id")
+    })
     public FoodTypeDTOComplex createFoodType(FoodTypeDTOComplex foodType) {
         FoodType newFoodType = dtoMapper.map(foodType, FoodType.class);
 
@@ -75,12 +79,11 @@ public class FoodTypeService {
         FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
 
         deleteFoodType(foodType);
-
-        evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
     }
 
     private void deleteFoodType(FoodType foodType) {
         foodTypeRepository.deleteById(foodType.getId());
+        evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
     }
 
     @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #foodType.foodCategory.id")
@@ -95,5 +98,7 @@ public class FoodTypeService {
     private void evictFoodTypeListCacheForFoodCategory(Long foodCategoryId) {
         Objects.requireNonNull(cacheManager.getCache("foodTypeList"))
                 .evictIfPresent("foodCategoryId=" + foodCategoryId);
+        Objects.requireNonNull(cacheManager.getCache("foodCategory"))
+                .evictIfPresent(foodCategoryId);
     }
 }
