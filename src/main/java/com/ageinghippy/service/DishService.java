@@ -55,6 +55,17 @@ public class DishService {
     }
 
     @Transactional
+    public DishDTOComplex createDish(DishDTOSimple dish, UserPrinciple userPrinciple) {
+        Dish newDish = dtoMapper.map(dish, Dish.class);
+
+        newDish.setPrinciple(userPrinciple);
+
+        newDish = saveDish(newDish);
+
+        return dtoMapper.map(newDish, DishDTOComplex.class);
+    }
+
+    @Transactional
     private Dish saveDish(Dish dish) {
 
         //verify specified preparationTechnique exists

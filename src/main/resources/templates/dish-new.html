@@ -45,8 +45,9 @@
     <script>
 
         async function initialisePreparationTechniqueSelect() {
+            let preSelected = "[[${dish.preparationTechnique.code}]]";
             const preparationTechniqueList = await fetchSelectOptions(preparationTechniquesUri);
-            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false);
+            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false,preSelected);
         }
 
         window.onload = function () {

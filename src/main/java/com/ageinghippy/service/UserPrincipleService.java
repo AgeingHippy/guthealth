@@ -24,6 +24,10 @@ public class UserPrincipleService {
     private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
 
+    public UserPrinciple castToUserPrinciple(Object principle) {
+        return (UserPrinciple) principle;
+    }
+
     public UserPrinciple loadUserByUsername(String username) throws UsernameNotFoundException {
 
         return userPrincipleRepository.findByUsername(username)
