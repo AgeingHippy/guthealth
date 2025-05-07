@@ -81,13 +81,13 @@ public class FoodTypeService {
         deleteFoodType(foodType);
     }
 
-    private void deleteFoodType(FoodType foodType) {
+    protected void deleteFoodType(FoodType foodType) {
         foodTypeRepository.deleteById(foodType.getId());
         evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
     }
 
     @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #foodType.foodCategory.id")
-    private FoodType saveFoodType(FoodType foodType) {
+    protected FoodType saveFoodType(FoodType foodType) {
         foodType = foodTypeRepository.save(foodType);
         entityManager.flush();
         entityManager.refresh(foodType);
@@ -95,7 +95,7 @@ public class FoodTypeService {
         return foodType;
     }
 
-    private void evictFoodTypeListCacheForFoodCategory(Long foodCategoryId) {
+    protected void evictFoodTypeListCacheForFoodCategory(Long foodCategoryId) {
         Objects.requireNonNull(cacheManager.getCache("foodTypeList"))
                 .evictIfPresent("foodCategoryId=" + foodCategoryId);
         Objects.requireNonNull(cacheManager.getCache("foodCategory"))
