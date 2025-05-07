@@ -5,13 +5,11 @@ import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,13 +39,17 @@ public class PreparationTechniqueService {
         return dtoMapper.map(newPreparationTechnique, PreparationTechniqueDTO.class);
     }
 
-    private PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
+    protected PreparationTechnique savePreparationTechnique(PreparationTechnique preparationTechnique) {
         return preparationTechniqueRepository.save(preparationTechnique);
     }
 
     public PreparationTechniqueDTO updatePreparationTechnique(String code, PreparationTechniqueDTO updatePreparationTechnique) {
+        if (!code.equals(updatePreparationTechnique.code())) {
+            throw new IllegalArgumentException("Specified and update codes do not match");
+        }
 
         PreparationTechnique preparationTechnique = preparationTechniqueRepository.findById(code).orElseThrow();
+
         preparationTechnique.setDescription(
                 Util.valueIfNull(updatePreparationTechnique.description(), preparationTechnique.getDescription()));
         preparationTechnique = savePreparationTechnique(preparationTechnique);
@@ -60,7 +62,7 @@ public class PreparationTechniqueService {
         deletePreparationTechnique(preparationTechnique);
     }
 
-    private void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
+    protected void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
         preparationTechniqueRepository.delete(preparationTechnique);
     }
 }

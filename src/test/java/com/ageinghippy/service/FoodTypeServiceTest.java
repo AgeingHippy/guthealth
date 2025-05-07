@@ -10,7 +10,6 @@ import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

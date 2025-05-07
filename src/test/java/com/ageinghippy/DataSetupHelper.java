@@ -1,11 +1,9 @@
 package com.ageinghippy;
 
-import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
-import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.dto.FoodTypeDTOComplex;
-import com.ageinghippy.model.dto.FoodTypeDTOSimple;
+import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
+import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.model.entity.UserPrinciple;
 
 import java.util.HashMap;
@@ -13,6 +11,9 @@ import java.util.Map;
 
 public class DataSetupHelper {
     private Map<Long, UserPrinciple> userPrincipleMap = new HashMap<>();
+
+    private Map<String, PreparationTechnique> preparationTechniqueMap = new HashMap<>();
+    private Map<String, PreparationTechniqueDTO> preparationTechniqueDTOMap = new HashMap<>();
 
     private Map<Long, FoodCategory> foodCategoryMap = new HashMap<>();
     private Map<Long, FoodCategoryDTOSimple> foodCategoryDTOSimpleMap = new HashMap<>();
@@ -26,8 +27,23 @@ public class DataSetupHelper {
 
     public DataSetupHelper() {
         initialisePrinciple();
+        initialisePreparationTechniques();
         initialiseFoodCategories();
         initialiseFoodTypes();
+    }
+
+    private void initialisePreparationTechniques() {
+        initialisePreparationTechnique("PrepType1","Preparation type one description");
+        initialisePreparationTechnique("PrepType2","Preparation type two description");
+        initialisePreparationTechnique("PrepType3","Preparation type three description");
+        initialisePreparationTechnique("PrepType4","Preparation type four description");
+    }
+
+    private void initialisePreparationTechnique(String code, String description) {
+        preparationTechniqueMap.put(code,
+                PreparationTechnique.builder().code(code).description(description).build());
+
+        preparationTechniqueDTOMap.put(code, new PreparationTechniqueDTO(code,description));
     }
 
     private void initialisePrinciple() {
@@ -96,6 +112,13 @@ public class DataSetupHelper {
 
     public UserPrinciple getPrinciple(Long id) {
         return userPrincipleMap.get(id);
+    }
+
+    public PreparationTechnique getPreparationTechnique(String code) {
+        return preparationTechniqueMap.get(code);
+    }
+    public PreparationTechniqueDTO getPreparationTechniqueDTO(String code) {
+        return preparationTechniqueDTOMap.get(code);
     }
 
     public FoodType getFoodType(Long id) {
