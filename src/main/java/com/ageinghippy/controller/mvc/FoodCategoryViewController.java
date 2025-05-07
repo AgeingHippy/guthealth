@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -44,8 +45,15 @@ public class FoodCategoryViewController {
 
     @RequestMapping("/delete/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','delete')")
-    public String deleteFoodCategory(@PathVariable Long id) {
-        foodCategoryService.deleteFoodCategory(id);
+    public String deleteFoodCategory(@PathVariable Long id,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            foodCategoryService.deleteFoodCategory(id);
+            redirectAttributes.addFlashAttribute("successMessage", "FoodCategory deleted successfully");
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodCategory delete failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        }
 
         return "redirect:/food-category";
     }
@@ -53,7 +61,9 @@ public class FoodCategoryViewController {
     @GetMapping("/new")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String showNewFoodCategoryView(Model model) {
-        model.addAttribute("foodCategory", new FoodCategoryDTOSimple(null, null, null));
+        if (!model.containsAttribute("foodCategory")) {
+            model.addAttribute("foodCategory", new FoodCategoryDTOSimple(null, null, null));
+        }
 
         return "/food-category-new";
     }
@@ -61,18 +71,28 @@ public class FoodCategoryViewController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
-                                     Authentication authentication) {
-        Long id = foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal()).id();
+                                     Authentication authentication,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            Long id = foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal()).id();
+            redirectAttributes.addFlashAttribute("successMessage", "FoodCategory successfully created");
+            return "redirect:/food-category/edit/" + id;
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodCategory create failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("foodCategory", foodCategory);
+            return "redirect:/food-category/new";
+        }
 
-        return "redirect:/food-category/edit/" + id;
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
     public String showEditFoodCategoryView(Model model, @PathVariable Long id) {
-        FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.getFoodCategory(id);
-
-        model.addAttribute("foodCategory", foodCategoryDTOComplex);
+        if (!model.containsAttribute("foodCategory")) {
+            FoodCategoryDTOComplex foodCategoryDTOComplex = foodCategoryService.getFoodCategory(id);
+            model.addAttribute("foodCategory", foodCategoryDTOComplex);
+        }
 
         return "/food-category-edit";
     }
@@ -80,8 +100,18 @@ public class FoodCategoryViewController {
     @PostMapping("/update/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','edit')")
     public String updateFoodCategory(@PathVariable Long id,
-                                     @ModelAttribute FoodCategoryDTOSimple foodCategory) {
-        foodCategoryService.updateFoodCategory(id, foodCategory);
+                                     @ModelAttribute FoodCategoryDTOSimple foodCategory,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            foodCategoryService.updateFoodCategory(id, foodCategory);
+            redirectAttributes.addFlashAttribute("successMessage", "FoodCategory updated successfully");
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "FoodCategory update failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("foodCategory",
+                    new FoodCategoryDTOComplex(foodCategory.id(), foodCategory.name(), foodCategory.description(),
+                            foodCategoryService.getFoodCategory(id).foodTypes()));
+        }
 
         return "redirect:/food-category/edit/" + id;
     }
