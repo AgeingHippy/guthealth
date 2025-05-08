@@ -3,7 +3,6 @@ package com.ageinghippy.controller.mvc;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.DishDTOSimple;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
-import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.DishService;
 import com.ageinghippy.service.UserPrincipleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
