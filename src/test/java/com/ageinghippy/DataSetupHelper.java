@@ -64,6 +64,18 @@ public class DataSetupHelper {
         return foodTypeDTOSimpleMap.get(id);
     }
 
+    private List<FoodTypeDTOSimple> getFoodTypeDTOSimpleList(Long foodCategoryId) {
+        List<Long> foodTypeIds = foodTypeMap.values().stream()
+                .filter(foodType -> foodCategoryId.equals(foodType.getFoodCategory().getId()))
+                .map(FoodType::getId).toList();
+
+        return foodTypeDTOSimpleMap
+                .values()
+                .stream()
+                .filter(ft -> foodTypeIds.contains(ft.id()))
+                .toList();
+    }
+
     public FoodTypeDTOComplex getFoodTypeDTOComplex(Long id) {
         return foodTypeDTOComplexMap.get(id);
     }
@@ -122,18 +134,37 @@ public class DataSetupHelper {
         initialiseFoodCategory(6L, 1L, "foodCategory6_name", "Food Category six description");
     }
 
+    //Must be initialised AFTER foodTypes have been initialised as foodTypeDTOComplexMap is immutable
+    private void initialiseFoodCategoryDTOComplexMap() {
+        foodCategoryMap.values().forEach(foodCategory ->
+                foodCategoryDTOComplexMap.put(
+                        foodCategory.getId(),
+                        new FoodCategoryDTOComplex(
+                                foodCategory.getId(),
+                                foodCategory.getName(),
+                                foodCategory.getDescription(),
+                                getFoodTypeDTOSimpleList(foodCategory.getId()))
+                )
+        );
+    }
+
     private void initialiseFoodCategory(Long id, Long userPrincipleId, String name, String description) {
-        FoodCategory foodCategory = FoodCategory.builder()
-                .id(id)
-                .name(name)
-                .description(description)
-                .principle(userPrincipleMap.get(userPrincipleId))
-                .build();
+        foodCategoryMap.put(
+                id,
+                FoodCategory.builder()
+                        .id(id)
+                        .name(name)
+                        .description(description)
+                        .principle(userPrincipleMap.get(userPrincipleId))
+                        .build()
+        );
 
-        FoodCategoryDTOSimple foodCategoryDTOSimple = new FoodCategoryDTOSimple(id, name, description);
+        foodCategoryDTOSimpleMap.put(
+                id,
+                new FoodCategoryDTOSimple(id, name, description)
+        );
 
-        foodCategoryMap.put(id, foodCategory);
-        foodCategoryDTOSimpleMap.put(id, foodCategoryDTOSimple);
+        //foodTypeDTOComplexMap contains foodTypes which have not yet been initialised.
     }
 
     private void initialiseFoodTypes() {
@@ -153,6 +184,8 @@ public class DataSetupHelper {
         initialiseFoodType(14L, 4L, "foodType14", "Food Type fourteen Description");
         initialiseFoodType(15L, 4L, "foodType15", "Food Type fifteen Description");
         initialiseFoodType(16L, 6L, "foodType16", "Food Type sixteen Description");
+
+        initialiseFoodCategoryDTOComplexMap();
     }
 
     private void initialiseFoodType(Long id, Long foodCategoryId, String name, String description) {

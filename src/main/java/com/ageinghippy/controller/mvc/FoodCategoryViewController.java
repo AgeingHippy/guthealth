@@ -2,9 +2,8 @@ package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodCategoryService;
-import com.ageinghippy.service.FoodTypeService;
+import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,11 +20,13 @@ import java.util.List;
 public class FoodCategoryViewController {
 
     private final FoodCategoryService foodCategoryService;
-    private final FoodTypeService foodTypeService;
+    private final UserPrincipleService userPrincipleService;
 
     @GetMapping("")
     public String showFoodCategories(Model model, Authentication authentication) {
-        List<FoodCategoryDTOSimple> foodCategories = foodCategoryService.getFoodCategories((UserPrinciple) authentication.getPrincipal());
+        List<FoodCategoryDTOSimple> foodCategories =
+                foodCategoryService.getFoodCategories(
+                        userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
 
         model.addAttribute("foodCategories", foodCategories);
 
@@ -74,7 +75,8 @@ public class FoodCategoryViewController {
                                      Authentication authentication,
                                      RedirectAttributes redirectAttributes) {
         try {
-            Long id = foodCategoryService.createFoodCategory(foodCategory, (UserPrinciple) authentication.getPrincipal()).id();
+            Long id = foodCategoryService.createFoodCategory(foodCategory,
+                    userPrincipleService.castToUserPrinciple(authentication.getPrincipal())).id();
             redirectAttributes.addFlashAttribute("successMessage", "FoodCategory successfully created");
             return "redirect:/food-category/edit/" + id;
         } catch (Exception e) {
