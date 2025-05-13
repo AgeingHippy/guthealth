@@ -11,21 +11,30 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Spring Security - Implementation of a User entity, and associated OAuth2 / UID & password authentication including custom login form and profile edit form
 - Updating views to standard view and modifying data capture to include dropdown select where relevant
 - FoodType and FoodCategory caching using Hazelcast cache
+- Improved feedback on views rather than a single error page
+- Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
+- Integration tests of REST controllers
+- Unit test coverage of View Controllers (Not exhaustive)
 - 
+
 # Currently phase:
-- better exception feedback on views
 
 
 
 # Future Phases showcasing (In no particular order)
-- [] On Insert trigger to enforce uniqueness of FoodType name per FoodCategory Principle User
+- Search for particular FoodType
+- Implementation of GUEST role and allow GUEST to view SYSTEM data (FoodCategory & FoodType)
+- Default new user as GUEST and require proactive user registration for USER role
+- Allow USER role to import SYSTEM data into the USER personal data 
+- Allow USER to register for new SYSTEM data setup, and notification of USER of such
+- Allow ADMIN user to reset user passwords
+- On Insert trigger to enforce uniqueness of FoodType name per Principle User
 - - Currently the implementation enforces uniqueness of FoodType within a category. We require different users to be able to create a FoodType of the same name but FoodType does not contain the principle so simple referential integrity cannot be applied here.
-- [] Meal MVC
-- [x] Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
-- File Load using API
-- [x] Data caching
-- Addition of Gut Health itself (Data Structure, API, UI etc.)
 - Third party API integration
+- [] Meal MVC
+- Filter meals based on date or description
+- File Load using API
+- Addition of Gut Health itself (Data Structure, API, UI etc.)
 - Android UI
 - AI analysis of consumption and gut health and reporting of patterns (Python and AI study required prior to this phase) 
 
