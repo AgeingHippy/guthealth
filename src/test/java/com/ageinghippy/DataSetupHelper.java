@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DataSetupHelper {
+    private Map<Long, Role> roleMap = new HashMap<>();
+
     private Map<Long, UserPrinciple> userPrincipleMap = new HashMap<>();
 
     private Map<String, PreparationTechnique> preparationTechniqueMap = new HashMap<>();
@@ -29,11 +31,23 @@ public class DataSetupHelper {
 
 
     public DataSetupHelper() {
-        initialisePrinciple();
+        initialiseRoles();
+        initialiseUserPrinciples();
         initialisePreparationTechniques();
         initialiseFoodCategories();
         initialiseFoodTypes();
         initialiseDishes();
+    }
+
+    public Role getRole(Long id) {
+        return roleMap.get(id);
+    }
+
+    public Role getRole(String authority) {
+        return roleMap.values().stream()
+                .filter(role -> authority.equals(role.getAuthority()))
+                .findFirst()
+                .orElse(null);
     }
 
     public UserPrinciple getPrinciple(Long id) {
@@ -104,6 +118,32 @@ public class DataSetupHelper {
         return dishDTOComplexMap.get(id);
     }
 
+    //********************************** DATA INITIALISATION ROUTINES *****************************
+    private void initialiseRoles() {
+        initialiseRole(1L, "ROLE_ADMIN");
+        initialiseRole(2L, "ROLE_USER");
+        initialiseRole(3L, "ROLE_GUEST");
+    }
+
+    private void initialiseRole(Long id, String authority) {
+        roleMap.put(id, Role.builder().id(id).authority(authority).build());
+    }
+
+    private void initialiseUserPrinciples() {
+        initialiseUserPrinciple(1L, "admin", List.of(getRole("ROLE_ADMIN")));
+        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
+    }
+
+    private void initialiseUserPrinciple(Long id, String userName, List<Role> authorities) {
+        userPrincipleMap.put(id,
+                UserPrinciple.builder()
+                        .id(id)
+                        .username(userName)
+                        .authorities(new ArrayList<>(authorities))
+                        .build()
+        );
+    }
 
     private void initialisePreparationTechniques() {
         initialisePreparationTechnique("PrepType1", "Preparation type one description");
@@ -117,12 +157,6 @@ public class DataSetupHelper {
                 PreparationTechnique.builder().code(code).description(description).build());
 
         preparationTechniqueDTOMap.put(code, new PreparationTechniqueDTO(code, description));
-    }
-
-    private void initialisePrinciple() {
-        userPrincipleMap.put(1L, UserPrinciple.builder().id(1L).username("admin").build());
-        userPrincipleMap.put(2L, UserPrinciple.builder().id(2L).username("basic").build());
-        userPrincipleMap.put(3L, UserPrinciple.builder().id(3L).username("guest").build());
     }
 
     private void initialiseFoodCategories() {

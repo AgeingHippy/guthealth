@@ -41,3 +41,16 @@ async function fetchSelectOptions(uri) {
     return resultSet;
 }
 
+//###########################################################################
+//##         Show a response message and then clear after 10 seconds
+//###########################################################################
+function showMessage(type, message) {
+    let messagePanel = document.getElementById(`${type}-panel`);
+    let messageSpan = messagePanel.getElementsByTagName('span')[0];
+    messageSpan.innerText = message;
+    messagePanel.removeAttribute("hidden");
+    setTimeout(function() {
+        messageSpan.innerText="";
+        messagePanel.setAttribute("hidden",true);
+        }, 5000);
+}

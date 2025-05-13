@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `principle` (
   `enabled` TINYINT NOT NULL DEFAULT 1,
   `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `principle_username_uk` (`username`),
   KEY `fk_user_meta_principle1_idx` (`user_meta_id`),
   CONSTRAINT `fk_user_meta_principle1`
     FOREIGN KEY (`user_meta_id`)

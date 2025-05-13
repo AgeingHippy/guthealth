@@ -22,4 +22,15 @@ public class UserController {
 
         return "Password successfully updated";
     }
+
+    @PostMapping("/register")
+    public String registerActiveUser(Authentication authentication) {
+        UserPrinciple userPrinciple = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
+        try {
+            userPrincipleService.registerActiveUser(userPrinciple);
+            return "Successfully registered as an active user";
+        } catch (Exception e) {
+            return "Failed to register as an active user";
+        }
+    }
 }

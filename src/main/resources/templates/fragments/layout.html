@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -23,11 +24,11 @@
 <th:block th:replace="~{fragments/header :: header}"/>
 <div class="container center">
     <div class="body-content">
-        <div class="center alert alert-success" th:if="${successMessage}">
+        <div id="success-panel" class="center alert alert-success" th:attr="hidden='${successMessage != null}'">
             <span class="center" th:text="${successMessage}"></span>
         </div>
 
-        <div class="center alert alert-danger" th:if="${errorMessage}">
+        <div id="error-panel" class="center alert alert-danger" th:attr="hidden='${errorMessage != null}'">
             <span class="center" th:text="${errorMessage}"></span>
         </div>
         <th:block layout:fragment="content"/>

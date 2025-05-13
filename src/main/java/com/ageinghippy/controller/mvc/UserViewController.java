@@ -4,10 +4,12 @@ import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
 
@@ -26,12 +28,28 @@ public class UserViewController {
     }
 
     @PostMapping("/create")
-    public String createNewUser(@ModelAttribute UserPrinciple userPrinciple, Model model) {
-        userPrinciple = userPrincipleService.createPasswordUser(userPrinciple);
+    public String createNewUser(@ModelAttribute UserPrinciple userPrinciple,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            userPrinciple = userPrincipleService.createPasswordUser(userPrinciple);
 
-        model.addAttribute("username", userPrinciple.getUsername());
+            model.addAttribute("username", userPrinciple.getUsername());
+            redirectAttributes.addFlashAttribute("successMessage", "User registered successfully.");
+            return "redirect:/login";
+        } catch (Exception e) {
+            String errorMessage;
+            if (e.getClass() == DataIntegrityViolationException.class) {
+                errorMessage = "User registration failed. Username not unique";
+            } else {
+                errorMessage = e.getClass().getSimpleName() + " - " + "User registration failed.";
+            }
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            userPrinciple.setPassword(null);
+            redirectAttributes.addFlashAttribute("user", userPrinciple);
+            return "redirect:/user/new";
+        }
 
-        return "redirect:/login";
     }
 
     @GetMapping("/profile")

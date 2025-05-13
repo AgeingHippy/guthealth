@@ -1,5 +1,6 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.entity.Role;
 import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.RoleRepository;
@@ -50,6 +51,20 @@ public class UserPrincipleService {
     }
 
     @Transactional
+    //If user already has the role, do nothing
+    public UserPrinciple registerActiveUser(UserPrinciple userPrinciple) {
+        Role userRole = roleRepository.findByAuthority("ROLE_USER").orElseThrow();
+
+        if (!userPrinciple.getAuthorities().contains(userRole)) {
+            userPrinciple.getAuthorities().add(userRole);
+
+            userPrinciple = saveUserPrinciple(userPrinciple);
+        }
+
+        return userPrinciple;
+    }
+
+    @Transactional
     public UserPrinciple createOauth2User(UserPrinciple userPrinciple) {
         assert(userPrinciple.getPassword() == null);
         assert(userPrinciple.getOauth2Provider() != null);
@@ -59,12 +74,12 @@ public class UserPrincipleService {
 
     @Transactional
     public UserPrinciple createUser(UserPrinciple userPrinciple) {
-        userPrinciple.setAuthorities(List.of(roleRepository.findByAuthority("ROLE_USER").orElseThrow()));
+        userPrinciple.setAuthorities(List.of(roleRepository.findByAuthority("ROLE_GUEST").orElseThrow()));
 
         return saveUserPrinciple(userPrinciple);
     }
 
-    private UserPrinciple saveUserPrinciple(UserPrinciple userPrinciple) {
+    protected UserPrinciple saveUserPrinciple(UserPrinciple userPrinciple) {
         boolean newUser = userPrinciple.getId() == null;
         userMetaRepository.save(userPrinciple.getUserMeta());
         userPrincipleRepository.save(userPrinciple);

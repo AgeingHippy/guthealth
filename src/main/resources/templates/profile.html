@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +21,9 @@
             </div>
 
             <div>
-                <button type="button" class="col-3 btn btn-warning" id="button-show-password-div" href="#">Change Password</button>
+                <button type="button" class="col-3 btn btn-warning" id="button-show-password-div" href="#">Change
+                    Password
+                </button>
             </div>
             <br>
 
@@ -35,7 +38,8 @@
                            name="repeat-new-password">
                 </div>
                 <div>
-                    <button type="button" class="col-3 btn btn-primary" id="button-submit-password">Submit Password</button>
+                    <button type="button" class="col-3 btn btn-primary" id="button-submit-password">Submit Password
+                    </button>
                 </div>
 
             </div>
@@ -47,6 +51,12 @@
     </div>
 
     <div id="user-profile">
+        <div id="div-register-active-user" sec:authorize="!hasRole('ROLE_USER')">
+            <button type="button" id="button-register-active-user" class="btn btn-success">
+                Click here to be able to create your own content
+            </button>
+            <br>
+        </div>
         <form th:action="@{'/user/userMeta/'+${userPrinciple.userMeta.id}}"
               th:object="${userPrinciple.userMeta}" method="post">
 
@@ -113,11 +123,22 @@
                 });
             let responseText = await response.text();
             let updateMessage = document.createElement("p");
-            updateMessage.innerText = responseText;
-            document.getElementById("div-change-password").appendChild(updateMessage);
 
-            setTimeout(hidePasswordUpdate,5000);
+            showMessage("success",responseText);
+
+            hidePasswordUpdate();
         }
+
+        async function submitActiveUserRegistration() {
+            let response = await fetch("/api/v1/user/register", {
+                method:"POST"
+                });
+            let responseText = await response.text();
+            showMessage("success",responseText);
+            document.getElementById("div-register-active-user").setAttribute("hidden",true);
+        }
+
+        document.getElementById("button-register-active-user").addEventListener("click",submitActiveUserRegistration);
 
         document.getElementById("button-submit-password").addEventListener("click",submitPassword);
 
