@@ -238,7 +238,7 @@ class FoodCategoryViewControllerTest {
                 .andExpect(flash().attributeExists("successMessage"))
                 .andExpect(redirectedUrl("/food-category/edit/1"));
 
-        verify(foodCategoryService,times(1)).updateFoodCategory(1L, foodCategoryDTOSimple);
+        verify(foodCategoryService, times(1)).updateFoodCategory(1L, foodCategoryDTOSimple);
     }
 
     @Test
@@ -263,7 +263,32 @@ class FoodCategoryViewControllerTest {
                 .andExpect(flash().attribute("foodCategory", foodCategoryFlashModel))
                 .andExpect(redirectedUrl("/food-category/edit/1"));
 
-        verify(foodCategoryService,times(1)).updateFoodCategory(1L, foodCategoryDTORequest);
+        verify(foodCategoryService, times(1)).updateFoodCategory(1L, foodCategoryDTORequest);
         verify(foodCategoryService, times(1)).getFoodCategory(1L);
     }
+
+    @Test
+    @WithMockUser(username = "basic", roles = "USER")
+    void viewSystemFoodCategories() throws Exception {
+        List<FoodCategoryDTOSimple> foodCategories = List.of(
+                dsh.getFoodCategoryDTOSimple(6L),
+                dsh.getFoodCategoryDTOSimple(7L),
+                dsh.getFoodCategoryDTOSimple(8L),
+                dsh.getFoodCategoryDTOSimple(9L)
+        );
+
+        UserPrinciple systemUserPrinciple = dsh.getPrinciple("system");
+        when(userPrincipleService.loadUserByUsername("system")).thenReturn(systemUserPrinciple);
+        when(foodCategoryService.getFoodCategories(systemUserPrinciple)).thenReturn(foodCategories);
+
+
+        mockMvc.perform(get(rootUri + "/system"))
+                .andDo(print())
+                .andExpect(model().attribute("foodCategories", foodCategories))
+                .andExpect(view().name("/food-category-system"));
+
+        verify(userPrincipleService, times(1)).loadUserByUsername("system");
+        verify(foodCategoryService, times(1)).getFoodCategories(systemUserPrinciple);
+    }
+
 }
