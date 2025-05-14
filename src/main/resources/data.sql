@@ -35,10 +35,11 @@ INSERT INTO user_meta
 VALUES
     ( 1, 'Bob','bob@home.com','Likes building'),
     ( 2, 'Bill','bill@home.com',null),
-    ( 3, 'Betty','betty@home.com','Does the boop');
+    ( 3, 'Betty','betty@home.com','Does the boop'),
+    ( 4, 'SYSTEM',null,'System Data Owner');
 
 /*!40000 ALTER TABLE `user_meta` ENABLE KEYS */;
-ALTER TABLE `user_meta` AUTO_INCREMENT=4;
+ALTER TABLE `user_meta` AUTO_INCREMENT=5;
 
 --
 -- PRINCIPLE
@@ -50,10 +51,11 @@ INSERT INTO principle
 VALUES
     (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', null, 1),
     (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', null, 2),
-    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', null, 3);
+    (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', null, 3),
+    (4, 'system','$2a$10$W9PJKMvG1O1MM79JxE3VBOCq0m7DOZLD/ky8mWmtcQ3qziR/KR7KK', null, 1);
 
 /*!40000 ALTER TABLE `principle` ENABLE KEYS */;
-ALTER TABLE `principle` AUTO_INCREMENT=4;
+ALTER TABLE `principle` AUTO_INCREMENT=5;
 
 --
 -- PRINCIPLE_ROLES
@@ -66,7 +68,8 @@ INSERT INTO principle_roles
 VALUES
     (1,1),
     (2,2),
-    (3,3);
+    (3,3),
+    (4,2);
 
 /*!40000 ALTER TABLE `principle_roles` ENABLE KEYS */;
 
@@ -82,7 +85,7 @@ VALUES
     ('PrepType1','Preparation type one description'),
     ('PrepType2','Preparation type two description'),
     ('PrepType3','Preparation type three description'),
-    ('PrepType4','Preparation type four description')
+    ('PrepType4','Preparation type four description');
 /*!40000 ALTER TABLE `preparation_technique` ENABLE KEYS */;
 
 --
@@ -99,10 +102,14 @@ VALUES
 	(3,2,'foodCategory3_name','Food Category three description'),
 	(4,2,'foodCategory4_name','Food Category four description'),
 	(5,2,'foodCategory5_name','Food Category five description'),
-	(6,1,'foodCategory6_name','Food Category six description');
+	(6,1,'foodCategory6_name','Food Category six description'),
+	(7,4,'foodCategory7_name','Food Category seven description'),
+	(8,4,'foodCategory8_name','Food Category eight description'),
+	(9,4,'foodCategory9_name','Food Category nine description');
+
 /*!40000 ALTER TABLE `food_category` ENABLE KEYS */;
 
-ALTER TABLE food_category AUTO_INCREMENT = 7;
+ALTER TABLE food_category AUTO_INCREMENT = 10;
 
 --
 -- Dumping data for table `food_type`
@@ -128,12 +135,18 @@ VALUES
     (13,4,'foodType13','Food Type thirteen Description'),
     (14,4,'foodType14','Food Type fourteen Description'),
     (15,4,'foodType15','Food Type fifteen Description'),
-    (16,6,'foodType16','Food Type sixteen Description');
+    (16,6,'foodType16','Food Type sixteen Description'),
+    (17,7,'foodType17','Food Type seventeen Description'),
+    (18,7,'foodType18','Food Type eighteen Description'),
+    (19,8,'foodType19','Food Type nineteen Description'),
+    (20,8,'foodType20','Food Type twenty Description'),
+    (21,9,'foodType21','Food Type twentyOne Description');
+
 
 
 /*!40000 ALTER TABLE `food_type` ENABLE KEYS */;
 
-ALTER TABLE `food_type` AUTO_INCREMENT=17;
+ALTER TABLE `food_type` AUTO_INCREMENT=22;
 
 --
 -- Dumping data for table `dish`

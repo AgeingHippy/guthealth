@@ -15,17 +15,18 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Refine views to use dropdowns, ajax etc. Basically make it prettier and more usable.
 - Integration tests of REST controllers
 - Unit test coverage of View Controllers (Not exhaustive)
-- 
+- Default new user as GUEST and require proactive user registration for USER role 
 
 # Currently phase:
-- Default new user as GUEST and require proactive user registration for USER role
-- 
+
+- Implementation of GUEST role and allow GUEST to view SYSTEM data (FoodCategory & FoodType)
 
 
 # Future Phases showcasing (In no particular order)
 - Add logging using AOP
+- Programmatically refresh security context when new role assigned to user
 - Search for particular FoodType
-- Implementation of GUEST role and allow GUEST to view SYSTEM data (FoodCategory & FoodType)
+- 
 - Allow USER role to import SYSTEM data into the USER personal data 
 - Allow USER to register for new SYSTEM data setup, and notification of USER of such
 - Allow ADMIN user to reset user passwords

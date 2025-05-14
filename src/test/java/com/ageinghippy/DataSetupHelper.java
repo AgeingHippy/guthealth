@@ -133,6 +133,8 @@ public class DataSetupHelper {
         initialiseUserPrinciple(1L, "admin", List.of(getRole("ROLE_ADMIN")));
         initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_USER")));
         initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
+        initialiseUserPrinciple(4L, "system", List.of(getRole("ROLE_USER")));
+
     }
 
     private void initialiseUserPrinciple(Long id, String userName, List<Role> authorities) {
@@ -165,7 +167,10 @@ public class DataSetupHelper {
         initialiseFoodCategory(3L, 2L, "foodCategory3_name", "Food Category three description");
         initialiseFoodCategory(4L, 2L, "foodCategory4_name", "Food Category four description");
         initialiseFoodCategory(5L, 2L, "foodCategory5_name", "Food Category five description");
-        initialiseFoodCategory(6L, 1L, "foodCategory6_name", "Food Category six description");
+        initialiseFoodCategory(6L, 4L, "foodCategory6_name", "Food Category six description");
+        initialiseFoodCategory(7L, 4L, "foodCategory7_name", "Food Category seven description");
+        initialiseFoodCategory(8L, 4L, "foodCategory8_name", "Food Category eight description");
+        initialiseFoodCategory(9L, 4L, "foodCategory9_name", "Food Category nine description");
     }
 
     //Must be initialised AFTER foodTypes have been initialised as foodTypeDTOComplexMap is immutable
@@ -218,6 +223,11 @@ public class DataSetupHelper {
         initialiseFoodType(14L, 4L, "foodType14", "Food Type fourteen Description");
         initialiseFoodType(15L, 4L, "foodType15", "Food Type fifteen Description");
         initialiseFoodType(16L, 6L, "foodType16", "Food Type sixteen Description");
+        initialiseFoodType(17L, 6L, "foodType17", "Food Type seventeen Description");
+        initialiseFoodType(18L, 6L, "foodType18", "Food Type eighteen Description");
+        initialiseFoodType(19L, 6L, "foodType19", "Food Type nineteen Description");
+        initialiseFoodType(20L, 6L, "foodType20", "Food Type twenty Description");
+        initialiseFoodType(21L, 6L, "foodType21", "Food Type twentyOne Description");
 
         initialiseFoodCategoryDTOComplexMap();
     }
