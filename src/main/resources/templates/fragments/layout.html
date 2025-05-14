@@ -24,11 +24,11 @@
 <th:block th:replace="~{fragments/header :: header}"/>
 <div class="container center">
     <div class="body-content">
-        <div id="success-panel" class="center alert alert-success" th:attr="hidden='${successMessage != null}'">
+        <div id="success-panel" class="center alert alert-success" th:attrappend="hidden=${successMessage == null}?'true'">
             <span class="center" th:text="${successMessage}"></span>
         </div>
 
-        <div id="error-panel" class="center alert alert-danger" th:attr="hidden='${errorMessage != null}'">
+        <div id="error-panel" class="center alert alert-danger" th:attrappend="hidden=${errorMessage == null}?'true'">
             <span class="center" th:text="${errorMessage}"></span>
         </div>
         <th:block layout:fragment="content"/>

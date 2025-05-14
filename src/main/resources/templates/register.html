@@ -9,7 +9,9 @@
 <body>
 
 <div layout:fragment="content" th:remove="tag">
-
+    <p/>
+    <h4>Register new account</h4>
+    <p/>
     <div id="registerUser">
         <form th:action="@{'/user/create'}"
               th:object="${user}" method="post">
