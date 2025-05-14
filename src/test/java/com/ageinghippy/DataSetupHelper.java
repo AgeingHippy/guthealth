@@ -3,10 +3,7 @@ package com.ageinghippy;
 import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataSetupHelper {
     private Map<Long, Role> roleMap = new HashMap<>();
@@ -187,6 +184,15 @@ public class DataSetupHelper {
         );
     }
 
+    private void populateFoodCategoriesWithFoodTypes() {
+        foodCategoryMap.values().forEach(foodCategory -> {
+           foodTypeMap.values()
+                   .stream()
+                   .filter(foodType -> Objects.equals(foodType.getFoodCategory().getId(), foodCategory.getId()))
+                   .forEach(foodType -> foodCategory.getFoodTypes().add(foodType));
+        });
+    }
+
     private void initialiseFoodCategory(Long id, Long userPrincipleId, String name, String description) {
         foodCategoryMap.put(
                 id,
@@ -195,6 +201,7 @@ public class DataSetupHelper {
                         .name(name)
                         .description(description)
                         .principle(userPrincipleMap.get(userPrincipleId))
+                        .foodTypes(new ArrayList<FoodType>())
                         .build()
         );
 
@@ -230,6 +237,7 @@ public class DataSetupHelper {
         initialiseFoodType(21L, 6L, "foodType21", "Food Type twentyOne Description");
 
         initialiseFoodCategoryDTOComplexMap();
+        populateFoodCategoriesWithFoodTypes();
     }
 
     private void initialiseFoodType(Long id, Long foodCategoryId, String name, String description) {

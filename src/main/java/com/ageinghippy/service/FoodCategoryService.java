@@ -3,6 +3,7 @@ package com.ageinghippy.service;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
+import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.UserPrinciple;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,18 +30,18 @@ public class FoodCategoryService {
     private final EntityManager entityManager;
     private final CacheManager cacheManager;
 
-    @Cacheable(value = "foodCategory",key="#id")
+    @Cacheable(value = "foodCategory", key = "#id")
     public FoodCategoryDTOComplex getFoodCategory(Long id) {
         return dTOMapper.map(foodCategoryRepository.findById(id).orElseThrow(), FoodCategoryDTOComplex.class);
     }
 
-    @Cacheable(value="foodCategoryList",key="'principleId='+#principle.getId()")
+    @Cacheable(value = "foodCategoryList", key = "'principleId='+#principle.getId()")
     public List<FoodCategoryDTOSimple> getFoodCategories(UserPrinciple principle) {
         return dTOMapper.mapList(foodCategoryRepository.findAllByPrinciple(principle), FoodCategoryDTOSimple.class);
     }
 
     @Transactional
-    @CacheEvict(value="foodCategoryList",key="'principleId='+#principle.getId()")
+    @CacheEvict(value = "foodCategoryList", key = "'principleId='+#principle.getId()")
     public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOSimple foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
         newFoodCategory.setPrinciple(principle);
@@ -51,14 +53,14 @@ public class FoodCategoryService {
 
     //todo - prototype method
     @Transactional
-    @CacheEvict(value="foodCategoryList",key="'principleId='+#principle.getId()")
+    @CacheEvict(value = "foodCategoryList", key = "'principleId='+#principle.getId()")
     public FoodCategoryDTOComplex createFoodCategory(FoodCategoryDTOComplex foodCategory, UserPrinciple principle) {
         FoodCategory newFoodCategory = dTOMapper.map(foodCategory, FoodCategory.class);
         newFoodCategory.setPrinciple(principle);
 
         //need to assign foodCategory explicitly
         //todo - assign in mapper?
-        for (int i=0; i< newFoodCategory.getFoodTypes().size(); i++) {
+        for (int i = 0; i < newFoodCategory.getFoodTypes().size(); i++) {
             newFoodCategory.getFoodTypes().get(i).setFoodCategory(newFoodCategory);
         }
 
@@ -69,7 +71,7 @@ public class FoodCategoryService {
         return dTOMapper.map(newFoodCategory, FoodCategoryDTOComplex.class);
     }
 
-    private FoodCategory saveFoodCategory(FoodCategory foodCategory) {
+    protected FoodCategory saveFoodCategory(FoodCategory foodCategory) {
         foodCategory = foodCategoryRepository.save(foodCategory);
         entityManager.flush();
         entityManager.refresh(foodCategory);
@@ -85,7 +87,7 @@ public class FoodCategoryService {
      * @throws java.util.NoSuchElementException if the food category with the provided id does not exist
      */
     @Transactional
-    @CacheEvict(value = "foodCategory",key="#id")
+    @CacheEvict(value = "foodCategory", key = "#id")
     public FoodCategoryDTOComplex updateFoodCategory(Long id, FoodCategoryDTOSimple updateFoodCategory) {
 
         FoodCategory foodCategory = foodCategoryRepository.findById(id).orElseThrow();
@@ -104,7 +106,7 @@ public class FoodCategoryService {
     }
 
     @Transactional
-    @CacheEvict(value = "foodCategory",key="#id")
+    @CacheEvict(value = "foodCategory", key = "#id")
     public void deleteFoodCategory(Long id) {
         deleteFoodCategory(foodCategoryRepository.findById(id).orElseThrow());
         evictFoodCategoryListCacheForCurrentPrinciple();
@@ -113,5 +115,39 @@ public class FoodCategoryService {
     private void evictFoodCategoryListCacheForCurrentPrinciple() {
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Objects.requireNonNull(cacheManager.getCache("foodCategoryList")).evictIfPresent("principleId=" + userPrinciple.getId());
+    }
+
+    @Transactional
+    public FoodCategoryDTOComplex copyFoodCategory(Long foodCategoryId, UserPrinciple userPrinciple) {
+        FoodCategory foodCategory = foodCategoryRepository.findById(foodCategoryId).orElseThrow();
+
+        FoodCategory newFoodCategory = copyFoodCategory(foodCategory, userPrinciple);
+
+        return dTOMapper.map(newFoodCategory, FoodCategoryDTOComplex.class);
+    }
+
+    protected FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
+
+        List<FoodType> newFoodTypes = new ArrayList<>();
+
+        FoodCategory newFoodCategory = FoodCategory.builder()
+                .name(foodCategory.getName())
+                .description(foodCategory.getDescription())
+                .principle(userPrinciple)
+                .build();
+
+        for (int i=0; i<foodCategory.getFoodTypes().size(); i++) {
+            FoodType ft = foodCategory.getFoodTypes().get(i);
+            newFoodTypes.add(
+                    FoodType.builder()
+                            .foodCategory(newFoodCategory)
+                            .name(ft.getName())
+                            .description(ft.getDescription())
+                            .build());
+        }
+
+        newFoodCategory.setFoodTypes(newFoodTypes);
+
+        return saveFoodCategory(newFoodCategory);
     }
 }

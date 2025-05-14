@@ -4,6 +4,7 @@ import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodCategoryService;
+import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import java.util.List;
 public class FoodCategoryController {
 
     private final FoodCategoryService foodCategoryService;
+    private final UserPrincipleService userPrincipleService;
 
     @GetMapping
     public List<FoodCategoryDTOSimple> getFoodCategories(Authentication authentication) {
@@ -82,6 +84,16 @@ public class FoodCategoryController {
     public ResponseEntity<String> deleteFoodCategory(@PathVariable Long id) {
         foodCategoryService.deleteFoodCategory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/system")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','read') && hasRole('ROLE_USER')")
+    public ResponseEntity<FoodCategoryDTOComplex> copySystemFoodCategory(@PathVariable Long id,
+                                                                         Authentication authentication) {
+        return ResponseEntity.ok(
+                foodCategoryService.copyFoodCategory(
+                        id,
+                        userPrincipleService.castToUserPrinciple(authentication.getPrincipal())));
     }
 
 }
