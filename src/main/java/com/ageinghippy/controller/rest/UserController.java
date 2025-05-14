@@ -28,7 +28,7 @@ public class UserController {
         UserPrinciple userPrinciple = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
         try {
             userPrincipleService.registerActiveUser(userPrinciple);
-            return "Successfully registered as an active user";
+            return "Successfully registered as an active user. Please log out and back in to activate the change";
         } catch (Exception e) {
             return "Failed to register as an active user";
         }

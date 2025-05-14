@@ -52,5 +52,5 @@ function showMessage(type, message) {
     setTimeout(function() {
         messageSpan.innerText="";
         messagePanel.setAttribute("hidden",true);
-        }, 5000);
+        }, 10000);
 }
