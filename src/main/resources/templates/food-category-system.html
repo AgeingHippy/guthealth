@@ -29,7 +29,7 @@
             <td th:text="${foodCategory.name}"></td>
             <td th:text="${foodCategory.description}"></td>
             <td>
-                <a th:href="@{'/food-category/view/' + ${foodCategory.id}}" class="icon-link">
+                <a th:href="@{'/food-category/view/' + ${foodCategory.id}}+'/system'" class="icon-link">
                     <i class="bi bi-eye"></i>
                 </a>
             </td>

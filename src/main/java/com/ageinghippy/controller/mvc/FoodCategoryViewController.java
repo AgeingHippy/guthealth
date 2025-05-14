@@ -34,7 +34,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/system")
-    @PreAuthorize("hasAnyRole('ROLE_GUEST','ROLE_USER')")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','read')")
     public String showSystemFoodCategories(Model model) {
         List<FoodCategoryDTOSimple> foodCategories =
                 foodCategoryService.getFoodCategories(
@@ -44,6 +44,17 @@ public class FoodCategoryViewController {
 
         return "/food-category-system";
     }
+
+    @GetMapping("/view/{id}/system")
+    @PreAuthorize("hasPermission(#id,'FoodCategory','read')")
+    public String showSpecificSystemFoodCategoryView(Model model, @PathVariable Long id) {
+        FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(id);
+
+        model.addAttribute("foodCategory", foodCategory);
+
+        return "/food-category-detail-system";
+    }
+
 
     @GetMapping("/view/{id}")
     @PreAuthorize("hasPermission(#id,'FoodCategory','read')")

@@ -57,24 +57,34 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
 
             switch (targetType) {
-                case "Dish" :
+                case "Dish":
                     Optional<Dish> dish = dishRepository.findById(Long.parseLong(targetId.toString()));
-                    if (dish.isEmpty()) {return true;}
+                    if (dish.isEmpty()) {
+                        return true;
+                    }
                     return dish.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-                case "DishComponent" :
+                case "DishComponent":
                     Optional<DishComponent> dishComponent = dishComponentRepository.findById(Long.parseLong(targetId.toString()));
-                    if (dishComponent.isEmpty()) {return true;}
+                    if (dishComponent.isEmpty()) {
+                        return true;
+                    }
                     return dishComponent.get().getDish().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
                 case "FoodCategory":
                     Optional<FoodCategory> foodCategory = foodCategoryRepository.findById(Long.parseLong(targetId.toString()));
-                    if (foodCategory.isEmpty()) {return true;}
-                    return foodCategory.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+                    if (foodCategory.isEmpty()) {
+                        return true;
+                    }
+                    return hasSystemDataReadPermission(foodCategory.get().getPrinciple(), userPrinciple, permission)
+                           ||
+                           foodCategory.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
                 case "FoodType":
                     Optional<FoodType> foodType = foodTypeRepository.findById(Long.parseLong(targetId.toString()));
-                    if (foodType.isEmpty()) {return true;}
+                    if (foodType.isEmpty()) {
+                        return true;
+                    }
                     return foodType.get().getFoodCategory().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
                 default:
@@ -83,7 +93,16 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             }
             return false;
         }
+    }
 
 
+    private boolean hasSystemDataReadPermission(UserPrinciple dataOwner, UserPrinciple supplicant, Object permission) {
+        return "read".equals(permission.toString())
+               &&
+               supplicant.getAuthorities()
+                       .stream()
+                       .anyMatch(auth -> "ROLE_GUEST".equals(auth.getAuthority()) || "ROLE_USER".equals(auth.getAuthority()))
+               &&
+               "system".equals(dataOwner.getUsername());
     }
 }

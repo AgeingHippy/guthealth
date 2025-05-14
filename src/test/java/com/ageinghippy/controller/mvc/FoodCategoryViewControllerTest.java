@@ -291,4 +291,20 @@ class FoodCategoryViewControllerTest {
         verify(foodCategoryService, times(1)).getFoodCategories(systemUserPrinciple);
     }
 
+    @Test
+    @WithMockUser(username = "basic", roles = "USER")
+    void viewSpecificSystemFoodCategory() throws Exception {
+        FoodCategoryDTOComplex foodCategoryDTOComplex = dsh.getFoodCategoryDTOComplex(7L);
+
+        when(foodCategoryService.getFoodCategory(7L)).thenReturn(foodCategoryDTOComplex);
+
+
+        mockMvc.perform(get(rootUri + "/view/7/system"))
+                .andDo(print())
+                .andExpect(model().attribute("foodCategory", foodCategoryDTOComplex))
+                .andExpect(view().name("/food-category-detail-system"));
+
+        verify(foodCategoryService, times(1)).getFoodCategory(7L);
+    }
+
 }
