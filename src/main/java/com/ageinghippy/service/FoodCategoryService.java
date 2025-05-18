@@ -3,7 +3,6 @@ package com.ageinghippy.service;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
-import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.UserPrinciple;
@@ -119,11 +118,18 @@ public class FoodCategoryService {
 
     @Transactional
     public FoodCategoryDTOComplex copyFoodCategory(Long foodCategoryId, UserPrinciple userPrinciple) {
-        FoodCategory foodCategory = foodCategoryRepository.findById(foodCategoryId).orElseThrow();
+        FoodCategory sourceFoodCategory = foodCategoryRepository.findById(foodCategoryId).orElseThrow();
+        FoodCategory targetFoodCategory =
+                foodCategoryRepository.findByNameAndPrinciple(sourceFoodCategory.getName(),userPrinciple).orElse(null);
 
-        FoodCategory newFoodCategory = copyFoodCategory(foodCategory, userPrinciple);
+        if (targetFoodCategory != null) {
+            targetFoodCategory = appendFoodTypesToFoodCategory(targetFoodCategory, sourceFoodCategory);
+        }
+        else {
+            targetFoodCategory = copyFoodCategory(sourceFoodCategory, userPrinciple);
+        }
 
-        return dTOMapper.map(newFoodCategory, FoodCategoryDTOComplex.class);
+        return dTOMapper.map(targetFoodCategory, FoodCategoryDTOComplex.class);
     }
 
     protected FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
@@ -136,7 +142,7 @@ public class FoodCategoryService {
                 .principle(userPrinciple)
                 .build();
 
-        for (int i=0; i<foodCategory.getFoodTypes().size(); i++) {
+        for (int i = 0; i < foodCategory.getFoodTypes().size(); i++) {
             FoodType ft = foodCategory.getFoodTypes().get(i);
             newFoodTypes.add(
                     FoodType.builder()
@@ -149,5 +155,23 @@ public class FoodCategoryService {
         newFoodCategory.setFoodTypes(newFoodTypes);
 
         return saveFoodCategory(newFoodCategory);
+    }
+
+    protected FoodCategory appendFoodTypesToFoodCategory(FoodCategory targetFoodCategory, FoodCategory sourceFoodCategory) {
+        List<String> existingSourceFoodTypeNames = targetFoodCategory.getFoodTypes().stream().map(FoodType::getName).toList();
+
+        sourceFoodCategory.getFoodTypes().stream()
+                .filter(ft -> !existingSourceFoodTypeNames.contains(ft.getName()))
+                .forEach(ft -> {
+                    targetFoodCategory.getFoodTypes().add(
+                            FoodType.builder()
+                                    .foodCategory(targetFoodCategory)
+                                    .name(ft.getName())
+                                    .description(ft.getDescription())
+                                    .build()
+                    );
+                });
+
+        return saveFoodCategory(targetFoodCategory);
     }
 }
