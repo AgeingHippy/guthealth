@@ -33,7 +33,7 @@ public class DishController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<DishDTOComplex> postFullDish(@RequestBody DishDTOComplex dish, Authentication authentication) {
         if (dish.id() != null) {
             throw new IllegalArgumentException("Dish ID cannot be specified on new record");

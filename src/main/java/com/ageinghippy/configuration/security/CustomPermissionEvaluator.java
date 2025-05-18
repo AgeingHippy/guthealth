@@ -46,53 +46,46 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                     "permission is not in String form");
         }
 
-        if (authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch("ROLE_ADMIN"::equals)) {
-            //Has ADMIN role so accept
-            return true;
-        } else {
-            //we need to determine whether the user is the owner of the entity
-            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
 
-            switch (targetType) {
-                case "Dish":
-                    Optional<Dish> dish = dishRepository.findById(Long.parseLong(targetId.toString()));
-                    if (dish.isEmpty()) {
-                        return true;
-                    }
-                    return dish.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+        //we need to determine whether the user is the owner of the entity
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
 
-                case "DishComponent":
-                    Optional<DishComponent> dishComponent = dishComponentRepository.findById(Long.parseLong(targetId.toString()));
-                    if (dishComponent.isEmpty()) {
-                        return true;
-                    }
-                    return dishComponent.get().getDish().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+        switch (targetType) {
+            case "Dish":
+                Optional<Dish> dish = dishRepository.findById(Long.parseLong(targetId.toString()));
+                if (dish.isEmpty()) {
+                    return true;
+                }
+                return dish.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-                case "FoodCategory":
-                    Optional<FoodCategory> foodCategory = foodCategoryRepository.findById(Long.parseLong(targetId.toString()));
-                    if (foodCategory.isEmpty()) {
-                        return true;
-                    }
-                    return hasSystemDataReadPermission(foodCategory.get().getPrinciple(), userPrinciple, permission)
-                           ||
-                           foodCategory.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+            case "DishComponent":
+                Optional<DishComponent> dishComponent = dishComponentRepository.findById(Long.parseLong(targetId.toString()));
+                if (dishComponent.isEmpty()) {
+                    return true;
+                }
+                return dishComponent.get().getDish().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-                case "FoodType":
-                    Optional<FoodType> foodType = foodTypeRepository.findById(Long.parseLong(targetId.toString()));
-                    if (foodType.isEmpty()) {
-                        return true;
-                    }
-                    return foodType.get().getFoodCategory().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+            case "FoodCategory":
+                Optional<FoodCategory> foodCategory = foodCategoryRepository.findById(Long.parseLong(targetId.toString()));
+                if (foodCategory.isEmpty()) {
+                    return true;
+                }
+                return hasSystemDataReadPermission(foodCategory.get().getPrinciple(), userPrinciple, permission)
+                       ||
+                       foodCategory.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-                default:
+            case "FoodType":
+                Optional<FoodType> foodType = foodTypeRepository.findById(Long.parseLong(targetId.toString()));
+                if (foodType.isEmpty()) {
+                    return true;
+                }
+                return foodType.get().getFoodCategory().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-                    break;
-            }
-            return false;
+            default:
+
+                break;
         }
+        return false;
     }
 
 

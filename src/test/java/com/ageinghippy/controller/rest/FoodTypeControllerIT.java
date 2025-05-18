@@ -6,6 +6,7 @@ import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -268,11 +269,13 @@ public class FoodTypeControllerIT {
     @Test
     @Transactional
     void delete_success() throws Exception {
+        UserPrinciple principle =
+                (UserPrinciple) entityManager.createQuery("SELECT principle FROM FoodCategory WHERE id = 1").getResultList().getFirst();
         //given a specific record exists in the database
         entityManager.persist(FoodType.builder()
                 .name("testName")
                 .description("testDesc")
-                .foodCategory(FoodCategory.builder().id(1L).build())
+                .foodCategory(FoodCategory.builder().id(1L).principle(principle).build())
                 .build());
 
         Long id = (Long) entityManager.createQuery("SELECT id FROM FoodType where name = 'testName'").getSingleResult();

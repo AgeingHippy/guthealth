@@ -6,6 +6,7 @@ import com.ageinghippy.service.FoodTypeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,16 +22,19 @@ public class FoodTypeController {
     private final FoodTypeService foodTypeService;
 
     @GetMapping
+    @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','read')")
     public List<FoodTypeDTOSimple> getFoodTypes(@RequestParam(required = true) Long foodCategoryId) {
         return foodTypeService.getFoodTypes(foodCategoryId);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','read')")
     public ResponseEntity<FoodTypeDTOComplex> getFoodType(@PathVariable Long id) {
         return ResponseEntity.ok(foodTypeService.getFoodType(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasPermission(#foodType.foodCategory.id,'FoodCategory','edit')")
     public ResponseEntity<FoodTypeDTOComplex> postFoodType(@Valid @RequestBody FoodTypeDTOComplex foodType) {
         if (foodType.id() != null) {
             throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
@@ -45,6 +49,7 @@ public class FoodTypeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','edit')")
     public ResponseEntity<FoodTypeDTOComplex> putFoodType(@RequestBody FoodTypeDTOComplex foodType, @PathVariable Long id) {
         if (!id.equals(foodType.id())) {
             throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
@@ -58,6 +63,7 @@ public class FoodTypeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'FoodType','delete')")
     public ResponseEntity<String> deleteFoodType(@PathVariable Long id) {
         foodTypeService.deleteFoodType(id);
         return ResponseEntity.noContent().build();

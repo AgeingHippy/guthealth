@@ -26,8 +26,6 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-//                .oauth2Login(Customizer.withDefaults())
-//                .formLogin(Customizer.withDefaults());
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
                         .defaultSuccessUrl("/user/profile")

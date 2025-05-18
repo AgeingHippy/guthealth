@@ -35,7 +35,7 @@ public class FoodCategoryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<FoodCategoryDTOComplex> postFoodCategory(@RequestBody FoodCategoryDTOSimple foodCategory,
                                                                    Authentication authentication) {
         if (foodCategory.id() != null) {
@@ -54,7 +54,7 @@ public class FoodCategoryController {
 
     //todo - prototype method
     @PostMapping("/complex")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<FoodCategoryDTOComplex> postFoodCategoryComplex(@RequestBody FoodCategoryDTOComplex foodCategory,
                                                                           Authentication authentication) {
         if (foodCategory.id() != null) {

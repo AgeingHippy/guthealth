@@ -59,18 +59,18 @@ public class FoodTypeService {
      * @throws java.util.NoSuchElementException if the FoodType with the provided id does not exist
      */
     @Transactional
-    @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #updateFoodType.foodCategory.id")
     public FoodTypeDTOComplex updateFoodType(Long id, FoodTypeDTOComplex updateFoodType) {
         FoodType foodType = foodTypeRepository.findById(id).orElseThrow();
 
         foodType.setName(Util.valueIfNull(updateFoodType.name(), foodType.getName()));
         foodType.setDescription(Util.valueIfNull(updateFoodType.description(), foodType.getDescription()));
         if (updateFoodType.foodCategory() != null && updateFoodType.foodCategory().id() != null) {
-            evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
+            evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId()); //oldFoodCategory
             foodType.setFoodCategory(foodCategoryRepository.findById(updateFoodType.foodCategory().id()).orElseThrow());
         }
 
         foodType = saveFoodType(foodType);
+        evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
 
         return dtoMapper.map(foodType, FoodTypeDTOComplex.class);
     }
