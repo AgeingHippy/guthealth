@@ -34,7 +34,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/system")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_GUEST','ROLE_USER')")
     public String showSystemFoodCategories(Model model) {
         List<FoodCategoryDTOSimple> foodCategories =
                 foodCategoryService.getFoodCategories(
