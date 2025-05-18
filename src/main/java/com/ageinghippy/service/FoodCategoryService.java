@@ -132,7 +132,7 @@ public class FoodCategoryService {
         return dTOMapper.map(targetFoodCategory, FoodCategoryDTOComplex.class);
     }
 
-    protected FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
+    private FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
 
         List<FoodType> newFoodTypes = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class FoodCategoryService {
         return saveFoodCategory(newFoodCategory);
     }
 
-    protected FoodCategory appendFoodTypesToFoodCategory(FoodCategory targetFoodCategory, FoodCategory sourceFoodCategory) {
+    private FoodCategory appendFoodTypesToFoodCategory(FoodCategory targetFoodCategory, FoodCategory sourceFoodCategory) {
         List<String> existingSourceFoodTypeNames = targetFoodCategory.getFoodTypes().stream().map(FoodType::getName).toList();
 
         sourceFoodCategory.getFoodTypes().stream()

@@ -1,7 +1,9 @@
 package com.ageinghippy.service;
 
 import com.ageinghippy.DataSetupHelper;
+import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
+import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.UserPrinciple;
@@ -25,20 +27,17 @@ import static org.mockito.Mockito.*;
 class FoodCategoryServiceTest {
     @Mock
     private FoodCategoryRepository foodCategoryRepository;
-//    private final DTOMapper dTOMapper;
-//    private final EntityManager entityManager;
-//    private final CacheManager cacheManager;
 
     private FoodCategoryService foodCategoryService;
 
-    private DataSetupHelper dsh = new DataSetupHelper();
+    private final DataSetupHelper dsh = new DataSetupHelper();
 
     @BeforeEach
     void setUp() {
         FoodCategoryService service =
                 new FoodCategoryService(
                         foodCategoryRepository,
-                        null,
+                        new DTOMapper(),
                         null,
                         null);
         foodCategoryService = spy(service);
@@ -49,28 +48,29 @@ class FoodCategoryServiceTest {
         UserPrinciple userPrinciple = dsh.getPrinciple("basic");
         FoodCategory systemFoodCategory = dsh.getFoodCategory(6L);
 
-//        when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
-//        when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
-//                .thenReturn(Optional.empty());
+        when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
+        when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
+                .thenReturn(Optional.empty());
 
-        doAnswer(returnsFirstArg()).when(foodCategoryService).saveFoodCategory(any(FoodCategory.class));
+        doAnswer(invocation -> {
+            FoodCategory fc = (FoodCategory) invocation.getArguments()[0];
+            assertEquals(userPrinciple, fc.getPrinciple());
+            return fc;
+        }).when(foodCategoryService).saveFoodCategory(any(FoodCategory.class));
 
         //GIVEN - user does not have a system food category
 
         //WHEN - the user chooses to import the food category
-        FoodCategory newFoodCategory = foodCategoryService.copyFoodCategory(systemFoodCategory, userPrinciple);
-//        FoodCategory newFoodCategory = foodCategoryService.copyFoodCategory(6L, userPrinciple);
+        FoodCategoryDTOComplex resultFoodCategoryDTOComplex = foodCategoryService.copyFoodCategory(6L, userPrinciple);
 
-        //THEN - the food category and associate food types are imported and belong to the requesting user
-        assertEquals(userPrinciple, newFoodCategory.getPrinciple());
-
-        assertEquals(systemFoodCategory.getName(), newFoodCategory.getName());
-        assertEquals(systemFoodCategory.getName(), newFoodCategory.getName());
-        assertEquals(systemFoodCategory.getFoodTypes().size(), newFoodCategory.getFoodTypes().size());
-        for (int i=0; i< systemFoodCategory.getFoodTypes().size(); i++ ){
+        //THEN - the food category and associate food types are imported
+        assertEquals(systemFoodCategory.getName(), resultFoodCategoryDTOComplex.name());
+        assertEquals(systemFoodCategory.getName(), resultFoodCategoryDTOComplex.name());
+        assertEquals(systemFoodCategory.getFoodTypes().size(), resultFoodCategoryDTOComplex.foodTypes().size());
+        for (int i = 0; i < systemFoodCategory.getFoodTypes().size(); i++) {
             assertEquals(
                     systemFoodCategory.getFoodTypes().get(i).getName(),
-                    newFoodCategory.getFoodTypes().get(i).getName());
+                    resultFoodCategoryDTOComplex.foodTypes().get(i).name());
         }
 
         verify(foodCategoryService, times(1)).saveFoodCategory(any(FoodCategory.class));
@@ -79,6 +79,7 @@ class FoodCategoryServiceTest {
     @Test
     void append_new_food_types_to_existing_foodCategory() {
         //GIVEN a user has a food category with the same name and at least 1 matching foodType
+        UserPrinciple userPrinciple = dsh.getPrinciple("basic");
         FoodCategory systemFoodCategory = dsh.getFoodCategory(6L);
         FoodCategory targetFoodCategory = FoodCategory.builder()
                 .name(systemFoodCategory.getName())
@@ -100,25 +101,28 @@ class FoodCategoryServiceTest {
 
         doAnswer(returnsFirstArg()).when(foodCategoryService).saveFoodCategory(any(FoodCategory.class));
 
+        when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
+        when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
+                .thenReturn(Optional.of(targetFoodCategory));
+
         //WHEN we choose to copy the food category
-        FoodCategory resultFoodCategory = foodCategoryService.appendFoodTypesToFoodCategory(targetFoodCategory,systemFoodCategory);
+        FoodCategoryDTOComplex resultFoodCategoryDTOComplex = foodCategoryService.copyFoodCategory(6L, userPrinciple);
 
         //THEN unmatched food types are appended to the users food category
-        List<String> resultFoodTypeNames = resultFoodCategory.getFoodTypes().stream().map(FoodType::getName).toList();
+        List<String> resultFoodTypeNames = resultFoodCategoryDTOComplex.foodTypes().stream().map(FoodTypeDTOSimple::name).toList();
         systemFoodCategory.getFoodTypes().stream()
                 .map(FoodType::getName)
                 .forEach(name -> {
-                    assert(resultFoodTypeNames.contains(name));
+                    assert (resultFoodTypeNames.contains(name));
                 });
 
         //verify original unmatched type still exists in list
-        assert(resultFoodTypeNames.contains("UnmatchedType"));
+        assert (resultFoodTypeNames.contains("UnmatchedType"));
 
         //verify original matched type is unmodified
-        FoodType originalMatchedFoodType = resultFoodCategory.getFoodTypes().stream()
-                .filter(ft -> systemFoodCategory.getFoodTypes().get(3).getName().equals(ft.getName()))
+        FoodTypeDTOSimple originalMatchedFoodTypeDTOSimple = resultFoodCategoryDTOComplex.foodTypes().stream()
+                .filter(ft -> systemFoodCategory.getFoodTypes().get(3).getName().equals(ft.name()))
                 .findFirst().orElseThrow();
-        assertEquals("alternative description",originalMatchedFoodType.getDescription());
-
+        assertEquals("alternative description", originalMatchedFoodTypeDTOSimple.description());
     }
 }
