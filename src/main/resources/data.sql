@@ -37,6 +37,7 @@ VALUES
     ( 2, 'Bill','bill@home.com',null),
     ( 3, 'Betty','betty@home.com','Does the boop'),
     ( 4, 'SYSTEM',null,'System Data Owner');
+--    ( 5, 'Bruce', null, 'alternative user');
 
 /*!40000 ALTER TABLE `user_meta` ENABLE KEYS */;
 ALTER TABLE `user_meta` AUTO_INCREMENT=5;
@@ -52,7 +53,8 @@ VALUES
     (1, 'admin', '$2a$10$MfPAJs3UgQApzYSUoYioFOXyLegPvusXibZqnfZq9EBgQu1h3W/BW', null, 1),
     (2, 'basic', '$2a$10$l5kuu4MxbDGfgjGwkov6HemySH3.uHgeVjYrEZOuzkzo20t01nVHa', null, 2),
     (3, 'guest', '$2a$10$al7wMSlApNl0hfjVAUAgfeJPc/wr02ynl7J0INBjFIopAxCro316K', null, 3),
-    (4, 'system','$2a$10$W9PJKMvG1O1MM79JxE3VBOCq0m7DOZLD/ky8mWmtcQ3qziR/KR7KK', null, 1);
+    (4, 'system','$2a$10$W9PJKMvG1O1MM79JxE3VBOCq0m7DOZLD/ky8mWmtcQ3qziR/KR7KK', null, 4);
+--    (5, 'alternative','$2a$10$peG6NHRkAuUDlsmR8Y0YCeZeTSmq6PVqNomtn0oMf75HY8/O6iY86', null, 5);
 
 /*!40000 ALTER TABLE `principle` ENABLE KEYS */;
 ALTER TABLE `principle` AUTO_INCREMENT=5;
@@ -70,6 +72,7 @@ VALUES
     (2,2),
     (3,3),
     (4,2);
+--    (5,2);
 
 /*!40000 ALTER TABLE `principle_roles` ENABLE KEYS */;
 
@@ -102,7 +105,7 @@ VALUES
 	(3,2,'foodCategory3_name','Food Category three description'),
 	(4,2,'foodCategory4_name','Food Category four description'),
 	(5,2,'foodCategory5_name','Food Category five description'),
-	(6,1,'foodCategory6_name','Food Category six description'),
+	(6,4,'foodCategory6_name','Food Category six description'),
 	(7,4,'foodCategory7_name','Food Category seven description'),
 	(8,4,'foodCategory8_name','Food Category eight description'),
 	(9,4,'foodCategory9_name','Food Category nine description');
@@ -140,7 +143,7 @@ VALUES
     (18,7,'foodType18','Food Type eighteen Description'),
     (19,8,'foodType19','Food Type nineteen Description'),
     (20,8,'foodType20','Food Type twenty Description'),
-    (21,9,'foodType21','Food Type twentyOne Description');
+    (21,8,'foodType21','Food Type twentyOne Description');
 
 
 

@@ -131,7 +131,7 @@ public class DataSetupHelper {
         initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_USER")));
         initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
         initialiseUserPrinciple(4L, "system", List.of(getRole("ROLE_USER")));
-
+        initialiseUserPrinciple(5L, "alternative", List.of(getRole("ROLE_USER")));
     }
 
     private void initialiseUserPrinciple(Long id, String userName, List<Role> authorities) {
@@ -230,11 +230,11 @@ public class DataSetupHelper {
         initialiseFoodType(14L, 4L, "foodType14", "Food Type fourteen Description");
         initialiseFoodType(15L, 4L, "foodType15", "Food Type fifteen Description");
         initialiseFoodType(16L, 6L, "foodType16", "Food Type sixteen Description");
-        initialiseFoodType(17L, 6L, "foodType17", "Food Type seventeen Description");
-        initialiseFoodType(18L, 6L, "foodType18", "Food Type eighteen Description");
-        initialiseFoodType(19L, 6L, "foodType19", "Food Type nineteen Description");
-        initialiseFoodType(20L, 6L, "foodType20", "Food Type twenty Description");
-        initialiseFoodType(21L, 6L, "foodType21", "Food Type twentyOne Description");
+        initialiseFoodType(17L, 7L, "foodType17", "Food Type seventeen Description");
+        initialiseFoodType(18L, 7L, "foodType18", "Food Type eighteen Description");
+        initialiseFoodType(19L, 8L, "foodType19", "Food Type nineteen Description");
+        initialiseFoodType(20L, 8L, "foodType20", "Food Type twenty Description");
+        initialiseFoodType(21L, 8L, "foodType21", "Food Type twentyOne Description");
 
         initialiseFoodCategoryDTOComplexMap();
         populateFoodCategoriesWithFoodTypes();

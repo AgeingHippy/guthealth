@@ -13,12 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +85,7 @@ class FoodCategoryServiceTest {
     void append_new_food_types_to_existing_foodCategory() {
         //GIVEN a user has a food category with the same name and at least 1 matching foodType
         UserPrinciple userPrinciple = dsh.getPrinciple("basic");
-        FoodCategory systemFoodCategory = dsh.getFoodCategory(6L);
+        FoodCategory systemFoodCategory = dsh.getFoodCategory(8L);
         FoodCategory targetFoodCategory = FoodCategory.builder()
                 .name(systemFoodCategory.getName())
                 .description(systemFoodCategory.getDescription())
@@ -104,20 +99,20 @@ class FoodCategoryServiceTest {
                         .build());
         targetFoodCategory.getFoodTypes().add(
                 FoodType.builder()
-                        .name(systemFoodCategory.getFoodTypes().get(3).getName())
+                        .name(systemFoodCategory.getFoodTypes().get(2).getName())
                         .description("alternative description")
                         .foodCategory(targetFoodCategory)
                         .build());
 
         doAnswer(returnsFirstArg()).when(foodCategoryService).saveFoodCategory(any(FoodCategory.class));
 
-        when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
+        when(foodCategoryRepository.findById(8L)).thenReturn(Optional.of(systemFoodCategory));
         when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
                 .thenReturn(Optional.of(targetFoodCategory));
         when(cacheManager.getCache(anyString())).thenReturn(null);
 
         //WHEN we choose to copy the food category
-        FoodCategoryDTOComplex resultFoodCategoryDTOComplex = foodCategoryService.copyFoodCategory(6L, userPrinciple);
+        FoodCategoryDTOComplex resultFoodCategoryDTOComplex = foodCategoryService.copyFoodCategory(8L, userPrinciple);
 
         //THEN unmatched food types are appended to the users food category
         List<String> resultFoodTypeNames = resultFoodCategoryDTOComplex.foodTypes().stream().map(FoodTypeDTOSimple::name).toList();
@@ -132,7 +127,7 @@ class FoodCategoryServiceTest {
 
         //verify original matched type is unmodified
         FoodTypeDTOSimple originalMatchedFoodTypeDTOSimple = resultFoodCategoryDTOComplex.foodTypes().stream()
-                .filter(ft -> systemFoodCategory.getFoodTypes().get(3).getName().equals(ft.name()))
+                .filter(ft -> systemFoodCategory.getFoodTypes().get(2).getName().equals(ft.name()))
                 .findFirst().orElseThrow();
         assertEquals("alternative description", originalMatchedFoodTypeDTOSimple.description());
     }
