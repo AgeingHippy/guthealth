@@ -74,7 +74,7 @@ public class GutViewControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ModelAndView exceptionResponse(HttpServletRequest request, Exception ex) {
         UUID uuid = UUID.randomUUID();
-        log.error(uuid + " :: " + ex.getMessage());
+        log.error(uuid + " :: " + ex.getMessage(), ex);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error");
