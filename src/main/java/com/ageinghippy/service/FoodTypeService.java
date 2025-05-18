@@ -9,6 +9,7 @@ import com.ageinghippy.repository.FoodTypeRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -96,9 +97,13 @@ public class FoodTypeService {
     }
 
     protected void evictFoodTypeListCacheForFoodCategory(Long foodCategoryId) {
-        Objects.requireNonNull(cacheManager.getCache("foodTypeList"))
-                .evictIfPresent("foodCategoryId=" + foodCategoryId);
-        Objects.requireNonNull(cacheManager.getCache("foodCategory"))
-                .evictIfPresent(foodCategoryId);
+        Cache foodTypeListCache = cacheManager.getCache("foodTypeList");
+        Cache foodCategoryCache = cacheManager.getCache("foodCategory");
+        if (foodTypeListCache != null) {
+            foodTypeListCache.evictIfPresent("foodCategoryId=" + foodCategoryId);
+        }
+        if (foodCategoryCache != null) {
+            foodCategoryCache.evictIfPresent(foodCategoryId);
+        }
     }
 }

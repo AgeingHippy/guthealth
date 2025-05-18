@@ -34,7 +34,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/system")
-    @PreAuthorize("hasAnyRole('ROLE_GUEST','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String showSystemFoodCategories(Model model) {
         List<FoodCategoryDTOSimple> foodCategories =
                 foodCategoryService.getFoodCategories(
@@ -83,7 +83,7 @@ public class FoodCategoryViewController {
     }
 
     @GetMapping("/new")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String showNewFoodCategoryView(Model model) {
         if (!model.containsAttribute("foodCategory")) {
             model.addAttribute("foodCategory", new FoodCategoryDTOSimple(null, null, null));
@@ -93,7 +93,7 @@ public class FoodCategoryViewController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String createFoodCategory(@ModelAttribute FoodCategoryDTOSimple foodCategory,
                                      Authentication authentication,
                                      RedirectAttributes redirectAttributes) {

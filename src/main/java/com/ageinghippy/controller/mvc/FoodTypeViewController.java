@@ -22,7 +22,6 @@ public class FoodTypeViewController {
 
     @GetMapping("")
     @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','read')")
-    //ToDo - May wish to remove this or redirect to food-category/edit
     public String showFoodTypesView(Model model, @RequestParam Long foodCategoryId) {
         FoodCategoryDTOComplex foodCategory = foodCategoryService.getFoodCategory(foodCategoryId);
 

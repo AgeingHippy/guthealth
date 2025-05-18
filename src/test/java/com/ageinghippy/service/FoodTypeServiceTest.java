@@ -55,6 +55,8 @@ class FoodTypeServiceTest {
                 entityManager,
                 cacheManager);
 
+        lenient().when(cacheManager.getCache(anyString())).thenReturn(null);
+
         foodTypeService = spy(service);
     }
 

@@ -47,7 +47,7 @@ public class DishViewController {
     }
 
     @GetMapping("/new")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String showDishNewView(Model model) throws JsonProcessingException {
         if (!model.containsAttribute("dish")) {
             model.addAttribute("dish",
@@ -59,7 +59,7 @@ public class DishViewController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String createDish(@ModelAttribute DishDTOSimple dish,
                              Authentication authentication,
                              RedirectAttributes redirectAttributes) {

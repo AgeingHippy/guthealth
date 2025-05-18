@@ -7,6 +7,7 @@ import com.ageinghippy.service.DishComponentService;
 import com.ageinghippy.service.DishService;
 import com.ageinghippy.service.FoodTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class DishComponentViewController {
     private final FoodTypeService foodTypeService;
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#dishId,'Dish','read')")
     public String getAllDishComponents(Model model, @PathVariable Long dishId) {
         List<DishComponentDTO> dishComponents = dishComponentService.getDishComponents(dishId);
 
@@ -31,6 +33,7 @@ public class DishComponentViewController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasPermission(#dishId,'Dish','edit')")
     public String showNewDishComponentView(Model model, @RequestParam Long dishId) {
         model.addAttribute("dishComponent",
                 new DishComponentDTO(null, new FoodTypeDTOSimple(null, null, null), null));
@@ -40,6 +43,7 @@ public class DishComponentViewController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(#dishId,'Dish','edit')")
     public String createDishComponent(@RequestParam Long dishId, @ModelAttribute DishComponentDTO dishComponent) {
         dishComponentService.createDishComponent(dishId, dishComponent);
 
@@ -47,6 +51,7 @@ public class DishComponentViewController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasPermission(#dishId,'Dish','edit')")
     public String showEditDishComponentView(Model model, @PathVariable Long id, @RequestParam Long dishId) {
         DishComponentDTO dishComponentDTO = dishComponentService.getDishComponent(id);
         FoodTypeDTOComplex foodTypeDTOComplex = foodTypeService.getFoodType(dishComponentDTO.foodType().id());
@@ -59,6 +64,7 @@ public class DishComponentViewController {
     }
 
     @PostMapping("/update/{id}")
+    @PreAuthorize("hasPermission(#dishId,'Dish','edit')")
     public String updateDishComponent(Model model, @ModelAttribute DishComponentDTO dishComponent,
                                       @PathVariable Long id, @RequestParam Long dishId) {
         dishComponentService.updateDishComponent(id, dishComponent);
@@ -67,6 +73,7 @@ public class DishComponentViewController {
     }
 
     @RequestMapping("/delete/{id}")
+    @PreAuthorize("hasPermission(#dishId,'Dish','delete')")
     public String deleteDishComponent(@PathVariable Long id, @RequestParam Long dishId) {
         dishComponentService.deleteDishComponent(id);
 
