@@ -10,6 +10,7 @@ import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -112,8 +112,18 @@ public class FoodCategoryService {
     }
 
     private void evictFoodCategoryListCacheForCurrentPrinciple() {
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Objects.requireNonNull(cacheManager.getCache("foodCategoryList")).evictIfPresent("principleId=" + userPrinciple.getId());
+        Cache cache =cacheManager.getCache("foodCategoryList");
+        if (cache != null) {
+            UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            cache.evictIfPresent("principleId=" + userPrinciple.getId());
+        }
+    }
+
+    private void evictFoodCategory(Long id) {
+        Cache cache = cacheManager.getCache("foodCategory");
+        if (cache != null) {
+            cache.evictIfPresent(id);
+        }
     }
 
     @Transactional
@@ -124,9 +134,11 @@ public class FoodCategoryService {
 
         if (targetFoodCategory != null) {
             targetFoodCategory = appendFoodTypesToFoodCategory(targetFoodCategory, sourceFoodCategory);
+            evictFoodCategory(targetFoodCategory.getId());
         }
         else {
             targetFoodCategory = copyFoodCategory(sourceFoodCategory, userPrinciple);
+            evictFoodCategoryListCacheForCurrentPrinciple();
         }
 
         return dTOMapper.map(targetFoodCategory, FoodCategoryDTOComplex.class);

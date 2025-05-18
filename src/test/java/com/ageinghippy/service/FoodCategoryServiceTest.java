@@ -13,6 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +34,9 @@ class FoodCategoryServiceTest {
     @Mock
     private FoodCategoryRepository foodCategoryRepository;
 
+    @Mock
+    CacheManager cacheManager;
+
     private FoodCategoryService foodCategoryService;
 
     private final DataSetupHelper dsh = new DataSetupHelper();
@@ -39,7 +48,7 @@ class FoodCategoryServiceTest {
                         foodCategoryRepository,
                         new DTOMapper(),
                         null,
-                        null);
+                        cacheManager);
         foodCategoryService = spy(service);
     }
 
@@ -51,6 +60,7 @@ class FoodCategoryServiceTest {
         when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
         when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
                 .thenReturn(Optional.empty());
+        when(cacheManager.getCache(anyString())).thenReturn(null);
 
         doAnswer(invocation -> {
             FoodCategory fc = (FoodCategory) invocation.getArguments()[0];
@@ -104,6 +114,7 @@ class FoodCategoryServiceTest {
         when(foodCategoryRepository.findById(6L)).thenReturn(Optional.of(systemFoodCategory));
         when(foodCategoryRepository.findByNameAndPrinciple(systemFoodCategory.getName(), userPrinciple))
                 .thenReturn(Optional.of(targetFoodCategory));
+        when(cacheManager.getCache(anyString())).thenReturn(null);
 
         //WHEN we choose to copy the food category
         FoodCategoryDTOComplex resultFoodCategoryDTOComplex = foodCategoryService.copyFoodCategory(6L, userPrinciple);

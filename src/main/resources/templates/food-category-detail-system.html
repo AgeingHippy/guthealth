@@ -48,10 +48,28 @@
                 </tbody>
             </table>
         </div>
-        <a sec:authorize="hasRole('ROLE_USER')" href="#">
-            <button type="button" class="col-6 btn btn-warning">Import Data to personal dataset</button>
+        <a sec:authorize="hasRole('ROLE_USER')">
+            <button id="import-system-data" type="button" class="col-6 btn btn-warning">Import Data to personal dataset</button>
         </a>
     </div>
+
+    <script>
+        async function importSystemData() {
+            const id = "[[${foodCategory.id}]]";
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const response = await fetch(`${foodCategoriesUri}/${id}/system`, requestOptions);
+            if (response.ok) {
+                showMessage("success", "Food Category and associated Food Types successfully copied into personal dataset");
+            } else {
+                showMessage("error", "Failed to copy Food Category and associated Food Types into personal dataset");
+            }
+        }
+
+        document.getElementById("import-system-data").addEventListener("click", importSystemData);
+    </script>
 
 </div>
 

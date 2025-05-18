@@ -33,7 +33,8 @@ public class FoodCategory implements Serializable {
     @NotEmpty
     private String description;
 
-    @OneToMany(mappedBy = "foodCategory", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "foodCategory", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     @JsonIgnoreProperties("foodCategory")
     List<FoodType> foodTypes;
 
