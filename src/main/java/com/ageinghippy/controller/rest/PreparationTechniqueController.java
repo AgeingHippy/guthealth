@@ -6,6 +6,7 @@ import com.ageinghippy.service.UserPrincipleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,11 +29,13 @@ public class PreparationTechniqueController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'PreparationTechnique','read')")
     public PreparationTechniqueDTO getPreparationTechnique(@PathVariable Long id) {
         return preparationTechniqueService.getPreparationTechnique(id);
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PreparationTechniqueDTO> postPreparationTechnique(
             @Valid @RequestBody PreparationTechniqueDTO preparationTechnique,
             Authentication authentication) {
@@ -47,6 +50,7 @@ public class PreparationTechniqueController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'PreparationTechnique','edit')")
     public ResponseEntity<PreparationTechniqueDTO> putPreparationTechnique(@RequestBody PreparationTechniqueDTO preparationTechnique, @PathVariable Long id) {
         if (!id.equals(preparationTechnique.id())) {
             throw new IllegalArgumentException("The id specified in the request body must match the id specified in the url");
@@ -55,6 +59,7 @@ public class PreparationTechniqueController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'PreparationTechnique','edit')")
     public ResponseEntity<String> deletePreparationTechnique(@PathVariable Long id) {
         preparationTechniqueService.deletePreparationTechnique(id);
         return ResponseEntity.noContent().build();
