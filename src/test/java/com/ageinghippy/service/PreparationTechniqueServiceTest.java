@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,6 +29,8 @@ class PreparationTechniqueServiceTest {
     private PreparationTechniqueRepository preparationTechniqueRepository;
     @Mock
     private DTOMapper dtoMapper;
+    @Mock
+    private UserPrincipleService userPrincipleService;
 
     private PreparationTechniqueService service;
 
@@ -36,7 +39,7 @@ class PreparationTechniqueServiceTest {
     @BeforeEach
     void setUp() {
         PreparationTechniqueService preparationTechniqueService =
-                new PreparationTechniqueService(preparationTechniqueRepository, dtoMapper);
+                new PreparationTechniqueService(preparationTechniqueRepository, dtoMapper, userPrincipleService);
         service = spy(preparationTechniqueService);
     }
 
@@ -106,7 +109,7 @@ class PreparationTechniqueServiceTest {
                 preparationTechniqueDTO,
                 service.createPreparationTechnique(newPreparationTechniqueDTO, principle));
 
-        verify(service,times(1)).savePreparationTechnique(any(PreparationTechnique.class));
+        verify(service, times(1)).savePreparationTechnique(any(PreparationTechnique.class));
         verify(dtoMapper, times(1)).map(newPreparationTechniqueDTO, PreparationTechnique.class);
         verify(dtoMapper, times(1)).map(preparationTechnique, PreparationTechniqueDTO.class);
     }
@@ -185,5 +188,74 @@ class PreparationTechniqueServiceTest {
         when(preparationTechniqueRepository.save(preparationTechnique)).thenReturn(preparationTechnique);
 
         assertEquals(preparationTechnique, service.savePreparationTechnique(preparationTechnique));
+    }
+
+    @Test
+    void copyNewSystemPreparationTechnique() {
+        UserPrinciple principle = dsh.getPrinciple("basic");
+        PreparationTechnique systemPreparationTechnique = dsh.getPreparationTechnique(5L);
+
+        lenient().when(preparationTechniqueRepository.findById(5L)).thenReturn(Optional.of(systemPreparationTechnique));
+        lenient().when(preparationTechniqueRepository.save(any(PreparationTechnique.class)))
+                .thenAnswer(invocation -> {
+                    PreparationTechnique request = invocation.getArgument(0, PreparationTechnique.class);
+                    assertEquals(principle, request.getPrinciple());
+                    assertEquals(systemPreparationTechnique.getCode(), request.getCode());
+                    assertEquals(systemPreparationTechnique.getDescription(), request.getDescription());
+                    return request;
+                });
+        when(dtoMapper.map(any(), any()))
+                .thenReturn(new PreparationTechniqueDTO(null, null, null));
+
+        PreparationTechniqueDTO preparationTechniqueDTO = service.copySystemPreparationTechnique(5L, principle);
+
+        verify(preparationTechniqueRepository, times(1)).findById(5L);
+        verify(preparationTechniqueRepository, times(1)).save(any(PreparationTechnique.class));
+        verify(dtoMapper, times(1)).map(any(), any());
+    }
+
+    @Test
+    void copyExistingSystemPreparationTechnique() {
+        UserPrinciple principle = dsh.getPrinciple("basic");
+        PreparationTechnique systemPreparationTechnique = dsh.getPreparationTechnique(5L);
+        PreparationTechnique existingPreparationTechnique = PreparationTechnique.builder().build();
+
+        lenient().when(preparationTechniqueRepository.findById(5L)).thenReturn(Optional.of(systemPreparationTechnique));
+        lenient().when(preparationTechniqueRepository.findByCodeAndPrinciple(systemPreparationTechnique.getCode(), principle))
+                .thenReturn(Optional.of(existingPreparationTechnique));
+
+        when(dtoMapper.map(existingPreparationTechnique, PreparationTechniqueDTO.class))
+                .thenReturn(new PreparationTechniqueDTO(null, null, null));
+
+        PreparationTechniqueDTO preparationTechniqueDTO = service.copySystemPreparationTechnique(5L, principle);
+
+        verify(preparationTechniqueRepository, times(1)).findById(5L);
+        verify(preparationTechniqueRepository, times(1))
+                .findByCodeAndPrinciple(systemPreparationTechnique.getCode(), principle);
+        verify(preparationTechniqueRepository, times(0)).save(any(PreparationTechnique.class));
+        verify(dtoMapper, times(1)).map(existingPreparationTechnique, PreparationTechniqueDTO.class);
+    }
+
+    @Test
+    void copyAllSystemPreparationTechniques() {
+        UserPrinciple principle = dsh.getPrinciple("basic");
+        UserPrinciple systemPrinciple = dsh.getPrinciple("system");
+        List<PreparationTechnique> systemPreparationTechniques = List.of(
+                dsh.getPreparationTechnique(5L),
+                dsh.getPreparationTechnique(6L));
+
+        when(userPrincipleService.loadUserByUsername("system")).thenReturn(systemPrinciple);
+        when(preparationTechniqueRepository.findAllByPrinciple(systemPrinciple)).thenReturn(systemPreparationTechniques);
+        doReturn(new PreparationTechniqueDTO(null, null, null))
+                .when(service).copySystemPreparationTechnique(5L, principle);
+        doReturn(new PreparationTechniqueDTO(null, null, null))
+                .when(service).copySystemPreparationTechnique(6L, principle);
+
+        service.copySystemPreparationTechniques(principle);
+
+        verify(userPrincipleService, times(1)).loadUserByUsername("system");
+        verify(preparationTechniqueRepository, times(1)).findAllByPrinciple(systemPrinciple);
+        verify(service, times(1)).copySystemPreparationTechnique(5L, principle);
+        verify(service, times(1)).copySystemPreparationTechnique(6L, principle);
     }
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Preparation Technique</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+    <p/>
+    <h4>Preparation Techniques</h4>
+    <p/>
+    <p>This describes how the food was prepared such as Boiled, Pan Fried, Roasted etc. We expect minimal changes to
+        this dataset once it is created.</p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="preparationTechnique : ${preparationTechniques}">
+            <td th:text="${preparationTechnique.code}"></td>
+            <td th:text="${preparationTechnique.description}"></td>
+            <td>
+                <a sec:authorize="hasRole('ROLE_USER')" th:onclick="'importSpecificPreparationTechniqueSystemData(' + ${preparationTechnique.id} + ')'" class="icon-link">
+                    <i class="bi bi-camera"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a sec:authorize="hasRole('ROLE_USER')">
+        <button id="import-system-data" type="button" class="full-width btn btn-warning">
+            <i class="bi bi-camera"></i> Import Data to personal dataset</button>
+    </a>
+
+    <script>
+        async function importSpecificPreparationTechniqueSystemData(id) {
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const response = await fetch(`${preparationTechniquesUri}/${id}/system`, requestOptions);
+            if (response.ok) {
+                showMessage("success", "Preparation Technique successfully copied into personal dataset");
+            } else {
+                showMessage("error", "Failed to copy Preparation Technique into personal dataset");
+            }
+        }
+
+        async function importAllPreparationTechniqueSystemData() {
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const response = await fetch(`${preparationTechniquesUri}/system`, requestOptions);
+            if (response.ok) {
+                showMessage("success", "Preparation Techniques successfully copied into personal dataset");
+            } else {
+                showMessage("error", "Failed to copy Preparation Techniques into personal dataset");
+            }
+        }
+
+        document.getElementById("import-system-data").addEventListener("click", importAllPreparationTechniqueSystemData);
+    </script>
+
+</div>
+
+</body>
+</html>

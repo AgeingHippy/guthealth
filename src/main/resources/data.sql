@@ -69,6 +69,7 @@ INSERT INTO principle_roles
     (principle_id, role_id)
 VALUES
     (1,1),
+    (2,3),
     (2,2),
     (3,3),
     (4,2);
@@ -88,9 +89,12 @@ VALUES
     (1, 2, 'PrepType1','Preparation type one description'),
     (2, 2, 'PrepType2','Preparation type two description'),
     (3, 2, 'PrepType3','Preparation type three description'),
-    (4, 2, 'PrepType4','Preparation type four description');
+    (4, 2, 'PrepType4','Preparation type four description'),
+    (5, 4, 'PrepType5','Preparation type five description'),
+    (6, 4, 'PrepType6','Preparation type six description');
+
 /*!40000 ALTER TABLE `preparation_technique` ENABLE KEYS */;
-ALTER TABLE `preparation_technique` AUTO_INCREMENT=5;
+ALTER TABLE `preparation_technique` AUTO_INCREMENT=7;
 
 --
 -- Dumping data for table `food_category`

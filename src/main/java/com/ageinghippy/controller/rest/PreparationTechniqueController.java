@@ -59,10 +59,28 @@ public class PreparationTechniqueController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasPermission(#id,'PreparationTechnique','edit')")
+    @PreAuthorize("hasPermission(#id,'PreparationTechnique','delete')")
     public ResponseEntity<String> deletePreparationTechnique(@PathVariable Long id) {
         preparationTechniqueService.deletePreparationTechnique(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/system")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> copyAllSystemPreparationTechniques(Authentication authentication) {
+        preparationTechniqueService.copySystemPreparationTechniques(
+                userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/system")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<PreparationTechniqueDTO> copyAllSystemPreparationTechniques(@PathVariable Long id,
+                                                                     Authentication authentication) {
+        return ResponseEntity.ok(
+                preparationTechniqueService.copySystemPreparationTechnique(
+                        id,
+                        userPrincipleService.castToUserPrinciple(authentication.getPrincipal())));
     }
 
 }

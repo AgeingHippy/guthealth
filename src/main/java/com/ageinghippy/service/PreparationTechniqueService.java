@@ -9,6 +9,7 @@ import com.ageinghippy.util.Util;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class PreparationTechniqueService {
 
     private final PreparationTechniqueRepository preparationTechniqueRepository;
     private final DTOMapper dtoMapper;
+    private final UserPrincipleService userPrincipleService;
 
     public PreparationTechniqueDTO getPreparationTechnique(Long id) {
         return dtoMapper.map(preparationTechniqueRepository.findById(id).orElseThrow(), PreparationTechniqueDTO.class);
@@ -69,5 +71,33 @@ public class PreparationTechniqueService {
 
     protected void deletePreparationTechnique(PreparationTechnique preparationTechnique) {
         preparationTechniqueRepository.delete(preparationTechnique);
+    }
+
+    public void copySystemPreparationTechniques(UserPrinciple principle) {
+        UserPrinciple systemUserPrinciple = userPrincipleService.loadUserByUsername("system");
+        List<PreparationTechnique> systemPreparationTechniques =
+                preparationTechniqueRepository.findAllByPrinciple(systemUserPrinciple);
+        systemPreparationTechniques.forEach(pt -> copySystemPreparationTechnique(pt.getId(), principle));
+    }
+
+
+    @Transactional
+    public PreparationTechniqueDTO copySystemPreparationTechnique(Long id, UserPrinciple principle) {
+        PreparationTechnique systemPreparationTechnique =
+                preparationTechniqueRepository.findById(id).orElseThrow();
+
+        PreparationTechnique targetPreparationTechnique =
+                preparationTechniqueRepository.findByCodeAndPrinciple(systemPreparationTechnique.getCode(), principle).orElse(null);
+        if (targetPreparationTechnique == null) {
+            targetPreparationTechnique =
+                    PreparationTechnique.builder()
+                            .code(systemPreparationTechnique.getCode())
+                            .description(systemPreparationTechnique.getDescription())
+                            .principle(principle)
+                            .build();
+            targetPreparationTechnique = savePreparationTechnique(targetPreparationTechnique);
+        }
+
+        return dtoMapper.map(targetPreparationTechnique, PreparationTechniqueDTO.class);
     }
 }

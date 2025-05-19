@@ -128,7 +128,7 @@ public class DataSetupHelper {
 
     private void initialiseUserPrinciples() {
         initialiseUserPrinciple(1L, "admin", List.of(getRole("ROLE_ADMIN")));
-        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
         initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
         initialiseUserPrinciple(4L, "system", List.of(getRole("ROLE_USER")));
         initialiseUserPrinciple(5L, "alternative", List.of(getRole("ROLE_USER")));
@@ -149,6 +149,9 @@ public class DataSetupHelper {
         initialisePreparationTechnique(2L, 2L, "PrepType2", "Preparation type two description");
         initialisePreparationTechnique(3L, 2L, "PrepType3", "Preparation type three description");
         initialisePreparationTechnique(4L, 2L, "PrepType4", "Preparation type four description");
+
+        initialisePreparationTechnique(5L, 4L, "PrepType5", "Preparation type five description");
+        initialisePreparationTechnique(6L, 4L, "PrepType6", "Preparation type six description");
     }
 
     private void initialisePreparationTechnique(Long id, Long principleId, String code, String description) {
