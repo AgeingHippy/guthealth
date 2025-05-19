@@ -50,7 +50,7 @@
     <a sec:authorize="hasRole('ROLE_USER')" th:href="@{'/food-category/new'}">
         <button type="button" class="col-3 btn btn-primary">Add New</button>
     </a>
-    <a sec:authorize="hasAnyRole('ROLE_USER','ROLE_GUEST')" th:href="@{'/food-category/system'}">
+    <a sec:authorize="hasAnyRole('ROLE_GUEST')" th:href="@{'/food-category/system'}">
         <button type="button" class="col-6 btn btn-secondary">View System Food Categories</button>
     </a>
 

@@ -144,6 +144,11 @@ public class FoodCategoryService {
         return dTOMapper.map(targetFoodCategory, FoodCategoryDTOComplex.class);
     }
 
+    @Transactional
+    public void copyFoodCategories(UserPrinciple userPrinciple) {
+        bla bla bla
+    }
+
     private FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
 
         List<FoodType> newFoodTypes = new ArrayList<>();
