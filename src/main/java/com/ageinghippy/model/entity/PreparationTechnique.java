@@ -1,8 +1,8 @@
 package com.ageinghippy.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,15 +23,25 @@ public class PreparationTechnique implements Serializable {
     private static final long serialVersionUID = 8426557152559923887L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private UserPrinciple principle;
+
+    @NotNull
     private String code;
-//    @NotNull
+    //    @NotNull
     private String description;
 
     @Override
     public String toString() {
         return "PreparationTechnique{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+               "id=" + id +
+               "code='" + code + '\'' +
+               ", description='" + description + '\'' +
+               '}';
     }
 }

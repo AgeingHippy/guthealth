@@ -93,7 +93,7 @@ class DishViewControllerTest {
     public void showDish_redirect_target_with_flash() throws Exception {
         DishDTOComplex dishDTOComplex =
                 new DishDTOComplex(1L, "name", "description",
-                        new PreparationTechniqueDTO("code", "descW"),
+                        new PreparationTechniqueDTO(1L,"code", "descW"),
                         null);
 
         mockMvc.perform(get(rootUri + "/view/1")
@@ -111,7 +111,7 @@ class DishViewControllerTest {
     public void showDishNewView() throws Exception {
         DishDTOSimple expectedDish =
                 new DishDTOSimple(null, null, null,
-                        new PreparationTechniqueDTO(null, null));
+                        new PreparationTechniqueDTO(null,null, null));
         mockMvc.perform(get(rootUri + "/new"))
                 .andDo(print())
                 .andExpect(view().name("/dish-new"))
@@ -123,7 +123,7 @@ class DishViewControllerTest {
     public void showDishNewView_redirect_target_with_flash() throws Exception {
         DishDTOSimple expectedDish =
                 new DishDTOSimple(1L, "test", "Test",
-                        new PreparationTechniqueDTO("PT", "desc"));
+                        new PreparationTechniqueDTO(1L,"PT", "desc"));
         mockMvc.perform(get(rootUri + "/new")
                         .flashAttr("dish", expectedDish))
                 .andDo(print())
@@ -135,7 +135,7 @@ class DishViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     public void createDish_success() throws Exception {
         DishDTOComplex savedDishDish = new DishDTOComplex(99L, "name", "description",
-                new PreparationTechniqueDTO("code", "descr"), List.of());
+                new PreparationTechniqueDTO(1L,"code", "descr"), List.of());
 
         when(dishService.createDish(any(DishDTOSimple.class), any(UserPrinciple.class))).thenReturn(savedDishDish);
 
@@ -155,14 +155,14 @@ class DishViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     public void createDish_failure() throws Exception {
         DishDTOSimple newDish = new DishDTOSimple(null, "name", "description",
-                new PreparationTechniqueDTO("PTCode", null));
+                new PreparationTechniqueDTO(1L,null, null));
 
         when(dishService.createDish(any(DishDTOSimple.class), any(UserPrinciple.class))).thenThrow(new RuntimeException("test"));
 
         mockMvc.perform(post(rootUri + "/create")
                         .param("name", "name")
                         .param("description", "description")
-                        .param("preparationTechnique.code", "PTCode")
+                        .param("preparationTechnique.id", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(csrf()))
                 .andDo(print())
@@ -191,7 +191,7 @@ class DishViewControllerTest {
     public void showDishEditView_redirect_target_with_flash() throws Exception {
         DishDTOComplex dishDTOComplex =
                 new DishDTOComplex(1L, "name", "description",
-                        new PreparationTechniqueDTO("code", "descW"),
+                        new PreparationTechniqueDTO(1L,"code", "descW"),
                         null);
 
         mockMvc.perform(get(rootUri + "/edit/1")
@@ -208,7 +208,7 @@ class DishViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     public void updateDish() throws Exception {
         DishDTOSimple dishDTOSimple = new DishDTOSimple(1L, "name", "description",
-                new PreparationTechniqueDTO("PTCode", "null"));
+                new PreparationTechniqueDTO(1L,"PTCode", "null"));
 
         when(dishService.updateDish(any(), any()))
                 .thenReturn(new DishDTOComplex(null, null, null, null, null));
@@ -232,7 +232,7 @@ class DishViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     public void updateDish_failure() throws Exception {
         DishDTOComplex dishDTOComplex = new DishDTOComplex(1L, "name", "description",
-                new PreparationTechniqueDTO("PTCode", "null"),List.of());
+                new PreparationTechniqueDTO(1L,"PTCode", "null"),List.of());
 
         when(dishService.updateDish(any(), any())).thenThrow(new RuntimeException("test"));
         when(dishService.getDish(1L))

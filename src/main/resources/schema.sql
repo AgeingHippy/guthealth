@@ -64,9 +64,15 @@ CREATE TABLE IF NOT EXISTS `principle_roles` (
 DROP TABLE IF EXISTS `preparation_technique`;
 
 CREATE TABLE `preparation_technique` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `principle_id` INT NOT NULL,
   `code` varchar(20) NOT NULL,
   `description` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`code`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `preparation_technique_uk1` (`principle_id`,`code`),
+  CONSTRAINT `fk_preparation_technique_principle`
+    FOREIGN KEY (`principle_id`)
+    REFERENCES `principle` (`id`)
 );
 
 
@@ -115,13 +121,13 @@ CREATE TABLE `dish` (
   `principle_id` int NOT NULL,
   `name` varchar(45) NOT NULL,
   `description` varchar(200) NOT NULL,
-  `preparation_technique_code` varchar(20) NOT NULL COMMENT 'Manner of preparation. e.g. roast, fry, grill, poach, unprepared',
+  `preparation_technique_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_dish_name` (`principle_id`, `name`),
   KEY `fk_dish_principle1_idx` (`principle_id`),
-  KEY `fk_dish_preparation_technique1_idx` (`preparation_technique_code`),
+  KEY `fk_dish_preparation_technique1_idx` (`preparation_technique_id`),
   CONSTRAINT `fk_dish_principle1` FOREIGN KEY (`principle_id`) REFERENCES `principle` (`id`),
-  CONSTRAINT `fk_dish_preparation_technique1` FOREIGN KEY (`preparation_technique_code`) REFERENCES `preparation_technique` (`code`)
+  CONSTRAINT `fk_dish_preparation_technique1` FOREIGN KEY (`preparation_technique_id`) REFERENCES `preparation_technique` (`id`)
 );
 
 --
@@ -169,15 +175,15 @@ CREATE TABLE `meal_component` (
   `id` int NOT NULL AUTO_INCREMENT,
   `meal_id` int NOT NULL,
   `food_type_id` int NOT NULL,
-  `preparation_technique_code` varchar(20) NOT NULL COMMENT 'Manner of preparation. e.g. roast, fry, grill, poach, unprepared',
+  `preparation_technique_id` INT NOT NULL,
   `volume` int NOT NULL COMMENT 'Volume of food in grammes',
   PRIMARY KEY (`id`),
   KEY `fk_meal_component_meal_idx` (`meal_id`),
   KEY `fk_meal_component_food_type1_idx` (`food_type_id`),
-  KEY `fk_meal_component_preparation_technique1_idx` (`preparation_technique_code`),
+  KEY `fk_meal_component_preparation_technique1_idx` (`preparation_technique_id`),
   CONSTRAINT `fk_meal_component_food_type1` FOREIGN KEY (`food_type_id`) REFERENCES `food_type` (`id`),
   CONSTRAINT `fk_meal_component_meal` FOREIGN KEY (`meal_id`) REFERENCES `meal` (`id`),
-  CONSTRAINT `fk_meal_component_preparation_technique1` FOREIGN KEY (`preparation_technique_code`) REFERENCES `preparation_technique` (`code`)
+  CONSTRAINT `fk_meal_component_preparation_technique1` FOREIGN KEY (`preparation_technique_id`) REFERENCES `preparation_technique` (`id`)
 );
 
 

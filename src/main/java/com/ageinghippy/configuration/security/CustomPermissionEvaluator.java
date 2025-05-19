@@ -1,10 +1,7 @@
 package com.ageinghippy.configuration.security;
 
 import com.ageinghippy.model.entity.*;
-import com.ageinghippy.repository.DishComponentRepository;
-import com.ageinghippy.repository.DishRepository;
-import com.ageinghippy.repository.FoodCategoryRepository;
-import com.ageinghippy.repository.FoodTypeRepository;
+import com.ageinghippy.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -22,6 +19,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     private final DishComponentRepository dishComponentRepository;
     private final FoodCategoryRepository foodCategoryRepository;
     private final FoodTypeRepository foodTypeRepository;
+    private final PreparationTechniqueRepository preparationTechniqueRepository;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -81,8 +79,17 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                 }
                 return foodType.get().getFoodCategory().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
-            default:
+            case "PreparationTechnique":
+                Optional<PreparationTechnique> preparationTechnique =
+                        preparationTechniqueRepository.findById(Long.parseLong(targetId.toString()));
+                if (preparationTechnique.isEmpty()) {
+                    return true;
+                }
+                return hasSystemDataReadPermission(preparationTechnique.get().getPrinciple(), userPrinciple, permission)
+                       ||
+                       preparationTechnique.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
+            default:
                 break;
         }
         return false;

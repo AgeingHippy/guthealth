@@ -2,9 +2,11 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;
+import com.ageinghippy.service.UserPrincipleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -17,39 +19,44 @@ import java.util.List;
 public class PreparationTechniqueController {
 
     private final PreparationTechniqueService preparationTechniqueService;
+    private final UserPrincipleService userPrincipleService;
 
     @GetMapping("")
-    public List<PreparationTechniqueDTO> getPreparationTechniques() {
-        return preparationTechniqueService.getPreparationTechniques();
+    public List<PreparationTechniqueDTO> getPreparationTechniques(Authentication authentication) {
+        return preparationTechniqueService.getPreparationTechniques(
+                userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
     }
 
-    @GetMapping("/{code}")
-    public PreparationTechniqueDTO getPreparationTechnique(@PathVariable String code) {
-        return preparationTechniqueService.getPreparationTechnique(code);
+    @GetMapping("/{id}")
+    public PreparationTechniqueDTO getPreparationTechnique(@PathVariable Long id) {
+        return preparationTechniqueService.getPreparationTechnique(id);
     }
 
     @PostMapping("")
-    public ResponseEntity<PreparationTechniqueDTO> postPreparationTechnique(@Valid @RequestBody PreparationTechniqueDTO preparationTechnique) {
-        preparationTechnique = preparationTechniqueService.createPreparationTechnique(preparationTechnique);
+    public ResponseEntity<PreparationTechniqueDTO> postPreparationTechnique(
+            @Valid @RequestBody PreparationTechniqueDTO preparationTechnique,
+            Authentication authentication) {
+        preparationTechnique = preparationTechniqueService.createPreparationTechnique(preparationTechnique,
+                userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{code}")
-                .buildAndExpand(preparationTechnique.code())
+                .path("/{id}")
+                .buildAndExpand(preparationTechnique.id())
                 .toUri();
         return ResponseEntity.created(location).body(preparationTechnique);
     }
 
-    @PutMapping("/{code}")
-    public ResponseEntity<PreparationTechniqueDTO> putPreparationTechnique(@RequestBody PreparationTechniqueDTO preparationTechnique, @PathVariable String code) {
-        if (!code.equals(preparationTechnique.code())) {
-            throw new IllegalArgumentException("The code specified in the request body must match the code specified in the url");
+    @PutMapping("/{id}")
+    public ResponseEntity<PreparationTechniqueDTO> putPreparationTechnique(@RequestBody PreparationTechniqueDTO preparationTechnique, @PathVariable Long id) {
+        if (!id.equals(preparationTechnique.id())) {
+            throw new IllegalArgumentException("The id specified in the request body must match the id specified in the url");
         }
-        return ResponseEntity.ok(preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique))                ;
+        return ResponseEntity.ok(preparationTechniqueService.updatePreparationTechnique(id, preparationTechnique))                ;
     }
 
-    @DeleteMapping("/{code}")
-    public ResponseEntity<String> deletePreparationTechnique(@PathVariable String code) {
-        preparationTechniqueService.deletePreparationTechnique(code);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePreparationTechnique(@PathVariable Long id) {
+        preparationTechniqueService.deletePreparationTechnique(id);
         return ResponseEntity.noContent().build();
     }
 

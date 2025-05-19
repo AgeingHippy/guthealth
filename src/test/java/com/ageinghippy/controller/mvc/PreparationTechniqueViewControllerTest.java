@@ -2,11 +2,14 @@ package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.DataSetupHelper;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.PreparationTechniqueService;
+import com.ageinghippy.service.UserPrincipleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -28,6 +31,9 @@ class PreparationTechniqueViewControllerTest {
     @MockitoBean
     private PreparationTechniqueService preparationTechniqueService;
 
+    @MockitoBean
+    private UserPrincipleService userPrincipleService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,19 +42,21 @@ class PreparationTechniqueViewControllerTest {
 
     @BeforeEach
     void setUp() {
+        doAnswer(invocation -> dsh.getPrinciple(((User) invocation.getArgument(0)).getUsername()))
+                .when(userPrincipleService).castToUserPrinciple(any());
     }
 
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void showPreparationTechniques() throws Exception {
         List<PreparationTechniqueDTO> preparationTechniqueDTOList = List.of(
-                dsh.getPreparationTechniqueDTO("PrepType1"),
-                dsh.getPreparationTechniqueDTO("PrepType2"),
-                dsh.getPreparationTechniqueDTO("PrepType3"),
-                dsh.getPreparationTechniqueDTO("PrepType4")
+                dsh.getPreparationTechniqueDTO(1L),
+                dsh.getPreparationTechniqueDTO(2L),
+                dsh.getPreparationTechniqueDTO(3L),
+                dsh.getPreparationTechniqueDTO(4L)
         );
 
-        when(preparationTechniqueService.getPreparationTechniques())
+        when(preparationTechniqueService.getPreparationTechniques(any(UserPrinciple.class)))
                 .thenReturn(preparationTechniqueDTOList);
 
         mockMvc.perform(get(rootUri))
@@ -61,12 +69,12 @@ class PreparationTechniqueViewControllerTest {
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void editPreparationTechnique() throws Exception {
-        PreparationTechniqueDTO preparationTechniqueDTO = dsh.getPreparationTechniqueDTO("PrepType1");
+        PreparationTechniqueDTO preparationTechniqueDTO = dsh.getPreparationTechniqueDTO(1L);
 
-        when(preparationTechniqueService.getPreparationTechnique("PrepType1"))
+        when(preparationTechniqueService.getPreparationTechnique(1L))
                 .thenReturn(preparationTechniqueDTO);
 
-        mockMvc.perform(get(rootUri + "/edit/PrepType1"))
+        mockMvc.perform(get(rootUri + "/edit/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("/preparation-technique-edit"))
@@ -76,7 +84,7 @@ class PreparationTechniqueViewControllerTest {
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void editPreparationTechnique_redirect_target_with_flash() throws Exception {
-        PreparationTechniqueDTO preparationTechniqueDTO = dsh.getPreparationTechniqueDTO("PrepType1");
+        PreparationTechniqueDTO preparationTechniqueDTO = dsh.getPreparationTechniqueDTO(1L);
 
         mockMvc.perform(get(rootUri + "/edit/1")
                         .flashAttr("preparationTechnique", preparationTechniqueDTO))
@@ -92,10 +100,11 @@ class PreparationTechniqueViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     void updatePreparationTechnique() throws Exception {
 
-        when(preparationTechniqueService.updatePreparationTechnique(anyString(), any(PreparationTechniqueDTO.class)))
-                .thenReturn(new PreparationTechniqueDTO("", ""));
+        when(preparationTechniqueService.updatePreparationTechnique(anyLong(), any(PreparationTechniqueDTO.class)))
+                .thenReturn(new PreparationTechniqueDTO(null,null, null));
 
-        mockMvc.perform(post(rootUri + "/update/PrepType1")
+        mockMvc.perform(post(rootUri + "/update/1")
+                        .param("id","1")
                         .param("code", "PrepType1")
                         .param("description", "PrepType1 description update")
                         .with(csrf()))
@@ -104,28 +113,29 @@ class PreparationTechniqueViewControllerTest {
                 .andExpect(flash().attributeExists("successMessage"));
 
         verify(preparationTechniqueService, times(1))
-                .updatePreparationTechnique(anyString(), any(PreparationTechniqueDTO.class));
+                .updatePreparationTechnique(anyLong(), any(PreparationTechniqueDTO.class));
     }
 
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void updatePreparationTechnique_failure() throws Exception {
 
-        when(preparationTechniqueService.updatePreparationTechnique(anyString(), any(PreparationTechniqueDTO.class)))
+        when(preparationTechniqueService.updatePreparationTechnique(anyLong(), any(PreparationTechniqueDTO.class)))
                 .thenThrow(new RuntimeException("test"));
 
-        mockMvc.perform(post(rootUri + "/update/PrepType1")
+        mockMvc.perform(post(rootUri + "/update/1")
+                        .param("id","1")
                         .param("code", "PrepType1")
                         .param("description", "PrepType1 description update")
                         .with(csrf()))
                 .andDo(print())
-                .andExpect(redirectedUrl("/preparation-technique/edit/PrepType1"))
+                .andExpect(redirectedUrl("/preparation-technique/edit/1"))
                 .andExpect(flash().attributeExists("errorMessage"))
                 .andExpect(flash().attribute("preparationTechnique",
-                        new PreparationTechniqueDTO("PrepType1", "PrepType1 description update")));
+                        new PreparationTechniqueDTO(1L,"PrepType1", "PrepType1 description update")));
 
         verify(preparationTechniqueService, times(1))
-                .updatePreparationTechnique(anyString(), any(PreparationTechniqueDTO.class));
+                .updatePreparationTechnique(anyLong(), any(PreparationTechniqueDTO.class));
     }
 
     @Test
@@ -133,14 +143,14 @@ class PreparationTechniqueViewControllerTest {
     void showNewPreparationTechniqueForm() throws Exception {
         mockMvc.perform(get(rootUri + "/new"))
                 .andDo(print())
-                .andExpect(model().attribute("preparationTechnique", new PreparationTechniqueDTO(null, null)))
+                .andExpect(model().attribute("preparationTechnique", new PreparationTechniqueDTO(null,null, null)))
                 .andExpect(view().name("preparation-technique-new"));
     }
 
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void showNewPreparationTechniqueForm_redirect_target_with_flash() throws Exception {
-        PreparationTechniqueDTO preparationTechniqueDTO = new PreparationTechniqueDTO("code", "desc");
+        PreparationTechniqueDTO preparationTechniqueDTO = new PreparationTechniqueDTO(null,"code", "desc");
         mockMvc.perform(get(rootUri + "/new")
                         .flashAttr("preparationTechnique", preparationTechniqueDTO))
                 .andDo(print())
@@ -151,8 +161,8 @@ class PreparationTechniqueViewControllerTest {
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void createPreparationTechnique() throws Exception {
-        when(preparationTechniqueService.createPreparationTechnique(any()))
-                .thenReturn(new PreparationTechniqueDTO("code", "desc"));
+        when(preparationTechniqueService.createPreparationTechnique(any(), any()))
+                .thenReturn(new PreparationTechniqueDTO(1L,"code", "desc"));
 
         mockMvc.perform(post(rootUri + "/create")
                         .param("code", "code")
@@ -166,7 +176,7 @@ class PreparationTechniqueViewControllerTest {
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void createPreparationTechnique_failure() throws Exception {
-        when(preparationTechniqueService.createPreparationTechnique(any()))
+        when(preparationTechniqueService.createPreparationTechnique(any(), any()))
                 .thenThrow(new RuntimeException("test"));
 
         mockMvc.perform(post(rootUri + "/create")
@@ -177,30 +187,31 @@ class PreparationTechniqueViewControllerTest {
                 .andExpect(redirectedUrl("/preparation-technique/new"))
                 .andExpect(flash().attributeExists("errorMessage"))
                 .andExpect(flash().attribute("preparationTechnique",
-                        new PreparationTechniqueDTO("code", "desc")));
+                        new PreparationTechniqueDTO(null,"code", "desc")));
     }
 
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void deletePreparationTechnique() throws Exception {
-        doNothing().when(preparationTechniqueService).deletePreparationTechnique("PrepType1");
-        mockMvc.perform(get(rootUri +"/delete/PrepType1"))
+        doNothing().when(preparationTechniqueService).deletePreparationTechnique(1L);
+
+        mockMvc.perform(get(rootUri +"/delete/1"))
                 .andDo(print())
                 .andExpect(redirectedUrl("/preparation-technique"))
                 .andExpect(flash().attributeExists("successMessage"));
 
-        verify(preparationTechniqueService, times(1)).deletePreparationTechnique("PrepType1");
+        verify(preparationTechniqueService, times(1)).deletePreparationTechnique(1L);
     }
 
     @Test
     @WithMockUser(username = "basic", roles = "USER")
     void deletePreparationTechnique_failure() throws Exception {
-        doThrow(new RuntimeException("test")).when(preparationTechniqueService).deletePreparationTechnique("PrepType1");
-        mockMvc.perform(get(rootUri +"/delete/PrepType1"))
+        doThrow(new RuntimeException("test")).when(preparationTechniqueService).deletePreparationTechnique(1L);
+        mockMvc.perform(get(rootUri +"/delete/1"))
                 .andDo(print())
                 .andExpect(redirectedUrl("/preparation-technique"))
                 .andExpect(flash().attributeExists("errorMessage"));
 
-        verify(preparationTechniqueService, times(1)).deletePreparationTechnique("PrepType1");
+        verify(preparationTechniqueService, times(1)).deletePreparationTechnique(1L);
     }
 }

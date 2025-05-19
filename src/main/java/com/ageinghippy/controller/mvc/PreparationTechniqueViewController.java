@@ -2,7 +2,9 @@ package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;
+import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +18,23 @@ import java.util.List;
 public class PreparationTechniqueViewController {
 
     private final PreparationTechniqueService preparationTechniqueService;
+    private final UserPrincipleService userPrincipleService;
 
     @GetMapping("")
-    public String showPreparationTechniques(Model model) {
-        List<PreparationTechniqueDTO> preparationTechniques = preparationTechniqueService.getPreparationTechniques();
+    public String showPreparationTechniques(Model model, Authentication authentication) {
+        List<PreparationTechniqueDTO> preparationTechniques =
+                preparationTechniqueService.getPreparationTechniques(
+                        userPrincipleService.castToUserPrinciple(authentication.getPrincipal())
+                );
         model.addAttribute("preparationTechniques", preparationTechniques);
 
         return "/preparation-technique";
     }
 
-    @GetMapping(value = "/edit/{code}")
-    public String editPreparationTechnique(Model model, @PathVariable String code) {
+    @GetMapping(value = "/edit/{id}")
+    public String editPreparationTechnique(Model model, @PathVariable Long id) {
         if (!model.containsAttribute("preparationTechnique")) {
-            PreparationTechniqueDTO preparationTechnique = preparationTechniqueService.getPreparationTechnique(code);
+            PreparationTechniqueDTO preparationTechnique = preparationTechniqueService.getPreparationTechnique(id);
 
             model.addAttribute("preparationTechnique", preparationTechnique);
         }
@@ -37,19 +43,19 @@ public class PreparationTechniqueViewController {
     }
 
 
-    @PostMapping("/update/{code}")
-    public String updatePreparationTechnique(@PathVariable String code,
+    @PostMapping("/update/{id}")
+    public String updatePreparationTechnique(@PathVariable Long id,
                                              @ModelAttribute PreparationTechniqueDTO preparationTechnique,
                                              RedirectAttributes redirectAttributes) {
         try {
-            preparationTechniqueService.updatePreparationTechnique(code, preparationTechnique);
+            preparationTechniqueService.updatePreparationTechnique(id, preparationTechnique);
             redirectAttributes.addFlashAttribute("successMessage", "PreparationTechnique updated successfully.");
             return "redirect:/preparation-technique";
         } catch (Exception e) {
             String errorMessage = e.getClass().getSimpleName() + " - " + "PreparationTechnique update failed.";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             redirectAttributes.addFlashAttribute("preparationTechnique", preparationTechnique);
-            return "redirect:/preparation-technique/edit/" + code;
+            return "redirect:/preparation-technique/edit/" + id;
         }
 
     }
@@ -57,7 +63,9 @@ public class PreparationTechniqueViewController {
     @GetMapping("/new")
     public String showNewPreparationTechniqueForm(Model model) {
         if (!model.containsAttribute("preparationTechnique")) {
-            model.addAttribute("preparationTechnique", new PreparationTechniqueDTO(null, null));
+            model.addAttribute(
+                    "preparationTechnique",
+                    new PreparationTechniqueDTO(null, null, null));
         }
 
         return "preparation-technique-new";
@@ -65,25 +73,28 @@ public class PreparationTechniqueViewController {
 
     @PostMapping("/create")
     public String createPreparationTechnique(@ModelAttribute PreparationTechniqueDTO preparationTechnique,
+                                             Authentication authentication,
                                              RedirectAttributes redirectAttributes) {
         try {
-            preparationTechniqueService.createPreparationTechnique(preparationTechnique);
+            preparationTechniqueService.createPreparationTechnique(
+                    preparationTechnique,
+                    userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
             redirectAttributes.addFlashAttribute("successMessage", "PreparationTechnique created successfully.");
             return "redirect:/preparation-technique";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     e.getClass().getSimpleName() + "- " + "PreparationTechnique create failed.");
-            redirectAttributes.addFlashAttribute("preparationTechnique",preparationTechnique);
+            redirectAttributes.addFlashAttribute("preparationTechnique", preparationTechnique);
             return "redirect:/preparation-technique/new";
         }
 
     }
 
-    @RequestMapping("/delete/{code}")
-    public String deletePreparationTechnique(@PathVariable String code,
+    @RequestMapping("/delete/{id}")
+    public String deletePreparationTechnique(@PathVariable Long id,
                                              RedirectAttributes redirectAttributes) {
         try {
-            preparationTechniqueService.deletePreparationTechnique(code);
+            preparationTechniqueService.deletePreparationTechnique(id);
             redirectAttributes.addFlashAttribute("successMessage", "PreparationTechnique deleted successfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",

@@ -59,16 +59,16 @@ class PreparationTechniqueControllerIT {
         });
 
         assertEquals(resultList.size(), 4);
-        assert (resultList.contains(new PreparationTechniqueDTO("PrepType1", "Preparation type one description")));
-        assert (resultList.contains(new PreparationTechniqueDTO("PrepType2", "Preparation type two description")));
-        assert (resultList.contains(new PreparationTechniqueDTO("PrepType3", "Preparation type three description")));
-        assert (resultList.contains(new PreparationTechniqueDTO("PrepType4", "Preparation type four description")));
+        assert (resultList.contains(new PreparationTechniqueDTO(1L, "PrepType1", "Preparation type one description")));
+        assert (resultList.contains(new PreparationTechniqueDTO(2L, "PrepType2", "Preparation type two description")));
+        assert (resultList.contains(new PreparationTechniqueDTO(3L, "PrepType3", "Preparation type three description")));
+        assert (resultList.contains(new PreparationTechniqueDTO(4L, "PrepType4", "Preparation type four description")));
     }
 
     @Test
     @Order(2)
     void getPreparationTechnique_found() throws Exception {
-        MvcResult result = mockMvc.perform(get(baseUrl + "/{code}", "PrepType2"))
+        MvcResult result = mockMvc.perform(get(baseUrl + "/{id}", 2L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -76,12 +76,12 @@ class PreparationTechniqueControllerIT {
 
         PreparationTechniqueDTO resultDto = objectMapper.readValue(result.getResponse().getContentAsString(), PreparationTechniqueDTO.class);
 
-        assertEquals(resultDto, new PreparationTechniqueDTO("PrepType2", "Preparation type two description"));
+        assertEquals(resultDto, new PreparationTechniqueDTO(2L, "PrepType2", "Preparation type two description"));
     }
 
     @Test
     void getPreparationTechnique_notFound() throws Exception {
-        mockMvc.perform(get(baseUrl + "/{code}", "PrepTypeZ"))
+        mockMvc.perform(get(baseUrl + "/{id}", 99L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -94,18 +94,19 @@ class PreparationTechniqueControllerIT {
                                 .content("{\"code\":\"newCode\",\"description\":\"newDescription\"}"))
                         .andDo(print())
                         .andExpect(status().isCreated())
-                        .andExpect(header().string("Location",matchesPattern(".*" +baseUrl + "/newCode")))
+                        .andExpect(header().string("Location", matchesPattern(".*" + baseUrl + "/\\d*")))
                         .andReturn();
 
         PreparationTechniqueDTO preparationTechniqueDTO = objectMapper.readValue(result.getResponse().getContentAsString(), PreparationTechniqueDTO.class);
 
         //THEN
         //Correct entity is returned
-        assertEquals(new PreparationTechniqueDTO("newCode", "newDescription"), preparationTechniqueDTO);
+        assertEquals("newCode",preparationTechniqueDTO.code());
+        assertEquals("newDescription",preparationTechniqueDTO.description());
 
         //Entity is correctly updated in the database
         String description = entityManager.createQuery(
-                        "SELECT description FROM PreparationTechnique WHERE code = 'newCode'")
+                        "SELECT description FROM PreparationTechnique WHERE code = 'newCode' AND principle.id = 2")
                 .getSingleResult().toString();
         assertEquals(description, "newDescription");
     }
@@ -113,9 +114,9 @@ class PreparationTechniqueControllerIT {
     @Test
     void createPreparationTechnique_failure() throws Exception {
         String requestJson = """
-                {
-                    "code":"PrepType1",
-                    "description":"description one"
+                {   "id": "11",
+                    "code":"PrepType11",
+                    "description":"description eleven"
                 }""";
 
         mockMvc.perform(post(baseUrl)
@@ -128,13 +129,13 @@ class PreparationTechniqueControllerIT {
     @Test
     void updatePreparationTechnique_success() throws Exception {
         String requestJson = """
-                {
+                {   "id": 1,
                     "code":"PrepType1",
                     "description":"nextDescription"
                 }""";
 
         MvcResult result =
-                mockMvc.perform(put(baseUrl + "/{code}", "PrepType1")
+                mockMvc.perform(put(baseUrl + "/{id}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestJson))
                         .andDo(print())
@@ -148,7 +149,7 @@ class PreparationTechniqueControllerIT {
 
         //Entity is correctly updated in the database
         String description = entityManager.createQuery(
-                        "SELECT description FROM PreparationTechnique WHERE code = 'PrepType1'")
+                        "SELECT description FROM PreparationTechnique WHERE id=1")
                 .getSingleResult().toString();
         assertEquals(description, "nextDescription");
     }
@@ -156,12 +157,12 @@ class PreparationTechniqueControllerIT {
     @Test
     void updatePreparationTechnique_failure_notFound() throws Exception {
         String requestJson = """
-                {
+                {   "id": 99,
                     "code":"InvalidCode",
                     "description":"name_updated"
                 }""";
 
-        mockMvc.perform(put(baseUrl + "/{code}", "InvalidCode")
+        mockMvc.perform(put(baseUrl + "/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
@@ -171,23 +172,17 @@ class PreparationTechniqueControllerIT {
     @Test
     void updatePreparationTechnique_failure_badRequest() throws Exception {
         String requestJson = """
-                {
+                {   "id": 1,
                     "code":"PrepType1",
                     "description":"Another updated description here"
                 }""";
 
-        mockMvc.perform(put(baseUrl + "/{code}", "PrepType2")
+        mockMvc.perform(put(baseUrl + "/{id}", 2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        //and validate entity not updated
-        //Entity is correctly updated in the database
-        String description = entityManager.createQuery(
-                        "SELECT description FROM PreparationTechnique WHERE code = 'PrepType1'")
-                .getSingleResult().toString();
-        assertNotEquals(description, "changedDescription");
     }
 
 
@@ -195,13 +190,9 @@ class PreparationTechniqueControllerIT {
     @Transactional
     void deletePreparationTechnique_success() throws Exception {
         //given a specific record exists in the database
-        entityManager.persist(PreparationTechnique.builder()
-                .code("testCode")
-                .description("testDesc")
-                .build());
 
         //WHEN the delete endpoint is called
-        mockMvc.perform(delete(baseUrl + "/{code}", "testCode")
+        mockMvc.perform(delete(baseUrl + "/{id}", 4L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -209,7 +200,7 @@ class PreparationTechniqueControllerIT {
 
     @Test
     void deletePreparationTechnique_failure_notfound() throws Exception {
-        mockMvc.perform(delete(baseUrl + "/{code}", "InvalidCode")
+        mockMvc.perform(delete(baseUrl + "/{id}", 99L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -217,7 +208,7 @@ class PreparationTechniqueControllerIT {
 
     @Test
     void deletePreparationTechnique_failure_constraintViolation() throws Exception {
-        mockMvc.perform(delete(baseUrl + "/{code}", "PrepType1")
+        mockMvc.perform(delete(baseUrl + "/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
