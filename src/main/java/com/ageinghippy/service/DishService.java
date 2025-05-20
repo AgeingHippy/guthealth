@@ -69,7 +69,7 @@ public class DishService {
     private Dish saveDish(Dish dish) {
 
         //verify specified preparationTechnique exists
-        preparationTechniqueRepository.findById(dish.getPreparationTechnique().getCode()).orElseThrow();
+        preparationTechniqueRepository.findById(dish.getPreparationTechnique().getId()).orElseThrow();
 
         //validate dish
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(dish);
@@ -99,9 +99,9 @@ public class DishService {
         Dish dish = dishRepository.findById(id).orElseThrow();
         dish.setName(Util.valueIfNull(updateDish.name(), dish.getName()));
         dish.setDescription(Util.valueIfNull(updateDish.description(), dish.getDescription()));
-        if (updateDish.preparationTechnique() != null && updateDish.preparationTechnique().code() != null) {
+        if (updateDish.preparationTechnique() != null && updateDish.preparationTechnique().id() != null) {
             dish.setPreparationTechnique(
-                    preparationTechniqueRepository.findById(updateDish.preparationTechnique().code()).orElseThrow());
+                    preparationTechniqueRepository.findById(updateDish.preparationTechnique().id()).orElseThrow());
         }
 
         dish = saveDish(dish);

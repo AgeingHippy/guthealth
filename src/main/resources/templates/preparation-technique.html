@@ -27,22 +27,24 @@
             <td th:text="${preparationTechnique.code}"></td>
             <td th:text="${preparationTechnique.description}"></td>
             <td>
-                <a th:href="@{'/preparation-technique/edit/' + ${preparationTechnique.code}}" class="icon-link">
+                <a th:href="@{'/preparation-technique/edit/' + ${preparationTechnique.id}}" class="icon-link">
                     <i class="bi bi-pencil"></i>
                 </a>
             </td>
             <td>
-                <a th:href="@{'/preparation-technique/delete/' + ${preparationTechnique.code}}" class="icon-link">
+                <a th:href="@{'/preparation-technique/delete/' + ${preparationTechnique.id}}" class="icon-link">
                     <i class="bi bi-trash"></i>
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
-    <a th:href="@{'/preparation-technique/new'}">
+    <a sec:authorize="hasRole('ROLE_USER')" th:href="@{'/preparation-technique/new'}">
         <button type="button" class="col-3 btn btn-primary">Add New</button>
     </a>
-
+    <a sec:authorize="hasRole('ROLE_GUEST')" th:href="@{'/preparation-technique/system'}">
+        <button type="button" class="col-6 btn btn-secondary">View System Preparation Techniques</button>
+    </a>
 
 </div>
 

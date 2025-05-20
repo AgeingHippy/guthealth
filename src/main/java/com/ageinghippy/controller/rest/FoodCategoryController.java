@@ -87,13 +87,21 @@ public class FoodCategoryController {
     }
 
     @PostMapping("/{id}/system")
-    @PreAuthorize("hasPermission(#id,'FoodCategory','read') && hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<FoodCategoryDTOComplex> copySystemFoodCategory(@PathVariable Long id,
                                                                          Authentication authentication) {
         return ResponseEntity.ok(
                 foodCategoryService.copyFoodCategory(
                         id,
                         userPrincipleService.castToUserPrinciple(authentication.getPrincipal())));
+    }
+
+    @PostMapping("/system")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Void> copyAllSystemFoodCategories(Authentication authentication) {
+        foodCategoryService.copyFoodCategories(
+                userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -11,15 +11,17 @@
 <div layout:fragment="content" th:remove="tag">
 
     <div>
-        <h1>Preparation Technique</h1>
-        <form action="#" th:action="@{'/preparation-technique/update/' + ${preparationTechnique.code}}"
+        <p/>
+        <h4>Edit Preparation Technique</h4>
+        <p/>
+        <form action="#" th:action="@{'/preparation-technique/update/' + ${preparationTechnique.id}}"
               th:object="${preparationTechnique}" method="post">
 
             <div class="input-group mb-3">
                 <span class="input-group-text">Code:</span>
                 <input type="text" class="form-control"
                        id="code" th:field="*{code}"
-                       readonly>
+                       required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Description:</span>

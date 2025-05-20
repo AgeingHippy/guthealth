@@ -69,16 +69,18 @@ class DTOMapperTest {
                 new Object[]{
                         "Map PreparationTechnique to PreparationTechniqueDTO",
                         PreparationTechnique.builder()
+                                .id(1L)
                                 .code("testCode")
                                 .description("testDescription")
                                 .build(),
-                        new PreparationTechniqueDTO("testCode", "testDescription"),
+                        new PreparationTechniqueDTO(1L, "testCode", "testDescription"),
                         PreparationTechniqueDTO.class
                 },
                 new Object[]{
                         "Map PreparationTechniqueDTO to PreparationTechnique",
-                        new PreparationTechniqueDTO("testCode", "testDescription"),
+                        new PreparationTechniqueDTO(1L, "testCode", "testDescription"),
                         PreparationTechnique.builder()
+                                .id(1L)
                                 .code("testCode")
                                 .description("testDescription")
                                 .build(),
@@ -93,26 +95,26 @@ class DTOMapperTest {
                 new Object[]{
                         "Map List<PreparationTechnique> to List<PreparationTechniqueDTO>",
                         List.of(
-                                PreparationTechnique.builder().code("code1").description("description1").build(),
-                                PreparationTechnique.builder().code("code2").description("description2").build(),
-                                PreparationTechnique.builder().code("code3").description("description3").build()
+                                PreparationTechnique.builder().id(1L).code("code1").description("description1").build(),
+                                PreparationTechnique.builder().id(2L).code("code2").description("description2").build(),
+                                PreparationTechnique.builder().id(3L).code("code3").description("description3").build()
                         ),
-                        List.of(new PreparationTechniqueDTO("code1", "description1"),
-                                new PreparationTechniqueDTO("code2", "description2"),
-                                new PreparationTechniqueDTO("code3", "description3")
+                        List.of(new PreparationTechniqueDTO(1L, "code1", "description1"),
+                                new PreparationTechniqueDTO(2L, "code2", "description2"),
+                                new PreparationTechniqueDTO(3L, "code3", "description3")
                         ),
                         PreparationTechniqueDTO.class
                 },
                 new Object[]{
                         "Map List<PreparationTechniqueDTO> to List<PreparationTechnique>",
-                        List.of(new PreparationTechniqueDTO("code1", "description1"),
-                                new PreparationTechniqueDTO("code2", "description2"),
-                                new PreparationTechniqueDTO("code3", "description3")
+                        List.of(new PreparationTechniqueDTO(1L, "code1", "description1"),
+                                new PreparationTechniqueDTO(2L, "code2", "description2"),
+                                new PreparationTechniqueDTO(3L, "code3", "description3")
                         ),
                         List.of(
-                                PreparationTechnique.builder().code("code1").description("description1").build(),
-                                PreparationTechnique.builder().code("code2").description("description2").build(),
-                                PreparationTechnique.builder().code("code3").description("description3").build()
+                                PreparationTechnique.builder().id(1L).code("code1").description("description1").build(),
+                                PreparationTechnique.builder().id(2L).code("code2").description("description2").build(),
+                                PreparationTechnique.builder().id(3L).code("code3").description("description3").build()
                         ),
                         PreparationTechnique.class
                 }
@@ -686,7 +688,7 @@ class DTOMapperTest {
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(
                                         List.of(
                                                 DishComponent.builder()
@@ -713,7 +715,7 @@ class DTOMapperTest {
                         new DishDTOSimple(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
                         DishDTOSimple.class
                 },
                 new Object[]{
@@ -721,13 +723,13 @@ class DTOMapperTest {
                         new DishDTOSimple(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
                         Dish.builder()
                                 .id(1L)
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(null)
                                 .build(),
                         Dish.class
@@ -746,7 +748,7 @@ class DTOMapperTest {
                                         .name("Dish1")
                                         .description("DishDescription1")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                                PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()
@@ -775,7 +777,7 @@ class DTOMapperTest {
                                         .name("Dish2")
                                         .description("DishDescription2")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                                PreparationTechnique.builder().id(2L).code("PT2").description("PTDesc2").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()
@@ -804,11 +806,11 @@ class DTOMapperTest {
                                 new DishDTOSimple(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
                                 new DishDTOSimple(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO("PT2", "PTDesc2"))
+                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"))
                         ),
                         DishDTOSimple.class
                 },
@@ -818,11 +820,11 @@ class DTOMapperTest {
                                 new DishDTOSimple(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1")),
+                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
                                 new DishDTOSimple(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO("PT2", "PTDesc2"))
+                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"))
                         ),
                         List.of(
                                 Dish.builder()
@@ -830,7 +832,7 @@ class DTOMapperTest {
                                         .name("Dish1")
                                         .description("DishDescription1")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                                PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                         .dishComponents(null)
                                         .build(),
                                 Dish.builder()
@@ -838,7 +840,7 @@ class DTOMapperTest {
                                         .name("Dish2")
                                         .description("DishDescription2")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                                PreparationTechnique.builder().id(2L).code("PT2").description("PTDesc2").build())
                                         .dishComponents(null)
                                         .build()
                         ),
@@ -857,7 +859,7 @@ class DTOMapperTest {
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(
                                         List.of(
                                                 DishComponent.builder()
@@ -884,7 +886,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                 List.of(
                                         new DishComponentDTO(101L,
                                                 new FoodTypeDTOSimple(11L, "FT11", null),
@@ -901,7 +903,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                 List.of(
                                         new DishComponentDTO(101L,
                                                 new FoodTypeDTOSimple(11L, "FT11", null),
@@ -916,7 +918,7 @@ class DTOMapperTest {
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(
                                         List.of(
                                                 DishComponent.builder()
@@ -947,13 +949,13 @@ class DTOMapperTest {
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(List.of())
                                 .build(),
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                 List.of()
                         ),
                         DishDTOComplex.class
@@ -963,7 +965,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                 null
                         ),
                         Dish.builder()
@@ -971,7 +973,7 @@ class DTOMapperTest {
                                 .name("Dish1")
                                 .description("DishDescription1")
                                 .preparationTechnique(
-                                        PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                        PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                 .dishComponents(List.of())
                                 .build(),
                         Dish.class
@@ -990,7 +992,7 @@ class DTOMapperTest {
                                         .name("Dish1")
                                         .description("DishDescription1")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                                PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()
@@ -1019,7 +1021,7 @@ class DTOMapperTest {
                                         .name("Dish2")
                                         .description("DishDescription2")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                                PreparationTechnique.builder().id(2L).code("PT2").description("PTDesc2").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()
@@ -1048,7 +1050,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                         List.of(
                                                 new DishComponentDTO(101L,
                                                         new FoodTypeDTOSimple(11L, "FT11", null),
@@ -1061,7 +1063,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO("PT2", "PTDesc2"),
+                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"),
                                         List.of(
                                                 new DishComponentDTO(201L,
                                                         new FoodTypeDTOSimple(21L, "FT21", null),
@@ -1080,7 +1082,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO("PT1", "PTDesc1"),
+                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
                                         List.of(
                                                 new DishComponentDTO(101L,
                                                         new FoodTypeDTOSimple(11L, "FT11", null),
@@ -1093,7 +1095,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO("PT2", "PTDesc2"),
+                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"),
                                         List.of(
                                                 new DishComponentDTO(201L,
                                                         new FoodTypeDTOSimple(21L, "FT21", null),
@@ -1110,7 +1112,7 @@ class DTOMapperTest {
                                         .name("Dish1")
                                         .description("DishDescription1")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT1").description("PTDesc1").build())
+                                                PreparationTechnique.builder().id(1L).code("PT1").description("PTDesc1").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()
@@ -1131,7 +1133,7 @@ class DTOMapperTest {
                                         .name("Dish2")
                                         .description("DishDescription2")
                                         .preparationTechnique(
-                                                PreparationTechnique.builder().code("PT2").description("PTDesc2").build())
+                                                PreparationTechnique.builder().id(2L).code("PT2").description("PTDesc2").build())
                                         .dishComponents(
                                                 List.of(
                                                         DishComponent.builder()

@@ -52,7 +52,7 @@ public class DishViewController {
         if (!model.containsAttribute("dish")) {
             model.addAttribute("dish",
                     new DishDTOSimple(null, null, null,
-                            new PreparationTechniqueDTO(null, null)));
+                            new PreparationTechniqueDTO(null,null, null)));
         }
 
         return "/dish-new";

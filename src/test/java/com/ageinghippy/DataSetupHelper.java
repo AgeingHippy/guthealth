@@ -10,8 +10,8 @@ public class DataSetupHelper {
 
     private Map<Long, UserPrinciple> userPrincipleMap = new HashMap<>();
 
-    private Map<String, PreparationTechnique> preparationTechniqueMap = new HashMap<>();
-    private Map<String, PreparationTechniqueDTO> preparationTechniqueDTOMap = new HashMap<>();
+    private Map<Long, PreparationTechnique> preparationTechniqueMap = new HashMap<>();
+    private Map<Long, PreparationTechniqueDTO> preparationTechniqueDTOMap = new HashMap<>();
 
     private Map<Long, FoodCategory> foodCategoryMap = new HashMap<>();
     private Map<Long, FoodCategoryDTOSimple> foodCategoryDTOSimpleMap = new HashMap<>();
@@ -59,12 +59,12 @@ public class DataSetupHelper {
     }
 
 
-    public PreparationTechnique getPreparationTechnique(String code) {
-        return preparationTechniqueMap.get(code);
+    public PreparationTechnique getPreparationTechnique(Long id) {
+        return preparationTechniqueMap.get(id);
     }
 
-    public PreparationTechniqueDTO getPreparationTechniqueDTO(String code) {
-        return preparationTechniqueDTOMap.get(code);
+    public PreparationTechniqueDTO getPreparationTechniqueDTO(Long id) {
+        return preparationTechniqueDTOMap.get(id);
     }
 
     public FoodType getFoodType(Long id) {
@@ -128,7 +128,7 @@ public class DataSetupHelper {
 
     private void initialiseUserPrinciples() {
         initialiseUserPrinciple(1L, "admin", List.of(getRole("ROLE_ADMIN")));
-        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
         initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
         initialiseUserPrinciple(4L, "system", List.of(getRole("ROLE_USER")));
         initialiseUserPrinciple(5L, "alternative", List.of(getRole("ROLE_USER")));
@@ -145,17 +145,25 @@ public class DataSetupHelper {
     }
 
     private void initialisePreparationTechniques() {
-        initialisePreparationTechnique("PrepType1", "Preparation type one description");
-        initialisePreparationTechnique("PrepType2", "Preparation type two description");
-        initialisePreparationTechnique("PrepType3", "Preparation type three description");
-        initialisePreparationTechnique("PrepType4", "Preparation type four description");
+        initialisePreparationTechnique(1L, 2L, "PrepType1", "Preparation type one description");
+        initialisePreparationTechnique(2L, 2L, "PrepType2", "Preparation type two description");
+        initialisePreparationTechnique(3L, 2L, "PrepType3", "Preparation type three description");
+        initialisePreparationTechnique(4L, 2L, "PrepType4", "Preparation type four description");
+
+        initialisePreparationTechnique(5L, 4L, "PrepType5", "Preparation type five description");
+        initialisePreparationTechnique(6L, 4L, "PrepType6", "Preparation type six description");
     }
 
-    private void initialisePreparationTechnique(String code, String description) {
-        preparationTechniqueMap.put(code,
-                PreparationTechnique.builder().code(code).description(description).build());
+    private void initialisePreparationTechnique(Long id, Long principleId, String code, String description) {
+        preparationTechniqueMap.put(id,
+                PreparationTechnique.builder()
+                        .id(id)
+                        .principle(userPrincipleMap.get(principleId))
+                        .code(code)
+                        .description(description)
+                        .build());
 
-        preparationTechniqueDTOMap.put(code, new PreparationTechniqueDTO(code, description));
+        preparationTechniqueDTOMap.put(id, new PreparationTechniqueDTO(id, code, description));
     }
 
     private void initialiseFoodCategories() {
@@ -164,6 +172,7 @@ public class DataSetupHelper {
         initialiseFoodCategory(3L, 2L, "foodCategory3_name", "Food Category three description");
         initialiseFoodCategory(4L, 2L, "foodCategory4_name", "Food Category four description");
         initialiseFoodCategory(5L, 2L, "foodCategory5_name", "Food Category five description");
+
         initialiseFoodCategory(6L, 4L, "foodCategory6_name", "Food Category six description");
         initialiseFoodCategory(7L, 4L, "foodCategory7_name", "Food Category seven description");
         initialiseFoodCategory(8L, 4L, "foodCategory8_name", "Food Category eight description");
@@ -186,10 +195,10 @@ public class DataSetupHelper {
 
     private void populateFoodCategoriesWithFoodTypes() {
         foodCategoryMap.values().forEach(foodCategory -> {
-           foodTypeMap.values()
-                   .stream()
-                   .filter(foodType -> Objects.equals(foodType.getFoodCategory().getId(), foodCategory.getId()))
-                   .forEach(foodType -> foodCategory.getFoodTypes().add(foodType));
+            foodTypeMap.values()
+                    .stream()
+                    .filter(foodType -> Objects.equals(foodType.getFoodCategory().getId(), foodCategory.getId()))
+                    .forEach(foodType -> foodCategory.getFoodTypes().add(foodType));
         });
     }
 
@@ -257,30 +266,30 @@ public class DataSetupHelper {
     }
 
     private void initialiseDishes() {
-        initialiseDish(1L, 2L, "Dish1", "Dish one Description", "PrepType1");
-        initialiseDish(2L, 2L, "Dish2", "Dish two Description", "PrepType1");
-        initialiseDish(3L, 2L, "Dish3", "Dish three Description", "PrepType2");
-        initialiseDish(4L, 2L, "Dish4", "Dish four Description", "PrepType3");
+        initialiseDish(1L, 2L, "Dish1", "Dish one Description", 1L);
+        initialiseDish(2L, 2L, "Dish2", "Dish two Description", 1L);
+        initialiseDish(3L, 2L, "Dish3", "Dish three Description", 2L);
+        initialiseDish(4L, 2L, "Dish4", "Dish four Description", 3L);
     }
 
     private void initialiseDish(Long id, Long userPrincipleId, String name,
-                                String description, String preparationTechniqueCode) {
+                                String description, Long preparationTechniqueId) {
         dishMap.put(id,
                 Dish.builder()
                         .id(id)
                         .principle(userPrincipleMap.get(userPrincipleId))
                         .name(name)
                         .description(description)
-                        .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueCode))
+                        .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueId))
                         .dishComponents(new ArrayList<>()) //todo
                         .build());
 
         dishDTOSimpleMap.put(id,
-                new DishDTOSimple(id, name, description, preparationTechniqueDTOMap.get(preparationTechniqueCode)));
+                new DishDTOSimple(id, name, description, preparationTechniqueDTOMap.get(preparationTechniqueId)));
 
         dishDTOComplexMap.put(id,
                 new DishDTOComplex(id, name, description,
-                        preparationTechniqueDTOMap.get(preparationTechniqueCode),
+                        preparationTechniqueDTOMap.get(preparationTechniqueId),
                         List.of())); //todo
     }
 

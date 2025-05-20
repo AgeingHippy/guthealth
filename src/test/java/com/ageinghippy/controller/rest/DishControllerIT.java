@@ -61,16 +61,16 @@ public class DishControllerIT {
         //check a portion of the contents
         assert (resultList.contains(
                 new DishDTOSimple(1L, "Dish1", "Dish one Description",
-                        new PreparationTechniqueDTO("PrepType1", "Preparation type one description"))));
+                        new PreparationTechniqueDTO(1L,"PrepType1", "Preparation type one description"))));
         assert (resultList.contains(
                 new DishDTOSimple(2L, "Dish2", "Dish two Description",
-                        new PreparationTechniqueDTO("PrepType1", "Preparation type one description"))));
+                        new PreparationTechniqueDTO(1L,"PrepType1", "Preparation type one description"))));
         assert (resultList.contains(
                 new DishDTOSimple(3L, "Dish3", "Dish three Description",
-                        new PreparationTechniqueDTO("PrepType2", "Preparation type two description"))));
+                        new PreparationTechniqueDTO(2L,"PrepType2", "Preparation type two description"))));
         assert (resultList.contains(
                 new DishDTOSimple(4L, "Dish4", "Dish four Description",
-                        new PreparationTechniqueDTO("PrepType3", "Preparation type three description"))));
+                        new PreparationTechniqueDTO(3L,"PrepType3", "Preparation type three description"))));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class DishControllerIT {
                         3L,
                         "Dish3",
                         "Dish three Description",
-                        new PreparationTechniqueDTO("PrepType2", "Preparation type two description"),
+                        new PreparationTechniqueDTO(2L,"PrepType2", "Preparation type two description"),
                         List.of(
                                 new DishComponentDTO(
                                         9L,
@@ -125,7 +125,7 @@ public class DishControllerIT {
                   "name":"newDish",
                   "description":"newDish description",
                   "preparationTechnique": {
-                    "code": "PrepType2"
+                    "id":2
                   }
                 }""";
 
@@ -147,7 +147,7 @@ public class DishControllerIT {
                         resultDto.id(),
                         "newDish",
                         "newDish description",
-                        new PreparationTechniqueDTO("PrepType2", "Preparation type two description"),
+                        new PreparationTechniqueDTO(2L,"PrepType2", "Preparation type two description"),
                         List.of()
                 ));
 
@@ -172,7 +172,7 @@ public class DishControllerIT {
                   "name":"newDish2",
                   "description":"newDish2 description",
                   "preparationTechnique": {
-                    "code": "PrepType2"
+                    "id":2
                   },
                   "dishComponents" : [
                     {
@@ -208,7 +208,7 @@ public class DishControllerIT {
                         resultDto.id(),
                         "newDish2",
                         "newDish2 description",
-                        new PreparationTechniqueDTO("PrepType2", "Preparation type two description"),
+                        new PreparationTechniqueDTO(2L,"PrepType2", "Preparation type two description"),
                         List.of(
                                 new DishComponentDTO(
                                         resultDto.dishComponents().stream().filter(dc -> dc.foodType().id().equals(1L)).findFirst().orElseThrow().id(),
@@ -247,7 +247,7 @@ public class DishControllerIT {
                   "name":"newDish3",
                   "description":"newDish3 description",
                   "preparationTechnique": {
-                    "code": "PrepType2"
+                    "id":2
                   },
                   "dishComponents" : [
                     {
@@ -280,7 +280,7 @@ public class DishControllerIT {
                   "name":"Dish2",
                   "description":"newDish2 description",
                   "preparationTechnique": {
-                    "code": "PrepType2"
+                    "id":2
                   }
                 }""";
 
@@ -305,7 +305,7 @@ public class DishControllerIT {
                   "name":"Dish99",
                   "description":"newDish99 description",
                   "preparationTechnique": {
-                    "code": "PrepType99"
+                    "id":99
                   }
                 }""";
 
@@ -331,7 +331,7 @@ public class DishControllerIT {
                   "name":"Dish3ChangedName",
                   "description":"Dish3 changed description",
                   "preparationTechnique": {
-                    "code": "PrepType3"
+                    "id":3
                   }
                 }""";
 
@@ -345,12 +345,12 @@ public class DishControllerIT {
         //verify response is updated foodType
         DishDTOComplex resultDto =
                 objectMapper.readValue(result.getResponse().getContentAsString(), DishDTOComplex.class);
-        assertEquals(resultDto,
+        assertEquals(
                 new DishDTOComplex(
                         3L,
                         "Dish3ChangedName",
                         "Dish3 changed description",
-                        new PreparationTechniqueDTO("PrepType3", "Preparation type three description"),
+                        new PreparationTechniqueDTO(3L,"PrepType3", "Preparation type three description"),
                         List.of(
                                 new DishComponentDTO(
                                         9L,
@@ -361,7 +361,8 @@ public class DishControllerIT {
                                         new FoodTypeDTOSimple(10L, "foodType10", "Food Type ten Description"),
                                         2)
                         )
-                )
+                ),
+                resultDto
         );
 
         //and verify category is in fact updated in the database

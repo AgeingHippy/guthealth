@@ -69,6 +69,7 @@ INSERT INTO principle_roles
     (principle_id, role_id)
 VALUES
     (1,1),
+    (2,3),
     (2,2),
     (3,3),
     (4,2);
@@ -83,13 +84,17 @@ VALUES
 /*!40000 ALTER TABLE `preparation_technique` DISABLE KEYS */;
 INSERT
 INTO `preparation_technique`
-    (code, description)
+    (id, principle_id, code, description)
 VALUES
-    ('PrepType1','Preparation type one description'),
-    ('PrepType2','Preparation type two description'),
-    ('PrepType3','Preparation type three description'),
-    ('PrepType4','Preparation type four description');
+    (1, 2, 'PrepType1','Preparation type one description'),
+    (2, 2, 'PrepType2','Preparation type two description'),
+    (3, 2, 'PrepType3','Preparation type three description'),
+    (4, 2, 'PrepType4','Preparation type four description'),
+    (5, 4, 'PrepType5','Preparation type five description'),
+    (6, 4, 'PrepType6','Preparation type six description');
+
 /*!40000 ALTER TABLE `preparation_technique` ENABLE KEYS */;
+ALTER TABLE `preparation_technique` AUTO_INCREMENT=7;
 
 --
 -- Dumping data for table `food_category`
@@ -158,12 +163,12 @@ ALTER TABLE `food_type` AUTO_INCREMENT=22;
 /*!40000 ALTER TABLE `dish` DISABLE KEYS */;
 INSERT
 INTO `dish`
-    (id, principle_id, name, description, preparation_technique_code)
+    (id, principle_id, name, description, preparation_technique_id)
 VALUES
-    (1,2,'Dish1','Dish one Description','PrepType1'),
-    (2,2,'Dish2','Dish two Description','PrepType1'),
-    (3,2,'Dish3','Dish three Description','PrepType2'),
-    (4,2,'Dish4','Dish four Description','PrepType3');
+    (1,2,'Dish1','Dish one Description',1),
+    (2,2,'Dish2','Dish two Description',1),
+    (3,2,'Dish3','Dish three Description',2),
+    (4,2,'Dish4','Dish four Description',3);
 /*!40000 ALTER TABLE `dish` ENABLE KEYS */;
 
 ALTER TABLE `dish` AUTO_INCREMENT=5;
@@ -220,27 +225,27 @@ ALTER TABLE `meal`AUTO_INCREMENT=6;
 /*!40000 ALTER TABLE `meal_component` DISABLE KEYS */;
 INSERT
 INTO `meal_component`
-    (id, meal_id, food_type_id, preparation_technique_code, volume)
+    (id, meal_id, food_type_id, preparation_technique_id, volume)
 VALUES
-    (1,1,1,'PrepType1',200),
-    (2,1,2,'PrepType1',200),
-    (3,1,3,'PrepType1',200),
-    (4,1,4,'PrepType1',200),
+    (1,1,1,1,200),
+    (2,1,2,1,200),
+    (3,1,3,1,200),
+    (4,1,4,1,200),
 
-    (5,2,1,'PrepType1',100),
-    (6,2,2,'PrepType1',100),
-    (7,2,3,'PrepType1',100),
-    (8,2,4,'PrepType1',100),
-    (9,2,1,'PrepType3',200),
-    (10,2,5,'PrepType3',200),
+    (5,2,1,1,100),
+    (6,2,2,1,100),
+    (7,2,3,1,100),
+    (8,2,4,1,100),
+    (9,2,1,3,200),
+    (10,2,5,3,200),
 
-    (11,3,15,'PrepType2',1000),
+    (11,3,15,2,1000),
 
-    (12,4,1,'PrepType1',100),
-    (13,4,10,'PrepType3',500),
-    (14,4,15,'PrepType2',200),
+    (12,4,1,1,100),
+    (13,4,10,3,500),
+    (14,4,15,2,200),
 
-    (15,5,11,'PrepType2', 2000);
+    (15,5,11,2, 2000);
 /*!40000 ALTER TABLE `meal_component` ENABLE KEYS */;
 
 ALTER TABLE `meal_component` AUTO_INCREMENT=44;

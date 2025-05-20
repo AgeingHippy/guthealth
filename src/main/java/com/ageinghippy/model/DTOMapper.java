@@ -57,7 +57,9 @@ public class DTOMapper extends ModelMapper {
     }
 
     private PreparationTechniqueDTO toDto(PreparationTechnique preparationTechnique) {
-        return new PreparationTechniqueDTO(preparationTechnique.getCode(), preparationTechnique.getDescription());
+        return new PreparationTechniqueDTO(preparationTechnique.getId(),
+                preparationTechnique.getCode(),
+                preparationTechnique.getDescription());
     }
 
     private DishComponentDTO toDTO(DishComponent dishComponent) {

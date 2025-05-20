@@ -33,7 +33,7 @@ public class Dish implements Serializable {
     private String description;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "preparation_technique_code")
+    @JoinColumn(name = "preparation_technique_id")
     private PreparationTechnique preparationTechnique;
 
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
@@ -48,10 +48,10 @@ public class Dish implements Serializable {
     @Override
     public String toString() {
         return "Dish{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", preparationTechniqueCode='" + preparationTechnique.getCode() + '\'' +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", description='" + description + '\'' +
+               ", preparationTechniqueCode='" + preparationTechnique.getCode() + '\'' +
+               '}';
     }
 }

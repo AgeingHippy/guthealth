@@ -8,6 +8,7 @@ import com.ageinghippy.model.entity.UserPrinciple;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -245,7 +245,39 @@ public class FoodCategoryControllerIT {
     void delete_failure_constraintViolation() throws Exception {
         mockMvc.perform(delete(baseUrl + "/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void copySpecificSystemFoodCategory_new() throws Exception {
+        TypedQuery<FoodCategory> query = entityManager.createQuery(
+                "SELECT p FROM FoodCategory p JOIN FETCH p.foodTypes WHERE p.id = :id", FoodCategory.class);
+        query.setParameter("id", 8L);
+        FoodCategory systemFoodCategory = query.getSingleResult();
+
+
+        MvcResult result = mockMvc.perform(post(baseUrl + "/{id}/system", 8L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        FoodCategoryDTOComplex resultDto =
+                objectMapper.readValue(result.getResponse().getContentAsString(), FoodCategoryDTOComplex.class);
+
+        assertNotEquals(resultDto.id(), systemFoodCategory.getId());
+        assertEquals(resultDto.name(), systemFoodCategory.getName());
+        assertEquals(resultDto.description(), systemFoodCategory.getDescription());
+        assertEquals(resultDto.foodTypes().size(), systemFoodCategory.getFoodTypes().size());
+        systemFoodCategory.getFoodTypes().forEach(ft -> {
+            assert (systemFoodCategory.getFoodTypes().stream()
+                    .anyMatch(sft -> ft.getName().equals(sft.getName())));
+        });
+
+        String principleName = (String) entityManager
+                .createQuery("""
+                                     SELECT username
+                                     FROM UserPrinciple up JOIN FoodCategory fc ON up.id = fc.principle.id
+                                     WHERE fc.id =""" + resultDto.id()).getSingleResult();
+        assertEquals("basic", principleName);
     }
 }
