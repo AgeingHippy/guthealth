@@ -30,6 +30,9 @@ class FoodCategoryServiceTest {
     private FoodCategoryRepository foodCategoryRepository;
 
     @Mock
+    private UserPrincipleService userPrincipleService;
+
+    @Mock
     CacheManager cacheManager;
 
     private FoodCategoryService foodCategoryService;
@@ -41,6 +44,7 @@ class FoodCategoryServiceTest {
         FoodCategoryService service =
                 new FoodCategoryService(
                         foodCategoryRepository,
+                        userPrincipleService,
                         new DTOMapper(),
                         null,
                         cacheManager);
@@ -130,5 +134,31 @@ class FoodCategoryServiceTest {
                 .filter(ft -> systemFoodCategory.getFoodTypes().get(2).getName().equals(ft.name()))
                 .findFirst().orElseThrow();
         assertEquals("alternative description", originalMatchedFoodTypeDTOSimple.description());
+    }
+
+    @Test
+    void copy_all_system_foodCategories_and_associated_food_types() {
+        UserPrinciple principle = dsh.getPrinciple("basic");
+        UserPrinciple systemPrinciple = dsh.getPrinciple("system");
+        List<FoodCategory> systemFoodCategories = List.of(
+                dsh.getFoodCategory(6L),
+                dsh.getFoodCategory(7L),
+                dsh.getFoodCategory(8L),
+                dsh.getFoodCategory(9L)
+        );
+
+        when(userPrincipleService.loadUserByUsername("system")).thenReturn(systemPrinciple);
+        when(foodCategoryRepository.findAllByPrinciple(systemPrinciple)).thenReturn(systemFoodCategories);
+
+        lenient().doReturn(new FoodCategoryDTOComplex(null,null,null,null))
+                .when(foodCategoryService).copyFoodCategory(anyLong(),any(UserPrinciple.class));
+
+        foodCategoryService.copyFoodCategories(principle);
+
+        verify(foodCategoryService, times(1)).copyFoodCategory(6L, principle);
+        verify(foodCategoryService, times(1)).copyFoodCategory(7L, principle);
+        verify(foodCategoryService, times(1)).copyFoodCategory(8L, principle);
+        verify(foodCategoryService, times(1)).copyFoodCategory(9L, principle);
+
     }
 }

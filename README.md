@@ -16,12 +16,12 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Integration tests of REST controllers
 - Unit test coverage of View Controllers (Not exhaustive)
 - Default new user as GUEST and require proactive user registration for USER role 
-- Implementation of GUEST role and allow GUEST to view SYSTEM data (FoodCategory & FoodType)
-- Allow USER role to import SYSTEM FoodCategory and FoodType data into the USER personal data
-- 
+- Refactor PreparationTechnique into a USER related data item
+- Implementation of GUEST role and allow GUEST to view SYSTEM data (PreparationTechnique, FoodCategory & FoodType)
+- Allow USER role to import SYSTEM PreparationTechnique, FoodCategory and FoodType data into the USER personal dataset
+ 
 # Currently phase:
-- Make PreparationTechnique a USER related data item
-- Allow USER role to import SYSTEM PreparationTechnique data into the USER personal data
+- Modify preparationTechnique dropdown in Dish views to work with new data structure
 
 # Future Phases showcasing (In no particular order)
 - Add logging using AOP

@@ -25,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FoodCategoryService {
     private final FoodCategoryRepository foodCategoryRepository;
+    private final UserPrincipleService userPrincipleService;
     private final DTOMapper dTOMapper;
     private final EntityManager entityManager;
     private final CacheManager cacheManager;
@@ -145,8 +146,12 @@ public class FoodCategoryService {
     }
 
     @Transactional
-    public void copyFoodCategories(UserPrinciple userPrinciple) {
-        bla bla bla
+    public void copyFoodCategories(UserPrinciple principle) {
+        UserPrinciple systemPrinciple = userPrincipleService.loadUserByUsername("system");
+        List<FoodCategory> systemFoodCategories = foodCategoryRepository.findAllByPrinciple(systemPrinciple);
+        systemFoodCategories.forEach(foodCategory -> {
+            this.copyFoodCategory(foodCategory.getId(),principle);
+        });
     }
 
     private FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {

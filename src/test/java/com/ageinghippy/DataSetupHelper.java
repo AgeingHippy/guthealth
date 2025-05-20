@@ -172,6 +172,7 @@ public class DataSetupHelper {
         initialiseFoodCategory(3L, 2L, "foodCategory3_name", "Food Category three description");
         initialiseFoodCategory(4L, 2L, "foodCategory4_name", "Food Category four description");
         initialiseFoodCategory(5L, 2L, "foodCategory5_name", "Food Category five description");
+
         initialiseFoodCategory(6L, 4L, "foodCategory6_name", "Food Category six description");
         initialiseFoodCategory(7L, 4L, "foodCategory7_name", "Food Category seven description");
         initialiseFoodCategory(8L, 4L, "foodCategory8_name", "Food Category eight description");
