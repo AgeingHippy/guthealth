@@ -19,9 +19,10 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Refactor PreparationTechnique into a USER related data item
 - Implementation of GUEST role and allow GUEST to view SYSTEM data (PreparationTechnique, FoodCategory & FoodType)
 - Allow USER role to import SYSTEM PreparationTechnique, FoodCategory and FoodType data into the USER personal dataset
- 
-# Currently phase:
 - Modify preparationTechnique dropdown in Dish views to work with new data structure
+
+# Currently phase:
+
 
 # Future Phases showcasing (In no particular order)
 - Add logging using AOP

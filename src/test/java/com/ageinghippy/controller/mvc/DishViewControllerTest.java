@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -142,7 +143,7 @@ class DishViewControllerTest {
         mockMvc.perform(post(rootUri + "/create")
                         .param("name", "name")
                         .param("description", "description")
-                        .param("preparationTechnique.code", "PTCode")
+                        .param("preparationTechnique.id", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(csrf()))
                 .andDo(print())
@@ -208,16 +209,22 @@ class DishViewControllerTest {
     @WithMockUser(username = "basic", roles = "USER")
     public void updateDish() throws Exception {
         DishDTOSimple dishDTOSimple = new DishDTOSimple(1L, "name", "description",
-                new PreparationTechniqueDTO(1L,"PTCode", "null"));
+                new PreparationTechniqueDTO(2L,"PTCode", "null"));
 
-        when(dishService.updateDish(any(), any()))
-                .thenReturn(new DishDTOComplex(null, null, null, null, null));
+        doAnswer(invocation -> {
+            DishDTOSimple requestDto = invocation.getArgument(1, DishDTOSimple.class);
+            assertEquals(1L, requestDto.id());
+            assertEquals("name", requestDto.name());
+            assertEquals("description", requestDto.description());
+            assertEquals(2L, requestDto.preparationTechnique().id());
+            return new DishDTOComplex(null, null, null, null, null);
+        }).when(dishService).updateDish(any(), any());
 
         mockMvc.perform(post(rootUri + "/update/1")
                         .param("id", "1")
                         .param("name", "name")
                         .param("description", "description")
-                        .param("preparationTechnique.code", "PTCode")
+                        .param("preparationTechnique.id", "2")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(csrf()))
                 .andDo(print())
@@ -242,7 +249,7 @@ class DishViewControllerTest {
                         .param("id", "1")
                         .param("name", "name")
                         .param("description", "description")
-                        .param("preparationTechnique.code", "PTCode")
+                        .param("preparationTechnique.id", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(csrf()))
                 .andDo(print())

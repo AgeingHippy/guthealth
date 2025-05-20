@@ -34,8 +34,8 @@
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Preparation Technique:</span>
-                    <select class="form-select" id="preparationTechnique.code"
-                            th:field="*{preparationTechnique.code}" required>
+                    <select class="form-select" id="preparationTechnique.id"
+                            th:field="*{preparationTechnique.id}" required>
                         <!--                        <option value=""></option>-->
                     </select>
                     <div class="invalid-feedback">This field is required</div>
@@ -85,9 +85,9 @@
     <script>
 
         async function initialisePreparationTechniqueSelect() {
-            let preSelected = "[[${dish.preparationTechnique.code}]]";
+            let preSelected = "[[${dish.preparationTechnique.id}]]";
             const preparationTechniqueList = await fetchSelectOptions(preparationTechniquesUri);
-            buildSelectOptions("preparationTechnique.code",preparationTechniqueList, "code","code",false,preSelected);
+            buildSelectOptions("preparationTechnique.id",preparationTechniqueList, "id","code",false,preSelected);
         }
 
         window.onload = function () {
