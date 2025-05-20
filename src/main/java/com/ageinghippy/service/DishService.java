@@ -11,7 +11,6 @@ import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class DishService {
     private final DishRepository dishRepository;
     private final PreparationTechniqueRepository preparationTechniqueRepository;

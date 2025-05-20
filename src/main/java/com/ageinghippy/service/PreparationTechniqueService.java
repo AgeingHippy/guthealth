@@ -1,5 +1,6 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.aspect.TrackSystemCopy;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.entity.PreparationTechnique;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
@@ -25,7 +26,6 @@ public class PreparationTechniqueService {
         return dtoMapper.map(preparationTechniqueRepository.findById(id).orElseThrow(), PreparationTechniqueDTO.class);
     }
 
-    //todo - limit by principle?
     public List<PreparationTechniqueDTO> getPreparationTechniques(UserPrinciple principle) {
         return dtoMapper.mapList(preparationTechniqueRepository.findAllByPrinciple(principle), PreparationTechniqueDTO.class);
     }
@@ -73,6 +73,8 @@ public class PreparationTechniqueService {
         preparationTechniqueRepository.delete(preparationTechnique);
     }
 
+    @Transactional
+    @TrackSystemCopy
     public void copySystemPreparationTechniques(UserPrinciple principle) {
         UserPrinciple systemUserPrinciple = userPrincipleService.loadUserByUsername("system");
         List<PreparationTechnique> systemPreparationTechniques =
@@ -82,6 +84,7 @@ public class PreparationTechniqueService {
 
 
     @Transactional
+    @TrackSystemCopy
     public PreparationTechniqueDTO copySystemPreparationTechnique(Long id, UserPrinciple principle) {
         PreparationTechnique systemPreparationTechnique =
                 preparationTechniqueRepository.findById(id).orElseThrow();

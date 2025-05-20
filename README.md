@@ -20,15 +20,16 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Implementation of GUEST role and allow GUEST to view SYSTEM data (PreparationTechnique, FoodCategory & FoodType)
 - Allow USER role to import SYSTEM PreparationTechnique, FoodCategory and FoodType data into the USER personal dataset
 - Modify preparationTechnique dropdown in Dish views to work with new data structure
+- Add logging of SYSTEM data copy and new user registration using AOP
 
 # Currently phase:
 
-
 # Future Phases showcasing (In no particular order)
-- Add logging using AOP
 - Programmatically refresh security context when new role assigned to user
 - Search for particular FoodType
 - Allow USER to register for new SYSTEM data setup, and notification of USER of such
+- Send new user a welcome email
+- Send registered users a usage email
 - Allow ADMIN user to reset user passwords
 - On Insert trigger to enforce uniqueness of FoodType name per Principle User
 - - Currently the implementation enforces uniqueness of FoodType within a category. We require different users to be able to create a FoodType of the same name but FoodType does not contain the principle so simple referential integrity cannot be applied here.
@@ -37,6 +38,7 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Filter meals based on date or description
 - File Load using API
 - Addition of Gut Health itself (Data Structure, API, UI etc.)
+- Context sensitive documentation
 - Android UI
 - AI analysis of consumption and gut health and reporting of patterns (Python and AI study required prior to this phase) 
 
