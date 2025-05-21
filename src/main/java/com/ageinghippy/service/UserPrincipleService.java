@@ -72,8 +72,7 @@ public class UserPrincipleService {
         return createUser(userPrinciple);
     }
 
-    @Transactional
-    public UserPrinciple createUser(UserPrinciple userPrinciple) {
+    private UserPrinciple createUser(UserPrinciple userPrinciple) {
         userPrinciple.setAuthorities(List.of(roleRepository.findByAuthority("ROLE_GUEST").orElseThrow()));
 
         return saveUserPrinciple(userPrinciple);

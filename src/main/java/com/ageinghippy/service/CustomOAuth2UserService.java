@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.entity.UserMeta;
+import com.ageinghippy.factory.OAuth2ServiceFactory;
 import com.ageinghippy.model.entity.UserPrinciple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,18 +28,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         try {
             userPrinciple = userPrincipleService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e) {
-            userPrinciple = userPrincipleService.createOauth2User(createOAuth2User(oauth2User,provider, username));
+            userPrinciple = createUserPrinciple(oauth2User, provider, username);
+            userPrinciple.setUserMeta(
+                    OAuth2ServiceFactory.getOAuth2Service(provider)
+                            .buildUserMeta(
+                                    request.getClientRegistration(),
+                                    request.getAccessToken(),
+                                    oauth2User));
+            userPrinciple = userPrincipleService.createOauth2User(userPrinciple);
         }
 
         return userPrinciple;
     }
 
-    private UserPrinciple createOAuth2User(OAuth2User oauth2User,String provider, String userName) {
+    private UserPrinciple createUserPrinciple(OAuth2User oauth2User, String provider, String userName) {
         return UserPrinciple.builder()
                 .username(userName)
                 .oauth2Provider(provider)
                 .attributes(oauth2User.getAttributes())
-                .userMeta(UserMeta.builder().name(userName).build())
                 .build();
     }
 
