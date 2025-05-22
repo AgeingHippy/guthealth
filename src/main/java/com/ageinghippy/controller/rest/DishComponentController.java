@@ -1,9 +1,7 @@
 package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.DishComponentDTO;
-import com.ageinghippy.model.entity.DishComponent;
 import com.ageinghippy.service.DishComponentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

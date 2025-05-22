@@ -24,7 +24,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String oauthId = oauth2User.getName();
         String username = provider + ":" + oauthId;
 
-        // Load or register
         try {
             userPrinciple = userPrincipleService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e) {
