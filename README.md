@@ -24,6 +24,7 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - 3rd Party API integration to fetch GitHub OAuth2 authenticated user's email address
 
 # Currently phase:
+- 3rd Party API integration - Implement task list for users
 
 # Future Phases showcasing (In no particular order)
 - Programmatically refresh security context when new role assigned to user

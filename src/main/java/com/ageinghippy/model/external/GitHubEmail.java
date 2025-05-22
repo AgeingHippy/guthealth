@@ -1,4 +1,4 @@
-package com.ageinghippy.model;
+package com.ageinghippy.model.external;
 
 public class GitHubEmail {
     public String email;
