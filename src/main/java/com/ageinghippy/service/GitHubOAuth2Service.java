@@ -24,14 +24,14 @@ import java.util.Objects;
 public class GitHubOAuth2Service implements OAuth2Service {
 
     @Override
-    public UserMeta buildUserMeta(ClientRegistration clientRegistration, OAuth2AccessToken accessToken, OAuth2User oauth2User) {
+    public UserMeta buildUserMeta(ClientRegistration clientRegistration, OAuth2AccessToken accessToken, OAuth2User oAuth2User) {
         UserMeta userMeta = new UserMeta();
 
-        if (oauth2User.getAttributes().containsKey("login") &&
-            !Objects.requireNonNull(oauth2User.getAttribute("login")).toString().isEmpty()) {
-            userMeta.setName(oauth2User.getAttribute("login"));
+        if (oAuth2User.getAttributes().containsKey("login") &&
+            !Objects.requireNonNull(oAuth2User.getAttribute("login")).toString().isEmpty()) {
+            userMeta.setName(oAuth2User.getAttribute("login"));
         } else {
-            userMeta.setName(clientRegistration.getRegistrationId() + ":" + oauth2User.getName());
+            userMeta.setName(clientRegistration.getRegistrationId() + ":" + oAuth2User.getName());
         }
 
         userMeta.setEmail(getEmail(accessToken));
