@@ -3,6 +3,7 @@ package com.ageinghippy.controller.rest;
 import com.ageinghippy.model.entity.UserPrinciple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,16 +26,30 @@ public class TestRestController {
 
     @GetMapping("/time")
     public String getTest(Authentication authentication) {
-        String userName = "Unknown User";
+        StringBuilder message = new StringBuilder();
         if (authentication != null) {
             UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-            userName = userPrinciple.getUsername();
+            message.append("User ")
+                    .append(userPrinciple.getUserMeta().getName())
+                    .append(" with username '")
+                    .append(userPrinciple.getUsername())
+                    .append("' and roles {");
+            userPrinciple.getAuthorities().forEach(role ->
+                    message.append(role.getAuthority().replace("ROLE_","")).append(", "));
+            message.delete(message.length() -2, message.length());
+            message.append("}");
+        } else {
+            message.append("Unauthenticated user");
         }
 
-        return MessageFormat.format("{0} accessed server on {1}", userName, (new Date()).toString());
+        message.append(" accessed server on ")
+                .append((new Date()).toString());
+
+        return message.toString();
     }
 
     @GetMapping("/cache")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<CacheEntry> getCacheDetails(Authentication authentication) {
         List<CacheEntry> cacheDetail = new ArrayList<>();
 

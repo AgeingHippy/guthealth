@@ -4,6 +4,7 @@ import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserViewController {
     private final UserPrincipleService userPrincipleService;
 
@@ -42,6 +44,7 @@ public class UserViewController {
             if (e.getClass() == DataIntegrityViolationException.class) {
                 errorMessage = "User registration failed. Username not unique";
             } else {
+                log.error("createNewUser", e);
                 errorMessage = e.getClass().getSimpleName() + " - " + "User registration failed.";
             }
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);

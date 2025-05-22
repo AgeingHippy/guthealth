@@ -7,7 +7,6 @@ import com.ageinghippy.service.DishService;
 import com.ageinghippy.service.UserPrincipleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/dish")
 @RequiredArgsConstructor
-@Slf4j
 public class DishViewController {
     private final DishService dishService;
     private final UserPrincipleService userPrincipleService;

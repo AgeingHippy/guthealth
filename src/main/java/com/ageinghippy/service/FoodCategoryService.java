@@ -1,5 +1,6 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.aspect.TrackSystemCopy;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodCategoryDTOComplex;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
@@ -128,17 +129,18 @@ public class FoodCategoryService {
     }
 
     @Transactional
-    public FoodCategoryDTOComplex copyFoodCategory(Long foodCategoryId, UserPrinciple userPrinciple) {
+    @TrackSystemCopy
+    public FoodCategoryDTOComplex copyFoodCategory(Long foodCategoryId, UserPrinciple principle) {
         FoodCategory sourceFoodCategory = foodCategoryRepository.findById(foodCategoryId).orElseThrow();
         FoodCategory targetFoodCategory =
-                foodCategoryRepository.findByNameAndPrinciple(sourceFoodCategory.getName(),userPrinciple).orElse(null);
+                foodCategoryRepository.findByNameAndPrinciple(sourceFoodCategory.getName(),principle).orElse(null);
 
         if (targetFoodCategory != null) {
             targetFoodCategory = appendFoodTypesToFoodCategory(targetFoodCategory, sourceFoodCategory);
             evictFoodCategory(targetFoodCategory.getId());
         }
         else {
-            targetFoodCategory = copyFoodCategory(sourceFoodCategory, userPrinciple);
+            targetFoodCategory = copyFoodCategory(sourceFoodCategory, principle);
             evictFoodCategoryListCacheForCurrentPrinciple();
         }
 
@@ -146,6 +148,7 @@ public class FoodCategoryService {
     }
 
     @Transactional
+    @TrackSystemCopy
     public void copyFoodCategories(UserPrinciple principle) {
         UserPrinciple systemPrinciple = userPrincipleService.loadUserByUsername("system");
         List<FoodCategory> systemFoodCategories = foodCategoryRepository.findAllByPrinciple(systemPrinciple);
@@ -154,14 +157,14 @@ public class FoodCategoryService {
         });
     }
 
-    private FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple userPrinciple) {
+    private FoodCategory copyFoodCategory(FoodCategory foodCategory, UserPrinciple principle) {
 
         List<FoodType> newFoodTypes = new ArrayList<>();
 
         FoodCategory newFoodCategory = FoodCategory.builder()
                 .name(foodCategory.getName())
                 .description(foodCategory.getDescription())
-                .principle(userPrinciple)
+                .principle(principle)
                 .build();
 
         for (int i = 0; i < foodCategory.getFoodTypes().size(); i++) {
