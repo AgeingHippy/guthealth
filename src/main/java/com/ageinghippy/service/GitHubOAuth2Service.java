@@ -1,6 +1,6 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.external.GitHubEmail;
+import com.ageinghippy.model.github.GitHubEmail;
 import com.ageinghippy.model.entity.UserMeta;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
