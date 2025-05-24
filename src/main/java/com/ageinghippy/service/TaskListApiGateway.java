@@ -137,4 +137,39 @@ public class TaskListApiGateway {
 
         return createTask(newTask);
     }
+
+    public Task updateTask(UserPrinciple principle, Task updatedTask) {
+        updatedTask.userId = getUserId(principle.getUserMeta().getEmail());
+
+        ResponseEntity<TaskResponse<Task>> response;
+        ParameterizedTypeReference<TaskResponse<Task>> typeRef =
+                new ParameterizedTypeReference<>() {
+                };
+
+        try {
+            response = restTemplate.exchange(
+                    tasksUri + "/" + updatedTask.id,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updatedTask),
+                    typeRef
+            );
+            return Objects.requireNonNull(response.getBody()).data;
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteTask(UserPrinciple principle, int taskId) {
+        List<Task> tasks = getTasks(principle);
+        if (tasks.stream().noneMatch(task -> task.id == taskId)) {
+            throw new IllegalArgumentException("Specified task does not belong to the specified user");
+        }
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+                tasksUri +"/" + taskId,
+                HttpMethod.DELETE,
+                null,
+                Void.class
+        );
+    }
 }

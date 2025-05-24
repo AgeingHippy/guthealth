@@ -11,24 +11,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/nomads")
+@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskListApiGateway taskListApiGateway;
     private final UserPrincipleService userPrincipleService;
 
-    @GetMapping("/user-tasks")
+    @GetMapping("")
     public List<Task> getUserTasks(Authentication authentication) {
         UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
 
         return taskListApiGateway.getTasks(principle);
     }
 
-    @PostMapping("/user-tasks")
+    @PostMapping("")
     public Task createUserTask(@RequestBody Task newTask, Authentication authentication) {
         UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
 
         return  taskListApiGateway.createTask(principle, newTask);
     }
+
+    @PutMapping("")
+    public Task updateUserTask(@RequestBody Task updatedTask, Authentication authentication) {
+        UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
+
+        return  taskListApiGateway.updateTask(principle, updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserTask(@PathVariable int id, Authentication authentication) {
+        UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
+
+        taskListApiGateway.deleteTask(principle,id);
+    }
+
 }
