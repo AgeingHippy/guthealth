@@ -7,7 +7,6 @@ import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.PreparationTechniqueRepository;
 import com.ageinghippy.util.Util;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

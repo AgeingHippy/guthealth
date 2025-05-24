@@ -21,8 +21,10 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Allow USER role to import SYSTEM PreparationTechnique, FoodCategory and FoodType data into the USER personal dataset
 - Modify preparationTechnique dropdown in Dish views to work with new data structure
 - Add logging of SYSTEM data copy and new user registration using AOP
+- 3rd Party API integration to fetch GitHub OAuth2 authenticated user's email address
 
 # Currently phase:
+- 3rd Party API integration - Implement task list for users
 
 # Future Phases showcasing (In no particular order)
 - Programmatically refresh security context when new role assigned to user

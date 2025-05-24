@@ -7,6 +7,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public interface OAuth2Service {
 
-    public UserMeta buildUserMeta(ClientRegistration clientRegistration, OAuth2AccessToken accessToken, OAuth2User oAuth2User);
+    UserMeta buildUserMeta(ClientRegistration clientRegistration, OAuth2AccessToken accessToken, OAuth2User oAuth2User);
 
 }

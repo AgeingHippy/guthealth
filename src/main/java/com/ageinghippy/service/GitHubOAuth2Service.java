@@ -1,16 +1,12 @@
 package com.ageinghippy.service;
 
-import com.ageinghippy.model.GitHubEmail;
+import com.ageinghippy.model.github.GitHubEmail;
 import com.ageinghippy.model.entity.UserMeta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -40,7 +36,7 @@ public class GitHubOAuth2Service implements OAuth2Service {
         return userMeta;
     }
 
-    public String getEmail(OAuth2AccessToken accessToken) {
+    private String getEmail(OAuth2AccessToken accessToken) {
         GitHubEmail primaryEmail = null;
         String accessTokenValue = accessToken.getTokenValue();
 
@@ -69,13 +65,4 @@ public class GitHubOAuth2Service implements OAuth2Service {
         return primaryEmail != null ? primaryEmail.email : "";
     }
 
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-
-    private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authToken) {
-        return authorizedClientService.loadAuthorizedClient(
-                authToken.getAuthorizedClientRegistrationId(),
-                authToken.getName()
-        );
-    }
 }

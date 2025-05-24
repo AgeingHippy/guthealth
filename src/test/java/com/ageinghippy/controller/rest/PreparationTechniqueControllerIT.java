@@ -2,7 +2,6 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
-import com.ageinghippy.model.entity.PreparationTechnique;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;

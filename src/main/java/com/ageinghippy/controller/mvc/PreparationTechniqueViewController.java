@@ -1,6 +1,5 @@
 package com.ageinghippy.controller.mvc;
 
-import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.service.PreparationTechniqueService;
 import com.ageinghippy.service.UserPrincipleService;

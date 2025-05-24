@@ -19,7 +19,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
         } else {
             userMeta.setName(clientRegistration.getRegistrationId() + ":" + oAuth2User.getName());
         }
-        
+
         return userMeta;
     }
 }
