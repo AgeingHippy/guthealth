@@ -1,6 +1,8 @@
 package com.ageinghippy.service;
 
 
+import com.ageinghippy.model.entity.UserMeta;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.model.nomads.Task;
 import com.ageinghippy.model.nomads.TaskError;
 import com.ageinghippy.model.nomads.TaskResponse;
@@ -23,18 +25,23 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskListUnitTests {
     private TaskListApiGateway taskListApiGateway;
+
+    private String tasksUri = "http://demo.codingnomads.co:8080/tasks_api/tasks";
+    private String usersUri = "http://demo.codingnomads.co:8080/tasks_api/users";
 
     @Mock
     RestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
-        taskListApiGateway = new TaskListApiGateway(restTemplate);
+        TaskListApiGateway gateway = new TaskListApiGateway(restTemplate);
+        taskListApiGateway = spy(gateway);
     }
 
     @Test
@@ -61,7 +68,7 @@ public class TaskListUnitTests {
                 };
 
         when(restTemplate.exchange(
-                "http://demo.codingnomads.co:8080/tasks_api/users?email=" + userEmail,
+                usersUri + "?email=" + userEmail,
                 HttpMethod.GET,
                 null,
                 typeRef)
@@ -160,7 +167,7 @@ public class TaskListUnitTests {
                 };
 
         when(restTemplate.exchange(
-                        "http://demo.codingnomads.co:8080/tasks_api/tasks?complete=-1&userId=" + userId,
+                "http://demo.codingnomads.co:8080/tasks_api/tasks?complete=-1&userId=" + userId,
                 HttpMethod.GET,
                 null,
                 typeRef))
@@ -198,7 +205,7 @@ public class TaskListUnitTests {
                 };
 
         when(restTemplate.exchange(
-                "http://demo.codingnomads.co:8080/tasks_api/tasks",
+                tasksUri,
                 HttpMethod.POST,
                 new HttpEntity<>(newTask),
                 typeRef)
@@ -206,4 +213,204 @@ public class TaskListUnitTests {
 
         assertEquals(expectedTask, taskListApiGateway.createTask(newTask));
     }
+
+    @Test
+    void createTask_user_exists() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().email("bob@home.com").build())
+                .build();
+
+        Task task = Task.builder().build();
+
+        doReturn(123).when(taskListApiGateway).getUserId("bob@home.com");
+        doAnswer(invocation -> {
+            return invocation.getArgument(0);
+        }).when(taskListApiGateway).createTask(any(Task.class));
+
+        assertEquals(task, taskListApiGateway.createTask(principle, task));
+
+        verify(taskListApiGateway, times(1)).getUserId("bob@home.com");
+        verify(taskListApiGateway, times(1)).createTask(any(Task.class));
+    }
+
+    @Test
+    void createTask_user_not_exists() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().email("bob@home.com").build())
+                .build();
+
+        Task task = Task.builder().build();
+
+        doReturn(0).when(taskListApiGateway).getUserId("bob@home.com");
+        doReturn(123).when(taskListApiGateway).createUser("bob@home.com");
+        doAnswer(invocation -> {
+            return invocation.getArgument(0);
+        }).when(taskListApiGateway).createTask(any(Task.class));
+
+        assertEquals(task, taskListApiGateway.createTask(principle, task));
+
+        verify(taskListApiGateway, times(1)).getUserId("bob@home.com");
+        verify(taskListApiGateway, times(1)).createUser("bob@home.com");
+        verify(taskListApiGateway, times(1)).createTask(any(Task.class));
+    }
+
+    @Test
+    void createTask_no_email() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().build())
+                .build();
+        Task task = Task.builder().build();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> taskListApiGateway.createTask(principle, task));
+    }
+
+    @Test
+    void updateTask_task_exists() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().email("bob@home.com").build())
+                .build();
+
+        List<Task> tasks = List.of(
+                Task.builder().id(123).build(),
+                Task.builder().id(456).build(),
+                Task.builder().id(789).build()
+        );
+
+        Task updatedTask = Task.builder().id(123).build();
+
+        TaskResponse<Task> taskResponse = new TaskResponse<>();
+        taskResponse.data = updatedTask;
+        taskResponse.error = TaskError.builder().message("none").build();
+        taskResponse.status = "200 OK";
+
+        ResponseEntity<TaskResponse<Task>> responseEntity =
+                new ResponseEntity<>(taskResponse, HttpStatus.CREATED);
+
+        ParameterizedTypeReference<TaskResponse<Task>> typeRef =
+                new ParameterizedTypeReference<>() {
+                };
+
+        doReturn(567).when(taskListApiGateway).getUserId("bob@home.com");
+        doReturn(tasks).when(taskListApiGateway).getTasks(567);
+
+        when(restTemplate.exchange(
+                tasksUri + "/123",
+                HttpMethod.PUT,
+                new HttpEntity<>(updatedTask),
+                typeRef)
+        ).thenReturn(responseEntity);
+
+        Task responseTask = taskListApiGateway.updateTask(principle, updatedTask);
+        assertEquals(567, responseTask.userId);
+    }
+
+    @Test
+    void updateTask_task_not_exists() throws JsonProcessingException {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().email("bob@home.com").build())
+                .build();
+
+        List<Task> tasks = List.of(
+                Task.builder().id(123).build(),
+                Task.builder().id(456).build(),
+                Task.builder().id(789).build()
+        );
+
+        Task updatedTask = Task.builder().id(111).build();
+
+        doReturn(567).when(taskListApiGateway).getUserId("bob@home.com");
+        doReturn(tasks).when(taskListApiGateway).getTasks(567);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> taskListApiGateway.updateTask(principle, updatedTask));
+    }
+
+    @Test
+    void testDeleteExists() {
+        UserPrinciple principle = UserPrinciple.builder().build();
+
+        List<Task> tasks = List.of(
+                Task.builder().id(123).build(),
+                Task.builder().id(456).build(),
+                Task.builder().id(789).build()
+        );
+
+        doReturn(tasks).when(taskListApiGateway).getTasks(principle);
+
+        TaskResponse<String> taskResponse = new TaskResponse<>();
+        taskResponse.data = "Task Successfully Deleted";
+        taskResponse.error = TaskError.builder().message("none").build();
+        taskResponse.status = "200 OK";
+
+        ResponseEntity<TaskResponse<String>> responseEntity =
+                new ResponseEntity<>(taskResponse, HttpStatus.CREATED);
+
+        ParameterizedTypeReference<TaskResponse<String>> typeRef =
+                new ParameterizedTypeReference<>() {
+                };
+
+        when(restTemplate.exchange(
+                "http://demo.codingnomads.co:8080/tasks_api/tasks" + "/456",
+                HttpMethod.DELETE,
+                null,
+                typeRef))
+                .thenReturn(responseEntity);
+
+        taskListApiGateway.deleteTask(principle, 456);
+
+        verify(restTemplate, timeout(1)).exchange(
+                "http://demo.codingnomads.co:8080/tasks_api/tasks" + "/456",
+                HttpMethod.DELETE,
+                null,
+                typeRef);
+    }
+
+    @Test
+    void testDeleteNotExists() {
+        UserPrinciple principle = UserPrinciple.builder().build();
+
+        List<Task> tasks = List.of(
+                Task.builder().id(123).build(),
+                Task.builder().id(456).build(),
+                Task.builder().id(789).build()
+        );
+
+        doReturn(tasks).when(taskListApiGateway).getTasks(principle);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> taskListApiGateway.deleteTask(principle, 111));
+
+    }
+
+    @Test
+    void getTasks_no_email() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().build())
+                .build();
+
+        assertEquals(List.of(), taskListApiGateway.getTasks(principle));
+    }
+
+    @Test
+    void getTasks_has_email() {
+        UserPrinciple principle = UserPrinciple.builder()
+                .userMeta(UserMeta.builder().email("bob@home.com").build())
+                .build();
+
+        List<Task> tasks = List.of(
+                Task.builder().id(123).build(),
+                Task.builder().id(456).build(),
+                Task.builder().id(789).build()
+        );
+
+        doReturn(123).when(taskListApiGateway).getUserId("bob@home.com");
+        doReturn(tasks).when(taskListApiGateway).getTasks(123);
+
+        assertEquals(tasks, taskListApiGateway.getTasks(principle));
+
+        verify(taskListApiGateway, times(1)).getUserId("bob@home.com");
+        verify(taskListApiGateway, times(1)).getTasks(123);
+    }
+
 }

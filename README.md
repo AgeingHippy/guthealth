@@ -22,9 +22,10 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Modify preparationTechnique dropdown in Dish views to work with new data structure
 - Add logging of SYSTEM data copy and new user registration using AOP
 - 3rd Party API integration to fetch GitHub OAuth2 authenticated user's email address
+- 3rd Party API integration - Implement task list for users
 
 # Currently phase:
-- 3rd Party API integration - Implement task list for users
+
 
 # Future Phases showcasing (In no particular order)
 - Programmatically refresh security context when new role assigned to user
@@ -35,11 +36,11 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - Allow ADMIN user to reset user passwords
 - On Insert trigger to enforce uniqueness of FoodType name per Principle User
 - - Currently the implementation enforces uniqueness of FoodType within a category. We require different users to be able to create a FoodType of the same name but FoodType does not contain the principle so simple referential integrity cannot be applied here.
-- Third party API integration
 - [] Meal MVC
 - Filter meals based on date or description
 - File Load using API
 - Addition of Gut Health itself (Data Structure, API, UI etc.)
+- - This might be implemented in a separate NoSql database as I'm not clear on the data structure as this may include miood and other factors
 - Context sensitive documentation
 - Android UI
 - AI analysis of consumption and gut health and reporting of patterns (Python and AI study required prior to this phase) 
