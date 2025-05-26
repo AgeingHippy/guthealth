@@ -27,7 +27,9 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 # Currently phase:
 
 
+
 # Future Phases showcasing (In no particular order)
+- Implement dedicated log file with rolling appender etc
 - Programmatically refresh security context when new role assigned to user
 - Search for particular FoodType
 - Allow USER to register for new SYSTEM data setup, and notification of USER of such
