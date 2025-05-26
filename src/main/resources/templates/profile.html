@@ -43,7 +43,8 @@
                                name="repeat-new-password">
                     </div>
                     <div>
-                        <button type="button" class="col-3 btn btn-primary" id="button-submit-password">Submit Password
+                        <button type="button" class="col-3 btn btn-primary" id="button-submit-password">
+                            Submit Password
                         </button>
                     </div>
 
@@ -228,7 +229,7 @@
 
           parent.replaceChild(newTaskRow, oldTaskRow);
 
-          showMessage("success", "Succesfully updated task");
+          showMessage("success", "Successfully updated task");
         } catch (error) {
           showMessage("error", "Failed to updated task");
         }
@@ -265,7 +266,7 @@
           }
 
           taskRow.remove();
-          showMessage("success", "Succesfully deleted task");
+          showMessage("success", "Successfully deleted task");
         } catch (error) {
           showMessage("error", "Failed to deleted task");
         }
@@ -338,7 +339,7 @@
         }
 
         async function submitPassword() {
-        let response = await fetch("/api/v1/user/password", {
+        let response = await fetch(userPasswordUri, {
             method:"POST",
             body: document.getElementById("new-password").value
             });
@@ -351,7 +352,7 @@
         }
 
         async function submitActiveUserRegistration() {
-        let response = await fetch("/api/v1/user/register", {
+        let response = await fetch(userRegisterUri, {
             method:"POST"
             });
         let responseText = await response.text();

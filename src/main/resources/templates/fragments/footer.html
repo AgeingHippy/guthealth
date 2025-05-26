@@ -1,28 +1,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
 </head>
-<th:block th:fragment="footer">
-    <footer class="bg-light">
-        <div class="container">
-            <p>
-                <span id="footer-time">WhoAmI - Click Here!!</span>
-            </p>
-        </div>
-    </footer>
+<body>
+    <th:block th:fragment="footer">
+        <footer class="bg-light">
+            <div class="container">
+                <p>
+                    <span id="footer-time">WhoAmI - Click Here!!</span>
+                </p>
+            </div>
+        </footer>
 
-    <script>
-        async function testFooterTime() {
-            let response = await fetch("/test/time");
-            let responseText = await response.text();
-            document.getElementById("footer-time").innerText = responseText;
-        }
+        <script>
+            async function testFooterTime() {
+                let response = await fetch(testUri);
+                let responseText = await response.text();
+                document.getElementById("footer-time").innerText = responseText;
+            }
 
-        document.getElementById("footer-time").addEventListener("click",testFooterTime);
-    </script>
-
-</th:block>
-
+            document.getElementById("footer-time").addEventListener("click",testFooterTime);
+        </script>
+    </th:block>
 </body>
 </html>

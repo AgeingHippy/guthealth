@@ -76,7 +76,7 @@ public class PreparationTechniqueViewController {
     }
 
     @GetMapping("/new")
-    @PreAuthorize("hasRole('USER)")
+    @PreAuthorize("hasRole('USER')")
     public String showNewPreparationTechniqueForm(Model model) {
         if (!model.containsAttribute("preparationTechnique")) {
             model.addAttribute(
@@ -88,7 +88,7 @@ public class PreparationTechniqueViewController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('USER)")
+    @PreAuthorize("hasRole('USER')")
     public String createPreparationTechnique(@ModelAttribute PreparationTechniqueDTO preparationTechnique,
                                              Authentication authentication,
                                              RedirectAttributes redirectAttributes) {
