@@ -9,14 +9,7 @@
 <body>
 
 <div layout:fragment="content" th:remove="tag">
-
     <div class="">
-        <div th:if="${param.error}" class="alert alert-danger">
-            Invalid username and password.
-        </div>
-        <div th:if="${param.logout}" class="alert alert-success">
-            You have been logged out.
-        </div>
 
         <div id="basic-login" class="content">
             <h2>Please sign in</h2>
@@ -66,6 +59,13 @@
 
         <div id="register-new-user">
             <a th:href="@{/user/new}">Register new User</a>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            Invalid username and password.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            You have been logged out.
         </div>
 
     </div>

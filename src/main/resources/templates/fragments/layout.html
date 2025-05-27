@@ -15,7 +15,7 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script  th:inline="javascript">const contextPath=[[@{/}]];</script>
+    <script th:inline="javascript">const contextPath=[[@{/}]];</script>
     <script th:src="@{/js/config.js}"></script>
     <script th:src="@{/js/script.js}"></script>
 
@@ -25,15 +25,21 @@
 <th:block th:replace="~{fragments/header :: header}"/>
 <div class="container center">
     <div class="body-content">
-        <div id="success-panel" class="center alert alert-success" th:attrappend="hidden=${successMessage == null}?'true'">
-            <span class="center" th:text="${successMessage}"></span>
-        </div>
-
-        <div id="error-panel" class="center alert alert-danger" th:attrappend="hidden=${errorMessage == null}?'true'">
-            <span class="center" th:text="${errorMessage}"></span>
-        </div>
         <th:block layout:fragment="content"/>
     </div>
+
+    <div id="success-panel" class="full-width center alert alert-success"
+         th:attrappend="hidden=${successMessage == null}?'true'"
+         role="alert">
+        <span class="center" th:text="${successMessage}"></span>
+    </div>
+
+    <div id="error-panel" class="full-width center alert alert-danger"
+         th:attrappend="hidden=${errorMessage == null}?'true'"
+         role="alert">
+        <span class="center" th:text="${errorMessage}"></span>
+    </div>
+
 </div>
 <th:block th:replace="~{fragments/footer :: footer}"/>
 </body>

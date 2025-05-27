@@ -26,7 +26,7 @@
                 </div>
 
                 <div>
-                    <button type="button" class="col-3 btn btn-warning" id="button-show-password-div" href="#">Change
+                    <button type="button" class="full-width btn btn-warning" id="button-show-password-div" href="#">Change
                         Password
                     </button>
                 </div>
@@ -57,12 +57,13 @@
         </div>
 
         <div id="user-profile">
-            <div id="div-register-active-user" sec:authorize="!hasRole('ROLE_USER')">
-                <button type="button" id="button-register-active-user" class="btn btn-success">
+            <div id="div-register-active-user" sec:authorize="!hasAnyRole('ROLE_ADMIN','ROLE_USER')">
+                <button type="button" id="button-register-active-user" class="full-width btn btn-success">
                     Click here to be able to create your own content
                 </button>
-                <br>
+                <p/>
             </div>
+
             <form th:action="@{'/user/userMeta/'+${userPrinciple.userMeta.id}}"
                   th:object="${userPrinciple.userMeta}" method="post">
 
@@ -310,61 +311,67 @@
         //#########################################################################################
 
         function showPasswordUpdate() {
-        document.getElementById("user-profile").setAttribute("hidden","hidden");
+            document.getElementById("user-profile").setAttribute("hidden","hidden");
 
-        document.getElementById("div-change-password").removeAttribute("hidden");
-        document.getElementById("button-submit-password").disabled = true;
+            document.getElementById("div-change-password").removeAttribute("hidden");
+            document.getElementById("button-submit-password").disabled = true;
         }
 
         function hidePasswordUpdate() {
-        document.getElementById("user-profile").removeAttribute("hidden");
+            document.getElementById("user-profile").removeAttribute("hidden");
 
-        document.getElementById("div-change-password").setAttribute("hidden","hidden");
+            document.getElementById("div-change-password").setAttribute("hidden","hidden");
 
-        document.getElementById("new-password").value = "";
-        document.getElementById("repeat-new-password").value = "";
+            document.getElementById("new-password").value = "";
+            document.getElementById("repeat-new-password").value = "";
 
-        document.getElementById("button-submit-password").disabled = true;
+            document.getElementById("button-submit-password").disabled = true;
         }
 
         function checkPasswordsMatch() {
-        let newPassword = document.getElementById("new-password").value;
-        let repeatNewPassword = document.getElementById("repeat-new-password").value;
-        let buttonSubmit = document.getElementById("button-submit-password");
-        if (newPassword.length >= 4 && newPassword === repeatNewPassword) {
-            buttonSubmit.disabled = false;
-        } else {
-            buttonSubmit.disabled = true;
-        }
+            let newPassword = document.getElementById("new-password").value;
+            let repeatNewPassword = document.getElementById("repeat-new-password").value;
+            let buttonSubmit = document.getElementById("button-submit-password");
+            if (newPassword.length >= 4 && newPassword === repeatNewPassword) {
+                buttonSubmit.disabled = false;
+            } else {
+                buttonSubmit.disabled = true;
+            }
         }
 
         async function submitPassword() {
-        let response = await fetch(userPasswordUri, {
-            method:"POST",
-            body: document.getElementById("new-password").value
-            });
-        let responseText = await response.text();
-        let updateMessage = document.createElement("p");
+            let response = await fetch(userPasswordUri, {
+                method:"POST",
+                body: document.getElementById("new-password").value
+                });
+            let responseText = await response.text();
+            let updateMessage = document.createElement("p");
 
-        showMessage("success",responseText);
+            showMessage("success",responseText);
 
-        hidePasswordUpdate();
+            hidePasswordUpdate();
         }
 
         async function submitActiveUserRegistration() {
-        let response = await fetch(userRegisterUri, {
-            method:"POST"
-            });
-        let responseText = await response.text();
-        showMessage("success",responseText);
-        document.getElementById("div-register-active-user").setAttribute("hidden",true);
+            let response = await fetch(userRegisterUri, {
+                method:"POST"
+                });
+            let responseText = await response.text();
+            showMessage("success",responseText);
+            document.getElementById("div-register-active-user").setAttribute("hidden",true);
         }
 
-        document.getElementById("button-register-active-user").addEventListener("click",submitActiveUserRegistration);
+        try {
+            document.getElementById("button-register-active-user").addEventListener("click",submitActiveUserRegistration);
+        }
+        catch (ignored) {}
 
         document.getElementById("button-submit-password").addEventListener("click",submitPassword);
 
-        document.getElementById("button-show-password-div").addEventListener("click",showPasswordUpdate);
+        try {
+            document.getElementById("button-show-password-div").addEventListener("click",showPasswordUpdate);
+        }
+        catch (ignored) {}
 
         document.getElementById("div-change-password").addEventListener( "keyup",
             (event) => {
@@ -373,7 +380,7 @@
                 }
             },
             true
-            );
+        );
 
         //#########################################################################################
         //###    PASSWORD SECTION END
