@@ -41,6 +41,8 @@ dependencies {
     implementation 'org.webjars:bootstrap:5.3.3'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.hazelcast:hazelcast:5.5.0'
+    implementation 'org.flywaydb:flyway-core:11.8.2'
+    implementation 'org.flywaydb:flyway-mysql:11.8.2'
 
     compileOnly 'org.projectlombok:lombok'
 

@@ -25,7 +25,7 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 - 3rd Party API integration - Implement task list for users
 
 # Currently phase:
-
+- Implement FlyWay to initialise database
 
 
 # Future Phases showcasing (In no particular order)
