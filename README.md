@@ -60,6 +60,8 @@ GutHealth is a Java 21 Spring Boot application using:
 - Spring AOP
 - Lombok
 - Thymeleaf
+- HTML
+- JavaScript
 - Actuator
 - Swagger
 - Hazelcast caching
