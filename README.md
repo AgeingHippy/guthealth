@@ -73,6 +73,7 @@ GutHealth is a Java 21 Spring Boot application using:
 # Change Log
 
 ## Implemented
+- Implement TRACE level (configurable using actuator) logging of all methods using AOP to assist troubleshooting. 
 - Spring Data JPA
 - Implementing basic CRUD REST APIs for the various entities (DTOs exposed as Java Record)
 - Spring Web MVC / Thymeleaf Templates (Basic CRUD) (currently excludes Meal data)
@@ -94,8 +95,10 @@ GutHealth is a Java 21 Spring Boot application using:
 - Implement FlyWay to initialise database
 
 ## Current phase:
+- AWS deployment prior to submitting to CodingNomads for certificate application
 
 ## Future Phases
+- remove disabling of CSRF and test
 *In no particular order*
 - Implement dedicated log file with rolling appender etc
 - Programmatically refresh security context when new role assigned to user

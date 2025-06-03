@@ -18,7 +18,8 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/webjars/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
+                        .requestMatchers("/actuator/health").permitAll()
+//                        .requestMatchers("/h2-console/**").permitAll() //todo remove!!!
                         .requestMatchers("/test/**").permitAll() //todo remove!!!
                         .requestMatchers("/", "/home", "/index").permitAll()
                         .requestMatchers("/user/new", "/user/create", "/login").anonymous()
@@ -35,7 +36,7 @@ public class SecurityConfiguration {
                         .defaultSuccessUrl("/user/profile")
                         .permitAll());
 
-        http.headers().frameOptions().disable(); //todo remove - for h2 access!!!
+//        http.headers().frameOptions().disable(); //todo remove - for h2 console access!!!
 
         return http.build();
     }
