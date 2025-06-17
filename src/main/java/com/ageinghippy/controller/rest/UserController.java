@@ -3,6 +3,7 @@ package com.ageinghippy.controller.rest;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,16 @@ public class UserController {
         return "Password successfully updated";
     }
 
+    @PostMapping("/{id}/password")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String updateUserPassword(@PathVariable Long id, @RequestBody String password) {
+        UserPrinciple userPrinciple = userPrincipleService.getUserPrincipleById(id);
+
+        userPrincipleService.updatePassword(userPrinciple, password);
+
+        return "Password successfully updated";
+    }
+
     @PostMapping("/register")
     public String registerActiveUser(Authentication authentication) {
         UserPrinciple userPrinciple = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
@@ -31,4 +42,5 @@ public class UserController {
             return "Failed to register as an active user";
         }
     }
+
 }

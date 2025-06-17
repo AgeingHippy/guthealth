@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>User Maintenance</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="container">
+        <p/>
+        <h1>User Maintenance</h1>
+        <p/>
+
+        <div id="authentication-type">
+            <div id="authentication-type-basic"
+                 th:unless="${userPrinciple.oauth2Provider} != null">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Username:</span>
+                    <input type="text" class="form-control" id="userPrinciple.username" name="userPrinciple.username"
+                           th:value="*{userPrinciple.username}" disabled>
+                </div>
+
+                <div>
+                    <button type="button" class="full-width btn btn-warning" id="button-show-password-div" href="#">
+                        Change Password
+                    </button>
+                </div>
+                <br>
+
+                <div id="div-change-password" hidden>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Password:</span>
+                        <input type="password" class="password form-control" id="new-password" name="new-password">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Repeat Password:</span>
+                        <input type="password" id="repeat-new-password" class="password form-control"
+                               name="repeat-new-password">
+                    </div>
+                    <div>
+                        <button type="button" class="col-3 btn btn-primary" id="button-submit-password">
+                            Submit Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="authentication-type-oauth2"
+                 th:if="${userPrinciple.oauth2Provider} != null">
+                <p>OAuth2 provider: <span th:text="${userPrinciple.oauth2Provider}"></span></p>
+            </div>
+        </div>
+
+        <div id="user-profile">
+            <!--            <div id="div-register-active-user" sec:authorize="!hasAnyRole('ROLE_ADMIN','ROLE_USER')">-->
+            <!--                <button type="button" id="button-register-active-user" class="full-width btn btn-success">-->
+            <!--                    Click here to be able to create your own content-->
+            <!--                </button>-->
+            <!--                <p/>-->
+            <!--            </div>-->
+            <form th:action="@{'/user/' + ${userPrinciple.id}}"
+                  th:object="${userPrinciple}"
+                  method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" th:field="*{accountNonExpired}">
+                            <label class="form-check-label" th:for="${#ids.prev('accountNonExpired')}">Account Non
+                                Expired</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" th:field="*{accountNonLocked}">
+                            <label class="form-check-label" th:for="${#ids.prev('accountNonLocked')}">Account
+                                Non-Locked</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" th:field="*{credentialsNonExpired}">
+                            <label class="form-check-label" th:for="${#ids.prev('credentialsNonExpired')}">Credentials
+                                Non-Expired</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+                            <label class="form-check-label" th:for="${#ids.prev('enabled')}">Enabled</label>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" th:field="*{userMeta.id}">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Name:</span>
+                    <input type="text" class="form-control" th:field="*{userMeta.name}">
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Email:</span>
+                    <input type="email" class="form-control" th:field="*{userMeta.email}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Bio:</span>
+                    <input type="text" class="form-control" th:field="*{userMeta.bio}">
+                </div>
+                <div>
+                    <button id="button-submit" class="col-3 btn btn-primary" type="submit">Save</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        //#########################################################################################
+        //###                               PASSWORD SECTION START
+        //#########################################################################################
+
+        function showPasswordUpdate() {
+            document.getElementById("user-profile").setAttribute("hidden","hidden");
+
+            document.getElementById("div-change-password").removeAttribute("hidden");
+            document.getElementById("button-submit-password").disabled = true;
+        }
+
+        function hidePasswordUpdate() {
+            document.getElementById("user-profile").removeAttribute("hidden");
+
+            document.getElementById("div-change-password").setAttribute("hidden","hidden");
+
+            document.getElementById("new-password").value = "";
+            document.getElementById("repeat-new-password").value = "";
+
+            document.getElementById("button-submit-password").disabled = true;
+        }
+
+        function checkPasswordsMatch() {
+            let newPassword = document.getElementById("new-password").value;
+            let repeatNewPassword = document.getElementById("repeat-new-password").value;
+            let buttonSubmit = document.getElementById("button-submit-password");
+            if (newPassword.length >= 4 && newPassword === repeatNewPassword) {
+                buttonSubmit.disabled = false;
+            } else {
+                buttonSubmit.disabled = true;
+            }
+        }
+
+        async function submitPassword() {
+            let passwordUri = adminUserPasswordUri.replace("{id}", document.getElementById("id").value );
+            let response = await fetch(passwordUri, {
+                method:"POST",
+                body: document.getElementById("new-password").value
+            });
+            let responseText = await response.text();
+            let updateMessage = document.createElement("p");
+            showMessage("success",responseText);
+            hidePasswordUpdate();
+        }
+
+        document.getElementById("button-submit-password").addEventListener("click",submitPassword);
+
+        try {
+            document.getElementById("button-show-password-div").addEventListener("click",showPasswordUpdate);
+        }
+        catch (ignored) {}
+
+        document.getElementById("div-change-password").addEventListener( "keyup",
+            (event) => {
+                if (event.target.classList.contains("password")) {
+                   checkPasswordsMatch();
+                }
+            },
+            true
+        );
+
+        //#########################################################################################
+        //###    PASSWORD SECTION END
+        //#########################################################################################
+    </script>
+
+</div>
+
+</body>
+</html>

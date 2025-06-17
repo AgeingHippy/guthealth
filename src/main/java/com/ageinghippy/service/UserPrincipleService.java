@@ -38,7 +38,7 @@ public class UserPrincipleService {
     @Transactional
     public UserPrinciple createPasswordUser(UserPrinciple userPrinciple) {
         userPrinciple.setPassword(passwordEncoder.encode(userPrinciple.getPassword()));
-        assert(userPrinciple.getOauth2Provider() == null);
+        assert (userPrinciple.getOauth2Provider() == null);
 
         return createUser(userPrinciple);
     }
@@ -66,8 +66,8 @@ public class UserPrincipleService {
 
     @Transactional
     public UserPrinciple createOauth2User(UserPrinciple userPrinciple) {
-        assert(userPrinciple.getPassword() == null);
-        assert(userPrinciple.getOauth2Provider() != null);
+        assert (userPrinciple.getPassword() == null);
+        assert (userPrinciple.getOauth2Provider() != null);
 
         return createUser(userPrinciple);
     }
@@ -101,4 +101,27 @@ public class UserPrincipleService {
 
         return saveUserPrinciple(userPrinciple);
     }
+
+    public UserPrinciple getUserPrincipleById(Long id) {
+        return userPrincipleRepository.findById(id).orElseThrow();
+    }
+
+    @Transactional
+    public UserPrinciple updateUserPrinciple(Long id, UserPrinciple updateUserPrinciple) {
+        UserPrinciple userPrinciple = userPrincipleRepository.findById(id).orElseThrow();
+
+        userPrinciple.setAccountNonExpired(updateUserPrinciple.isAccountNonExpired());
+        userPrinciple.setAccountNonLocked(updateUserPrinciple.isAccountNonLocked());
+        userPrinciple.setCredentialsNonExpired(updateUserPrinciple.isCredentialsNonExpired());
+        userPrinciple.setEnabled(updateUserPrinciple.isEnabled());
+
+        userPrinciple.getUserMeta().setName(updateUserPrinciple.getUserMeta().getName());
+        userPrinciple.getUserMeta().setEmail(updateUserPrinciple.getUserMeta().getEmail());
+        userPrinciple.getUserMeta().setBio(updateUserPrinciple.getUserMeta().getBio());
+
+        //todo - update roles
+
+        return saveUserPrinciple(userPrinciple);
+    }
+
 }

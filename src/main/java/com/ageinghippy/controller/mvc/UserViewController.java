@@ -6,6 +6,7 @@ import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,6 +74,39 @@ public class UserViewController {
         userPrincipleService.updateUserMeta(userPrinciple, userMeta);
 
         return "redirect:/user/profile";
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String showUserMaintenanceView(Model model, @PathVariable Long id) {
+        if (!model.containsAttribute("userPrinciple")) {
+            UserPrinciple userPrinciple = userPrincipleService.getUserPrincipleById(id);
+            model.addAttribute("userPrinciple", userPrinciple);
+        }
+
+
+        return "user-maintenance";
+    }
+
+    @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String updateUserDetails(@PathVariable Long id,
+                                    @ModelAttribute UserPrinciple userPrinciple,
+                                    RedirectAttributes redirectAttributes) {
+        if (!Objects.equals(id, userPrinciple.getId())) {
+            throw new IllegalArgumentException("Principle ID mismatch");
+        }
+
+        try {
+            userPrincipleService.updateUserPrinciple(id, userPrinciple);
+            redirectAttributes.addFlashAttribute("successMessage", "User updated successfully.");
+            return "redirect:/user/" + id;
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "User updated failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("userPrinciple", userPrinciple);
+            return "redirect:/user/" + id;
+        }
     }
 
 }

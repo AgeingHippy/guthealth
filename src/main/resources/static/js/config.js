@@ -15,3 +15,4 @@ const tasksUri = contextPath + "api/v1/tasks";
 const testUri = contextPath + "test/time";
 const userPasswordUri = contextPath + "api/v1/user/password";
 const userRegisterUri = contextPath + "api/v1/user/register";
+const adminUserPasswordUri = contextPath + "api/v1/user/{id}/password";
