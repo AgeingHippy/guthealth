@@ -76,14 +76,18 @@ public class UserViewController {
         return "redirect:/user/profile";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping({"","/", "/{id}"})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String showUserMaintenanceView(Model model, @PathVariable Long id) {
-        if (!model.containsAttribute("userPrinciple")) {
-            UserPrinciple userPrinciple = userPrincipleService.getUserPrincipleById(id);
+    public String showUserMaintenanceView(Model model, @PathVariable(required = false) Long id) {
+        if (!model.containsAttribute("userPrinciple") ) {
+            UserPrinciple userPrinciple;
+            if (id != null) {
+                userPrinciple = userPrincipleService.getUserPrincipleById(id);
+            } else {
+                userPrinciple = UserPrinciple.builder().userMeta(UserMeta.builder().build()).build();
+            }
             model.addAttribute("userPrinciple", userPrinciple);
         }
-
 
         return "user-maintenance";
     }

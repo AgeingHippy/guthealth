@@ -99,9 +99,9 @@ GutHealth is a Java 21 Spring Boot application using:
 - Admin user maintenance
 - [x] reset user passwords
 - [x] update user and user meta
-- [] select user to maintain
+- [x] select user to maintain
 - [] Maintain user roles
-- [] Menu option to show user maintenance form if user has role ADMIN
+- [x] Menu option to show user maintenance form if user has role ADMIN
 
 
 ## Future Phases

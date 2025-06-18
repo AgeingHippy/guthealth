@@ -16,113 +16,117 @@
         <h1>User Maintenance</h1>
         <p/>
 
-        <div id="authentication-type">
-            <div id="authentication-type-basic"
-                 th:unless="${userPrinciple.oauth2Provider} != null">
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Username:</span>
-                    <input type="text" class="form-control" id="userPrinciple.username" name="userPrinciple.username"
-                           th:value="*{userPrinciple.username}" disabled>
-                </div>
-
-                <div>
-                    <button type="button" class="full-width btn btn-warning" id="button-show-password-div" href="#">
-                        Change Password
-                    </button>
-                </div>
-                <br>
-
-                <div id="div-change-password" hidden>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Password:</span>
-                        <input type="password" class="password form-control" id="new-password" name="new-password">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Repeat Password:</span>
-                        <input type="password" id="repeat-new-password" class="password form-control"
-                               name="repeat-new-password">
-                    </div>
-                    <div>
-                        <button type="button" class="col-3 btn btn-primary" id="button-submit-password">
-                            Submit Password
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div id="authentication-type-oauth2"
-                 th:if="${userPrinciple.oauth2Provider} != null">
-                <p>OAuth2 provider: <span th:text="${userPrinciple.oauth2Provider}"></span></p>
-            </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Username:</span>
+            <select class="form-select" id="principle" required>
+                <!--                        <option value=""></option>-->
+            </select>
         </div>
 
-        <div id="user-profile">
-            <!--            <div id="div-register-active-user" sec:authorize="!hasAnyRole('ROLE_ADMIN','ROLE_USER')">-->
-            <!--                <button type="button" id="button-register-active-user" class="full-width btn btn-success">-->
-            <!--                    Click here to be able to create your own content-->
-            <!--                </button>-->
-            <!--                <p/>-->
-            <!--            </div>-->
-            <form th:action="@{'/user/' + ${userPrinciple.id}}"
-                  th:object="${userPrinciple}"
-                  method="post">
-                <input type="hidden" th:field="*{id}">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" th:field="*{accountNonExpired}">
-                            <label class="form-check-label" th:for="${#ids.prev('accountNonExpired')}">Account Non
-                                Expired</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" th:field="*{accountNonLocked}">
-                            <label class="form-check-label" th:for="${#ids.prev('accountNonLocked')}">Account
-                                Non-Locked</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" th:field="*{credentialsNonExpired}">
-                            <label class="form-check-label" th:for="${#ids.prev('credentialsNonExpired')}">Credentials
-                                Non-Expired</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" th:field="*{enabled}">
-                            <label class="form-check-label" th:for="${#ids.prev('enabled')}">Enabled</label>
-                        </div>
-                    </div>
-                </div>
 
-                <input type="hidden" th:field="*{userMeta.id}">
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Name:</span>
-                    <input type="text" class="form-control" th:field="*{userMeta.name}">
-                    <div class="invalid-feedback">This field is required</div>
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Email:</span>
-                    <input type="email" class="form-control" th:field="*{userMeta.email}">
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Bio:</span>
-                    <input type="text" class="form-control" th:field="*{userMeta.bio}">
-                </div>
-                <div>
-                    <button id="button-submit" class="col-3 btn btn-primary" type="submit">Save</button>
-                </div>
-            </form>
 
+        <div th:if="${userPrinciple.id}">
+
+            <div id="authentication-type">
+                <div id="authentication-type-basic"
+                     th:unless="${userPrinciple.oauth2Provider} != null">
+                    <div>
+                        <button type="button" class="full-width btn btn-warning" id="button-show-password-div" href="#">
+                            Change Password
+                        </button>
+                    </div>
+                    <br>
+
+                    <div id="div-change-password" hidden>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Password:</span>
+                            <input type="password" class="password form-control" id="new-password" name="new-password">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Repeat Password:</span>
+                            <input type="password" id="repeat-new-password" class="password form-control"
+                                   name="repeat-new-password">
+                        </div>
+                        <div>
+                            <button type="button" class="col-3 btn btn-primary" id="button-submit-password">
+                                Submit Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="authentication-type-oauth2"
+                     th:if="${userPrinciple.oauth2Provider} != null">
+                    <p>OAuth2 provider: <span th:text="${userPrinciple.oauth2Provider}"></span></p>
+                </div>
+            </div>
+
+            <div id="user-profile">
+                <form th:action="@{'/user/' + ${userPrinciple.id}}"
+                      th:object="${userPrinciple}"
+                      method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" th:field="*{accountNonExpired}">
+                                <label class="form-check-label" th:for="${#ids.prev('accountNonExpired')}">Account Non
+                                    Expired</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" th:field="*{accountNonLocked}">
+                                <label class="form-check-label" th:for="${#ids.prev('accountNonLocked')}">Account
+                                    Non-Locked</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" th:field="*{credentialsNonExpired}">
+                                <label class="form-check-label" th:for="${#ids.prev('credentialsNonExpired')}">Credentials
+                                    Non-Expired</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+                                <label class="form-check-label" th:for="${#ids.prev('enabled')}">Enabled</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" th:field="*{userMeta.id}">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Name:</span>
+                        <input type="text" class="form-control" th:field="*{userMeta.name}">
+                        <div class="invalid-feedback">This field is required</div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Email:</span>
+                        <input type="email" class="form-control" th:field="*{userMeta.email}">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Bio:</span>
+                        <input type="text" class="form-control" th:field="*{userMeta.bio}">
+                    </div>
+                    <div>
+                        <button id="button-submit" class="col-3 btn btn-primary" type="submit">Save</button>
+                    </div>
+                </form>
+
+            </div>
         </div>
 
     </div>
 
 
     <script>
+        window.onload = function () {
+            initialisePrincipleSelect();
+        }
+
         //#########################################################################################
         //###                               PASSWORD SECTION START
         //#########################################################################################
@@ -168,25 +172,52 @@
             hidePasswordUpdate();
         }
 
-        document.getElementById("button-submit-password").addEventListener("click",submitPassword);
+        try {
+            document.getElementById("button-submit-password").addEventListener("click",submitPassword);
+        }
+        catch (ignored) {}
 
         try {
             document.getElementById("button-show-password-div").addEventListener("click",showPasswordUpdate);
         }
         catch (ignored) {}
 
-        document.getElementById("div-change-password").addEventListener( "keyup",
-            (event) => {
-                if (event.target.classList.contains("password")) {
-                   checkPasswordsMatch();
-                }
-            },
-            true
-        );
+        try {
+            document.getElementById("div-change-password").addEventListener( "keyup",
+                (event) => {
+                    if (event.target.classList.contains("password")) {
+                       checkPasswordsMatch();
+                    }
+                },
+                true
+            );
+        }
+        catch (ignored) {}
 
         //#########################################################################################
         //###    PASSWORD SECTION END
         //#########################################################################################
+
+
+        //#########################################################################################
+        //###    SELECT USER SECTION START
+        //#########################################################################################
+
+        async function initialisePrincipleSelect() {
+            const principleId = "[[${userPrinciple.id}]]";
+            const principleList = await fetchSelectOptions(usersUri);
+            buildSelectOptions("principle", principleList, "id", "userName", true, principleId);
+        }
+
+        document.getElementById("principle").addEventListener("change", function () {
+            const url = contextPath + `user/${this.value}`;
+            window.location.href =url;
+        });
+
+        //#########################################################################################
+        //###    SELECT USER SECTION END
+        //#########################################################################################
+
     </script>
 
 </div>
