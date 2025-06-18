@@ -45,6 +45,8 @@ public class DTOMapper extends ModelMapper {
         } else if (source.getClass() == DishDTOComplex.class && destinationType == Dish.class) {
             //todo - sledgehammer solution - to refactor
             return (D) mapDishDTOComplexToDish((DishDTOComplex) source);
+        } else if (destinationType == UserPrincipleDTOSimple.class) {
+            return (D) toDtoSimple((UserPrinciple) source);
         } else {
             return super.map(source, destinationType);
         }
@@ -167,5 +169,9 @@ public class DTOMapper extends ModelMapper {
                                 : List.of()
                 )
                 .build();
+    }
+
+    private UserPrincipleDTOSimple toDtoSimple(UserPrinciple source) {
+        return new UserPrincipleDTOSimple(source.getId(), source.getUsername(), source.getUserMeta().getName());
     }
 }

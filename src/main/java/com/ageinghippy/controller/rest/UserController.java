@@ -1,5 +1,6 @@
 package com.ageinghippy.controller.rest;
 
+import com.ageinghippy.model.dto.UserPrincipleDTOSimple;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.UserPrincipleService;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserPrincipleService userPrincipleService;
@@ -41,6 +44,12 @@ public class UserController {
         } catch (Exception e) {
             return "Failed to register as an active user";
         }
+    }
+
+    @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserPrincipleDTOSimple> getUsers() {
+        return userPrincipleService.getUsers();
     }
 
 }

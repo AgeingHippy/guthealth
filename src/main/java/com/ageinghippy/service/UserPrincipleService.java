@@ -1,5 +1,7 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.UserPrincipleDTOSimple;
 import com.ageinghippy.model.entity.Role;
 import com.ageinghippy.model.entity.UserMeta;
 import com.ageinghippy.model.entity.UserPrinciple;
@@ -24,6 +26,7 @@ public class UserPrincipleService {
     private final RoleRepository roleRepository;
     private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
+    private final DTOMapper dtoMapper;
 
     public UserPrinciple castToUserPrinciple(Object principle) {
         return (UserPrinciple) principle;
@@ -124,4 +127,8 @@ public class UserPrincipleService {
         return saveUserPrinciple(userPrinciple);
     }
 
+    public List<UserPrincipleDTOSimple> getUsers() {
+        List<UserPrinciple> userPrinciples = userPrincipleRepository.findAll();
+        return dtoMapper.mapList(userPrinciples, UserPrincipleDTOSimple.class);
+    }
 }

@@ -1,6 +1,8 @@
 package com.ageinghippy.service;
 
 import com.ageinghippy.DataSetupHelper;
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.UserPrincipleDTOSimple;
 import com.ageinghippy.model.entity.Role;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.RoleRepository;
@@ -11,8 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 
@@ -36,13 +40,14 @@ class UserPrincipleServiceTest {
                 null,
                 roleRepository,
                 null,
-                null);
+                null,
+                new DTOMapper());
 
         userPrincipleService = spy(service);
     }
 
     @Test
-    public void registerActiveUser() {
+    void registerActiveUser() {
         Role userRole = dsh.getRole("ROLE_USER");
         when(roleRepository.findByAuthority("ROLE_USER")).thenReturn(Optional.ofNullable(userRole));
         doAnswer(returnsFirstArg()).when(userPrincipleService).saveUserPrinciple(any(UserPrinciple.class));
@@ -63,7 +68,7 @@ class UserPrincipleServiceTest {
     }
 
     @Test
-    public void registerActiveUser_alreadyHasRole() {
+    void registerActiveUser_alreadyHasRole() {
         Role userRole = dsh.getRole("ROLE_USER");
         when(roleRepository.findByAuthority("ROLE_USER")).thenReturn(Optional.ofNullable(userRole));
 
@@ -80,4 +85,25 @@ class UserPrincipleServiceTest {
         verify(roleRepository, times(1)).findByAuthority("ROLE_USER");
     }
 
+    @Test
+    void getUsers() {
+        List<UserPrinciple> userPrinciples = List.of(
+                dsh.getPrinciple(1L),
+                dsh.getPrinciple(2L),
+                dsh.getPrinciple(3L),
+                dsh.getPrinciple(4L));
+
+        List<UserPrincipleDTOSimple> userPrincipleDTOSimpleList = List.of(
+                dsh.getPrincipleDTOSimple(1L),
+                dsh.getPrincipleDTOSimple(2L),
+                dsh.getPrincipleDTOSimple(3L),
+                dsh.getPrincipleDTOSimple(4L));
+
+
+        when(userPrincipleRepository.findAll()).thenReturn(userPrinciples);
+
+        List<UserPrincipleDTOSimple> resultList = userPrincipleService.getUsers();
+
+        assertEquals(userPrincipleDTOSimpleList, resultList);
+    }
 }

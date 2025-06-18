@@ -24,7 +24,8 @@ class DTOMapperTest {
             "verify_map_provider_DishComponentDTO",
             "verify_map_provider_DishDTOSimple",
             "verify_map_provider_DishDTOComplex",
-            "verify_map_provider_DishDTOComplex_noChildren"
+            "verify_map_provider_DishDTOComplex_noChildren",
+            "verify_map_provider_UserPrincipleDTOSimple"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
 
@@ -46,7 +47,8 @@ class DTOMapperTest {
             "verify_mapList_provider_FoodTypeDTOComplex",
             "verify_mapList_provider_DishComponentDTO",
             "verify_mapList_provider_DishDTOSimple",
-            "verify_mapList_provider_DishDTOComplex"
+            "verify_mapList_provider_DishDTOComplex",
+            "verify_mapList_provider_UserPrincipleDTOSimple"
     })
     <S, T> void mapList(String testDescription, List<S> sourceList, List<T> targetList, Class<T> targetClassType) {
 
@@ -715,7 +717,7 @@ class DTOMapperTest {
                         new DishDTOSimple(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1")),
                         DishDTOSimple.class
                 },
                 new Object[]{
@@ -723,7 +725,7 @@ class DTOMapperTest {
                         new DishDTOSimple(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1")),
                         Dish.builder()
                                 .id(1L)
                                 .name("Dish1")
@@ -806,11 +808,11 @@ class DTOMapperTest {
                                 new DishDTOSimple(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
+                                        new PreparationTechniqueDTO(1L, "PT1", "PTDesc1")),
                                 new DishDTOSimple(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"))
+                                        new PreparationTechniqueDTO(2L, "PT2", "PTDesc2"))
                         ),
                         DishDTOSimple.class
                 },
@@ -820,11 +822,11 @@ class DTOMapperTest {
                                 new DishDTOSimple(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1")),
+                                        new PreparationTechniqueDTO(1L, "PT1", "PTDesc1")),
                                 new DishDTOSimple(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"))
+                                        new PreparationTechniqueDTO(2L, "PT2", "PTDesc2"))
                         ),
                         List.of(
                                 Dish.builder()
@@ -886,7 +888,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                 List.of(
                                         new DishComponentDTO(101L,
                                                 new FoodTypeDTOSimple(11L, "FT11", null),
@@ -903,7 +905,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                 List.of(
                                         new DishComponentDTO(101L,
                                                 new FoodTypeDTOSimple(11L, "FT11", null),
@@ -955,7 +957,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                 List.of()
                         ),
                         DishDTOComplex.class
@@ -965,7 +967,7 @@ class DTOMapperTest {
                         new DishDTOComplex(1L,
                                 "Dish1",
                                 "DishDescription1",
-                                new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                 null
                         ),
                         Dish.builder()
@@ -1050,7 +1052,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                        new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                         List.of(
                                                 new DishComponentDTO(101L,
                                                         new FoodTypeDTOSimple(11L, "FT11", null),
@@ -1063,7 +1065,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"),
+                                        new PreparationTechniqueDTO(2L, "PT2", "PTDesc2"),
                                         List.of(
                                                 new DishComponentDTO(201L,
                                                         new FoodTypeDTOSimple(21L, "FT21", null),
@@ -1082,7 +1084,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(1L,
                                         "Dish1",
                                         "DishDescription1",
-                                        new PreparationTechniqueDTO(1L,"PT1", "PTDesc1"),
+                                        new PreparationTechniqueDTO(1L, "PT1", "PTDesc1"),
                                         List.of(
                                                 new DishComponentDTO(101L,
                                                         new FoodTypeDTOSimple(11L, "FT11", null),
@@ -1095,7 +1097,7 @@ class DTOMapperTest {
                                 new DishDTOComplex(2L,
                                         "Dish2",
                                         "DishDescription2",
-                                        new PreparationTechniqueDTO(2L,"PT2", "PTDesc2"),
+                                        new PreparationTechniqueDTO(2L, "PT2", "PTDesc2"),
                                         List.of(
                                                 new DishComponentDTO(201L,
                                                         new FoodTypeDTOSimple(21L, "FT21", null),
@@ -1155,5 +1157,72 @@ class DTOMapperTest {
         );
     }
 
+    private static Stream<Object[]> verify_map_provider_UserPrincipleDTOSimple() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map UserPrinciple to UserPrincipleDTOSimple",
+                        UserPrinciple.builder()
+                                .id(1L)
+                                .username("username1")
+                                .accountNonExpired(true)
+                                .userMeta(new UserMeta(1L, "name1", "1@home.com", "bio1"))
+                                .build(),
+                        new UserPrincipleDTOSimple(1L,
+                                "username1",
+                                "name1"),
+                        UserPrincipleDTOSimple.class
+                },
+                new Object[]{
+                        "Map UserPrinciple to UserPrincipleDTOSimple",
+                        UserPrinciple.builder()
+                                .id(2L)
+                                .username("username2")
+                                .accountNonExpired(true)
+                                .userMeta(new UserMeta(2L, "name2", "2@home.com", "bio2"))
+                                .build(),
+                        new UserPrincipleDTOSimple(2L,
+                                "username2",
+                                "name2"),
+                        UserPrincipleDTOSimple.class
+                }
+        );
+    }
 
+    private static Stream<Object[]> verify_mapList_provider_UserPrincipleDTOSimple() {
+        return Stream.of(
+                //id, name, description
+                new Object[]{
+                        "Map UserPrinciple to UserPrincipleDTOSimple",
+                        List.of(UserPrinciple.builder()
+                                        .id(1L)
+                                        .username("username1")
+                                        .accountNonExpired(true)
+                                        .userMeta(new UserMeta(1L, "name1", "1@home.com", "bio1"))
+                                        .build(),
+                                UserPrinciple.builder()
+                                        .id(2L)
+                                        .username("username2")
+                                        .accountNonExpired(true)
+                                        .userMeta(new UserMeta(2L, "name2", "2@home.com", "bio2"))
+                                        .build()
+                        ),
+                        List.of(
+                                new UserPrincipleDTOSimple(1L,
+                                        "username1",
+                                        "name1"),
+                                new UserPrincipleDTOSimple(2L,
+                                        "username2",
+                                        "name2")
+                        ),
+                        UserPrincipleDTOSimple.class
+                },
+                new Object[]{
+                        "Map UserPrinciple to UserPrincipleDTOSimple - empty",
+                        List.of(),
+                        List.of(),
+                        UserPrincipleDTOSimple.class
+                }
+        );
+    }
 }

@@ -9,6 +9,7 @@ public class DataSetupHelper {
     private Map<Long, Role> roleMap = new HashMap<>();
 
     private Map<Long, UserPrinciple> userPrincipleMap = new HashMap<>();
+    private Map<Long, UserPrincipleDTOSimple> userPrincipleDTOSimpleMap = new HashMap<>();
 
     private Map<Long, PreparationTechnique> preparationTechniqueMap = new HashMap<>();
     private Map<Long, PreparationTechniqueDTO> preparationTechniqueDTOMap = new HashMap<>();
@@ -58,6 +59,9 @@ public class DataSetupHelper {
                 .orElse(null);
     }
 
+    public UserPrincipleDTOSimple getPrincipleDTOSimple(Long id) {
+        return userPrincipleDTOSimpleMap.get(id);
+    }
 
     public PreparationTechnique getPreparationTechnique(Long id) {
         return preparationTechniqueMap.get(id);
@@ -127,21 +131,23 @@ public class DataSetupHelper {
     }
 
     private void initialiseUserPrinciples() {
-        initialiseUserPrinciple(1L, "admin", List.of(getRole("ROLE_ADMIN")));
-        initialiseUserPrinciple(2L, "basic", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
-        initialiseUserPrinciple(3L, "guest", List.of(getRole("ROLE_GUEST")));
-        initialiseUserPrinciple(4L, "system", List.of(getRole("ROLE_USER")));
-        initialiseUserPrinciple(5L, "alternative", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(1L, "admin","adminName", List.of(getRole("ROLE_ADMIN")));
+        initialiseUserPrinciple(2L, "basic","basicName", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
+        initialiseUserPrinciple(3L, "guest","guestName", List.of(getRole("ROLE_GUEST")));
+        initialiseUserPrinciple(4L, "system","systemName", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(5L, "alternative","alternativeName", List.of(getRole("ROLE_USER")));
     }
 
-    private void initialiseUserPrinciple(Long id, String userName, List<Role> authorities) {
+    private void initialiseUserPrinciple(Long id, String userName,String name, List<Role> authorities) {
         userPrincipleMap.put(id,
                 UserPrinciple.builder()
                         .id(id)
                         .username(userName)
                         .authorities(new ArrayList<>(authorities))
+                        .userMeta(new UserMeta(id, name, null,null))
                         .build()
         );
+        userPrincipleDTOSimpleMap.put(id, new UserPrincipleDTOSimple(id, userName, name));
     }
 
     private void initialisePreparationTechniques() {
