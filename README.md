@@ -94,19 +94,18 @@ GutHealth is a Java 21 Spring Boot application using:
 - 3rd Party API integration - Implement task list for users
 - Implement FlyWay to initialise database
 - AWS deployment prior to submitting to CodingNomads for certificate application
-- 
-## Current phase:
 - Admin user maintenance
-- [x] reset user passwords
-- [x] update user and user meta
-- [x] select user to maintain
-- [] Maintain user roles
-- [x] Menu option to show user maintenance form if user has role ADMIN
-
+## Current phase:
+- [] Meal MVC
+- [] Repository
+- [] Meal Service
+- [] Meal REST API
+- [] Meal Views
 
 ## Future Phases
 - remove disabling of CSRF and test
 *In no particular order*
+- Add user role maintenance to Admin User Maintenance form
 - Implement dedicated log file with rolling appender etc
 - Programmatically refresh security context when new role assigned to user
 - Search for particular FoodType
@@ -114,7 +113,7 @@ GutHealth is a Java 21 Spring Boot application using:
 - Send new user a welcome email
 - Send registered users a usage email
 
-- [] Meal MVC
+- 
 - Filter meals based on date or description
 - Addition of Gut Health itself (Data Structure, API, UI etc.)
 - - This might be implemented in a separate NoSql database as I'm not clear on the data structure as this may include miood and other factors
