@@ -1,5 +1,6 @@
 package com.ageinghippy.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,13 @@ public class Meal  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn
+    @JsonIgnore
+    private UserPrinciple principle;
+
+    private String description;
 
     private LocalDate date;
     private LocalTime time;

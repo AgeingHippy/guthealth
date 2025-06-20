@@ -3,6 +3,8 @@ package com.ageinghippy;
 import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class DataSetupHelper {
@@ -27,6 +29,9 @@ public class DataSetupHelper {
     private Map<Long, DishDTOSimple> dishDTOSimpleMap = new HashMap<>();
     private Map<Long, DishDTOComplex> dishDTOComplexMap = new HashMap<>();
 
+    private Map<Long, Meal> mealMap = new HashMap<>();
+    private Map<Long, MealDTOSimple> mealDTOSimpleMap = new HashMap<>();
+    private Map<Long, MealDTOComplex> mealDTOComplexMap = new HashMap<>();
 
     public DataSetupHelper() {
         initialiseRoles();
@@ -35,6 +40,7 @@ public class DataSetupHelper {
         initialiseFoodCategories();
         initialiseFoodTypes();
         initialiseDishes();
+        initialiseMeals();
     }
 
     public Role getRole(Long id) {
@@ -119,6 +125,18 @@ public class DataSetupHelper {
         return dishDTOComplexMap.get(id);
     }
 
+    public Meal getMeal(Long id) {
+        return mealMap.get(id);
+    }
+
+    public MealDTOSimple getMealDTOSimple(Long id) {
+        return mealDTOSimpleMap.get(id);
+    }
+
+    public MealDTOComplex getMealDTOComplex(long id) {
+        return mealDTOComplexMap.get(id);
+    }
+
     //********************************** DATA INITIALISATION ROUTINES *****************************
     private void initialiseRoles() {
         initialiseRole(1L, "ROLE_ADMIN");
@@ -131,20 +149,20 @@ public class DataSetupHelper {
     }
 
     private void initialiseUserPrinciples() {
-        initialiseUserPrinciple(1L, "admin","adminName", List.of(getRole("ROLE_ADMIN")));
-        initialiseUserPrinciple(2L, "basic","basicName", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
-        initialiseUserPrinciple(3L, "guest","guestName", List.of(getRole("ROLE_GUEST")));
-        initialiseUserPrinciple(4L, "system","systemName", List.of(getRole("ROLE_USER")));
-        initialiseUserPrinciple(5L, "alternative","alternativeName", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(1L, "admin", "adminName", List.of(getRole("ROLE_ADMIN")));
+        initialiseUserPrinciple(2L, "basic", "basicName", List.of(getRole("ROLE_GUEST"), getRole("ROLE_USER")));
+        initialiseUserPrinciple(3L, "guest", "guestName", List.of(getRole("ROLE_GUEST")));
+        initialiseUserPrinciple(4L, "system", "systemName", List.of(getRole("ROLE_USER")));
+        initialiseUserPrinciple(5L, "alternative", "alternativeName", List.of(getRole("ROLE_USER")));
     }
 
-    private void initialiseUserPrinciple(Long id, String userName,String name, List<Role> authorities) {
+    private void initialiseUserPrinciple(Long id, String userName, String name, List<Role> authorities) {
         userPrincipleMap.put(id,
                 UserPrinciple.builder()
                         .id(id)
                         .username(userName)
                         .authorities(new ArrayList<>(authorities))
-                        .userMeta(new UserMeta(id, name, null,null))
+                        .userMeta(new UserMeta(id, name, null, null))
                         .build()
         );
         userPrincipleDTOSimpleMap.put(id, new UserPrincipleDTOSimple(id, userName, name));
@@ -297,6 +315,31 @@ public class DataSetupHelper {
                 new DishDTOComplex(id, name, description,
                         preparationTechniqueDTOMap.get(preparationTechniqueId),
                         List.of())); //todo
+    }
+
+    private void initialiseMeals() {
+        initialiseMeal(1L, 2L, "Meal 1 breakfast", LocalDate.parse("2025-06-17"), LocalTime.parse("09:30"));
+        initialiseMeal(2L, 2L, "Meal 2 lunch", LocalDate.parse("2025-06-17"), LocalTime.parse("13:30"));
+        initialiseMeal(3L, 2L, "Meal 3 breakfast", LocalDate.parse("2025-06-18"), LocalTime.parse("09:00"));
+        initialiseMeal(4L, 2L, "Meal 4 lunch", LocalDate.parse("2025-06-17"), LocalTime.parse("14:00"));
+    }
+
+    private void initialiseMeal(Long id, Long userPrincipleId, String description, LocalDate date, LocalTime time) {
+        mealMap.put(id,
+                Meal.builder()
+                        .id(id)
+                        .principle(userPrincipleMap.get(userPrincipleId))
+                        .description(description)
+                        .date(date)
+                        .time(time)
+                        .mealComponents(List.of()) //todo
+                        .build()
+        );
+
+        mealDTOSimpleMap.put(id, new MealDTOSimple(id, description, date, time));
+
+        mealDTOComplexMap.put(id,
+                new MealDTOComplex(id,description,date, time, List.of()));
     }
 
 }

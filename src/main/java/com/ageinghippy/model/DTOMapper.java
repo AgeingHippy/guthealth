@@ -47,7 +47,14 @@ public class DTOMapper extends ModelMapper {
             return (D) mapDishDTOComplexToDish((DishDTOComplex) source);
         } else if (destinationType == UserPrincipleDTOSimple.class) {
             return (D) toDtoSimple((UserPrinciple) source);
-        } else {
+        } else if (destinationType == MealDTOSimple.class) {
+            return (D) toDtoSimple((Meal) source);
+        } else if (destinationType == MealDTOComplex.class) {
+            return (D) toDtoComplex((Meal) source);
+        } else if (destinationType == MealComponentDTO.class) {
+            return (D) toDto((MealComponent) source);
+        }
+        else {
             return super.map(source, destinationType);
         }
     }
@@ -169,6 +176,33 @@ public class DTOMapper extends ModelMapper {
                                 : List.of()
                 )
                 .build();
+    }
+
+    private MealDTOSimple toDtoSimple(Meal source) {
+        return new MealDTOSimple(
+                source.getId(),
+                source.getDescription(),
+                source.getDate(),
+                source.getTime());
+    }
+
+    private MealDTOComplex toDtoComplex(Meal source) {
+        return new MealDTOComplex(
+                source.getId(),
+                source.getDescription(),
+                source.getDate(),
+                source.getTime(),
+                mapList(source.getMealComponents(), MealComponentDTO.class)
+        );
+    }
+
+    private MealComponentDTO toDto(MealComponent source) {
+        return new MealComponentDTO(
+                source.getId(),
+                map(source.getFoodType(),FoodTypeDTOSimple.class),
+                map(source.getPreparationTechnique(),PreparationTechniqueDTO.class),
+                source.getVolume()
+        );
     }
 
     private UserPrincipleDTOSimple toDtoSimple(UserPrinciple source) {

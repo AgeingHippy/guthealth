@@ -1,10 +1,14 @@
 package com.ageinghippy.controller.rest;
 
+import com.ageinghippy.model.dto.MealDTOComplex;
+import com.ageinghippy.model.dto.MealDTOSimple;
 import com.ageinghippy.model.entity.Meal;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.MealService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,13 +24,13 @@ public class MealController {
     private final MealService mealService;
 
     @GetMapping
-    public List<Meal> getMeals() {
-        return mealService.getMeals();
+    public List<MealDTOSimple> getMeals(Authentication authentication) {
+        return mealService.getMeals((UserPrinciple) authentication.getPrincipal());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Meal> getMeal(@PathVariable Long id) {
-        Meal meal = mealService.getMeal(id);
+    public ResponseEntity<MealDTOComplex> getMeal(@PathVariable Long id) {
+        MealDTOComplex meal = mealService.getMeal(id);
         if (meal != null) {
             return ResponseEntity.ok(meal);
         } else {
@@ -60,13 +64,8 @@ public class MealController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMeal(@PathVariable Long id) {
-        Meal meal = mealService.getMeal(id);
-        if (meal != null) {
-            mealService.deleteMeal(meal);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        mealService.deleteMeal(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

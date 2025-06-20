@@ -1,6 +1,10 @@
 package com.ageinghippy.service;
 
+import com.ageinghippy.model.DTOMapper;
+import com.ageinghippy.model.dto.MealDTOComplex;
+import com.ageinghippy.model.dto.MealDTOSimple;
 import com.ageinghippy.model.entity.Meal;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.MealRepository;
 import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
@@ -15,13 +19,14 @@ import java.util.List;
 public class MealService {
     private final MealRepository mealRepository;
     private final EntityManager entityManager;
+    private final DTOMapper dtoMapper;
 
-    public Meal getMeal(Long id) {
-        return mealRepository.findById(id).orElse(null);
+    public MealDTOComplex getMeal(Long id) {
+        return dtoMapper.map(mealRepository.findById(id).orElseThrow(), MealDTOComplex.class);
     }
 
-    public List<Meal> getMeals() {
-        return mealRepository.findAll();
+    public List<MealDTOSimple> getMeals(UserPrinciple principle) {
+        return dtoMapper.mapList(mealRepository.findAllByPrinciple(principle), MealDTOSimple.class);
     }
 
     @Transactional
@@ -58,5 +63,10 @@ public class MealService {
 
     public void deleteMeal(Meal meal) {
         mealRepository.deleteById(meal.getId());
+    }
+
+    public void deleteMeal(Long id) {
+        Meal meal = mealRepository.findById(id).orElseThrow();
+        deleteMeal(meal);
     }
 }
