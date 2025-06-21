@@ -1,7 +1,9 @@
 package com.ageinghippy.model;
 
+import com.ageinghippy.DataSetupHelper;
 import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.*;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -10,9 +12,11 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DTOMapperTest {
 
     DTOMapper DTOMapper = new DTOMapper();
+    DataSetupHelper dsh = new DataSetupHelper();
 
     @ParameterizedTest
     @MethodSource({
@@ -25,7 +29,9 @@ class DTOMapperTest {
             "verify_map_provider_DishDTOSimple",
             "verify_map_provider_DishDTOComplex",
             "verify_map_provider_DishDTOComplex_noChildren",
-            "verify_map_provider_UserPrincipleDTOSimple"
+            "verify_map_provider_UserPrincipleDTOSimple",
+            "verify_map_provider_MealDTOSimple",
+            "verify_map_provider_MealDTOComplex"
     })
     <S, T> void verify_map(String testDescription, S source, T target, Class<T> classType) {
 
@@ -48,7 +54,9 @@ class DTOMapperTest {
             "verify_mapList_provider_DishComponentDTO",
             "verify_mapList_provider_DishDTOSimple",
             "verify_mapList_provider_DishDTOComplex",
-            "verify_mapList_provider_UserPrincipleDTOSimple"
+            "verify_mapList_provider_UserPrincipleDTOSimple",
+            "verify_mapList_provider_MealDTOSimple",
+            "verify_mapList_provider_MealDTOComplex"
     })
     <S, T> void mapList(String testDescription, List<S> sourceList, List<T> targetList, Class<T> targetClassType) {
 
@@ -1218,11 +1226,158 @@ class DTOMapperTest {
                         UserPrincipleDTOSimple.class
                 },
                 new Object[]{
-                        "Map UserPrinciple to UserPrincipleDTOSimple - empty",
+                        "Map UserPrincipleDTOSimple to UserPrinciple - not implemented",
                         List.of(),
                         List.of(),
-                        UserPrincipleDTOSimple.class
+                        UserPrinciple.class
                 }
         );
+    }
+
+    private Stream<Object[]> verify_map_provider_MealDTOSimple() {
+        return Stream.of(
+                new Object[]{
+                        "Map Meal to MealDTOSimple - with components",
+                        dsh.getMeal(1L),
+                        dsh.getMealDTOSimple(1L),
+                        MealDTOSimple.class
+                },
+                new Object[]{
+                        "Map Meal to MealDTOSimple - no components",
+                        dsh.getMeal(4L),
+                        dsh.getMealDTOSimple(4L),
+                        MealDTOSimple.class
+                }
+        );
+    }
+
+    private Stream<Object[]> verify_mapList_provider_MealDTOSimple() {
+        return Stream.of(
+                new Object[]{
+                        "Map Meal to MealDTOSimple list",
+                        List.of(
+                                dsh.getMeal(1L),
+                                dsh.getMeal(4L)
+                        ),
+                        List.of(
+                                dsh.getMealDTOSimple(1L),
+                                dsh.getMealDTOSimple(4L)
+                        ),
+                        MealDTOSimple.class
+                },
+                new Object[]{
+                        "Map Meal to MealDTOSimple - no elements",
+                        List.of(),
+                        List.of(),
+                        MealDTOSimple.class
+                }
+        );
+    }
+
+    private Stream<Object[]> verify_map_provider_MealDTOComplex() {
+        return Stream.of(
+                new Object[]{
+                        "Map Meal to MealDTOComplex - with components",
+                        dsh.getMeal(1L),
+                        dsh.getMealDTOComplex(1L),
+                        MealDTOComplex.class
+                },
+                new Object[]{
+                        "Map Meal to MealDTOComplex - no components",
+                        dsh.getMeal(4L),
+                        dsh.getMealDTOComplex(4L),
+                        MealDTOComplex.class
+                },
+                new Object[]{
+                        "Map MealDTOComplex to Meal - with components",
+                        dsh.getMealDTOComplex(1L),
+                        cloneMealAsMappedFromComplexDTO(dsh.getMeal(1L)),
+                        Meal.class
+                }
+        );
+    }
+
+    private Stream<Object[]> verify_mapList_provider_MealDTOComplex() {
+        return Stream.of(
+                new Object[]{
+                        "Map Meal List to MealDTOComplex list",
+                        List.of(
+                                dsh.getMeal(1L),
+                                dsh.getMeal(4L)
+                        ),
+                        List.of(
+                                dsh.getMealDTOComplex(1L),
+                                dsh.getMealDTOComplex(4L)
+                        ),
+                        MealDTOComplex.class
+                },
+                new Object[]{
+                        "Map Meal List to MealDTOComplex List - no elements",
+                        List.of(),
+                        List.of(),
+                        MealDTOComplex.class
+                },
+                new Object[] {
+                        "Map MealDTOComplex list to Meal List",
+                        List.of(
+                                dsh.getMealDTOComplex(1L),
+                                dsh.getMealDTOComplex(4L)
+                        ),
+                        List.of(
+                                cloneMealAsMappedFromComplexDTO(dsh.getMeal(1L)),
+                                cloneMealAsMappedFromComplexDTO(dsh.getMeal(4L))
+                        ),
+                        Meal.class
+                },
+                new Object[]{
+                        "Map MealDTOComplex list to Meal List - no elements",
+                        List.of(),
+                        List.of(),
+                        Meal.class
+                }
+        );
+    }
+
+
+    private FoodType cloneFoodTypeAsMappedFromSimpleDTO(FoodType foodType) {
+        //note FoodCategory is null
+        return FoodType.builder()
+                .id(foodType.getId())
+                .name(foodType.getName())
+                .description(foodType.getDescription())
+                .build();
+    }
+
+    private PreparationTechnique clonePreparationTechniqueAsMappedFromDTO(PreparationTechnique preparationTechnique) {
+        //note principle is null
+        return PreparationTechnique.builder()
+                .id(preparationTechnique.getId())
+                .code(preparationTechnique.getCode())
+                .description(preparationTechnique.getDescription())
+                .build();
+    }
+
+    private MealComponent cloneMealComponentAsMappedFromDTO(MealComponent mealComponent) {
+        //note Meal is null and contained entities are also truncated in some way
+        return MealComponent.builder()
+                .id(mealComponent.getId())
+                .foodType(cloneFoodTypeAsMappedFromSimpleDTO(mealComponent.getFoodType()))
+                .preparationTechnique(clonePreparationTechniqueAsMappedFromDTO(mealComponent.getPreparationTechnique()))
+                .volume(mealComponent.getVolume())
+                .build();
+    }
+
+    private Meal cloneMealAsMappedFromComplexDTO(Meal meal) {
+        //note principle is null and contained entities are also truncated in some way
+        return Meal.builder()
+                .id(meal.getId())
+                .description(meal.getDescription())
+                .date(meal.getDate())
+                .time(meal.getTime())
+                .mealComponents(meal.getMealComponents().stream()
+                        .map(this::cloneMealComponentAsMappedFromDTO)
+                        .toList()
+                )
+                .build();
     }
 }

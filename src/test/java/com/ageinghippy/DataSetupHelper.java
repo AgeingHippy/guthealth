@@ -20,7 +20,6 @@ public class DataSetupHelper {
     private Map<Long, FoodCategoryDTOSimple> foodCategoryDTOSimpleMap = new HashMap<>();
     private Map<Long, FoodCategoryDTOComplex> foodCategoryDTOComplexMap = new HashMap<>();
 
-
     private Map<Long, FoodType> foodTypeMap = new HashMap<>();
     private Map<Long, FoodTypeDTOSimple> foodTypeDTOSimpleMap = new HashMap<>();
     private Map<Long, FoodTypeDTOComplex> foodTypeDTOComplexMap = new HashMap<>();
@@ -32,6 +31,9 @@ public class DataSetupHelper {
     private Map<Long, Meal> mealMap = new HashMap<>();
     private Map<Long, MealDTOSimple> mealDTOSimpleMap = new HashMap<>();
     private Map<Long, MealDTOComplex> mealDTOComplexMap = new HashMap<>();
+
+    private Map<Long, MealComponent> mealComponentMap = new HashMap<>();
+    private Map<Long, MealComponentDTO> mealComponentDTOMap = new HashMap<>();
 
     public DataSetupHelper() {
         initialiseRoles();
@@ -318,10 +320,16 @@ public class DataSetupHelper {
     }
 
     private void initialiseMeals() {
-        initialiseMeal(1L, 2L, "Meal 1 breakfast", LocalDate.parse("2025-06-17"), LocalTime.parse("09:30"));
-        initialiseMeal(2L, 2L, "Meal 2 lunch", LocalDate.parse("2025-06-17"), LocalTime.parse("13:30"));
-        initialiseMeal(3L, 2L, "Meal 3 breakfast", LocalDate.parse("2025-06-18"), LocalTime.parse("09:00"));
-        initialiseMeal(4L, 2L, "Meal 4 lunch", LocalDate.parse("2025-06-17"), LocalTime.parse("14:00"));
+        initialiseMeal(1L, 2L, "Meal one description", LocalDate.parse("2025-06-17"), LocalTime.parse("09:30"));
+        initialiseMeal(2L, 2L, "Meal two description", LocalDate.parse("2025-06-17"), LocalTime.parse("13:30"));
+        initialiseMeal(3L, 2L, "Meal three description", LocalDate.parse("2025-06-18"), LocalTime.parse("09:00"));
+        initialiseMeal(4L, 2L, "Meal four description", LocalDate.parse("2025-06-17"), LocalTime.parse("14:00"));
+
+        initialiseMealComponents();
+
+        addMealComponentsToMeals();
+
+        initialiseMealDTOMaps();
     }
 
     private void initialiseMeal(Long id, Long userPrincipleId, String description, LocalDate date, LocalTime time) {
@@ -332,14 +340,64 @@ public class DataSetupHelper {
                         .description(description)
                         .date(date)
                         .time(time)
-                        .mealComponents(List.of()) //todo
+                        .mealComponents(new ArrayList<>())
+                        .build()
+        );
+    }
+
+    private void initialiseMealComponents() {
+        initialiseMealComponent(1L, 1L, 1L, 1L, 100);
+        initialiseMealComponent(2L, 1L, 2L, 1L, 100);
+        initialiseMealComponent(3L, 1L, 3L, 1L, 1);
+
+        initialiseMealComponent(4L, 2L, 3L, 2L, 200);
+        initialiseMealComponent(5L, 2L, 4L, 2L, 200);
+
+        initialiseMealComponent(6L, 3L, 5L, 3L, 100);
+        initialiseMealComponent(7L, 3L, 6L, 4L, 200);
+    }
+
+    private void initialiseMealComponent(Long id, Long mealId, Long foodTypeId, Long preparationTechniqueId, int volume) {
+        mealComponentMap.put(id,
+                MealComponent.builder()
+                        .id(id)
+                        .meal(mealMap.get(mealId))
+                        .foodType(foodTypeMap.get(foodTypeId))
+                        .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueId))
+                        .volume(volume)
                         .build()
         );
 
-        mealDTOSimpleMap.put(id, new MealDTOSimple(id, description, date, time));
-
-        mealDTOComplexMap.put(id,
-                new MealDTOComplex(id,description,date, time, List.of()));
+        mealComponentDTOMap.put(id,
+                new MealComponentDTO(
+                        id,
+                        foodTypeDTOSimpleMap.get(foodTypeId),
+                        preparationTechniqueDTOMap.get(preparationTechniqueId),
+                        volume));
     }
+
+    private void addMealComponentsToMeals() {
+        mealMap.values().forEach(meal -> {
+            mealComponentMap.values()
+                    .stream()
+                    .filter(mealComponent -> Objects.equals(mealComponent.getMeal().getId(), meal.getId()))
+                    .forEach(mealComponent -> meal.getMealComponents().add(mealComponent));
+        });
+    }
+
+    private void initialiseMealDTOMaps() {
+        mealMap.values().forEach(meal -> {
+            mealDTOSimpleMap.put(meal.getId(), new MealDTOSimple(meal.getId(), meal.getDescription(), meal.getDate(), meal.getTime()));
+
+            List<MealComponentDTO> mealComponentDTOList = new ArrayList<>();
+            meal.getMealComponents().forEach(mealComponent -> {
+                mealComponentDTOList.add( mealComponentDTOMap.get(mealComponent.getId()));
+            });
+
+            mealDTOComplexMap.put(meal.getId(),
+                    new MealDTOComplex(meal.getId(), meal.getDescription(), meal.getDate(), meal.getTime(), mealComponentDTOList));
+        });
+    }
+
 
 }

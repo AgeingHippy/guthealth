@@ -40,7 +40,7 @@ public class PreparationTechnique implements Serializable {
     public String toString() {
         return "PreparationTechnique{" +
                "id=" + id +
-               "code='" + code + '\'' +
+               ", code='" + code + '\'' +
                ", description='" + description + '\'' +
                '}';
     }
