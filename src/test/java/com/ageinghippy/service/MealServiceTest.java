@@ -90,5 +90,6 @@ public class MealServiceTest {
 
         assertEquals(expected,result);
 
+        verify(mealRepository,times(1)).findById(1L);
     }
 }
