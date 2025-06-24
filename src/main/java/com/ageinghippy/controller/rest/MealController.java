@@ -5,9 +5,11 @@ import com.ageinghippy.model.dto.MealDTOSimple;
 import com.ageinghippy.model.entity.Meal;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.MealService;
+import com.ageinghippy.service.UserPrincipleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,6 +24,7 @@ import java.util.NoSuchElementException;
 public class MealController {
 
     private final MealService mealService;
+    private final UserPrincipleService userPrincipleService;
 
     @GetMapping
     public List<MealDTOSimple> getMeals(Authentication authentication) {
@@ -39,24 +42,28 @@ public class MealController {
     }
 
     @PostMapping
-    public ResponseEntity<Meal> postMeal(@Valid @RequestBody Meal meal) {
-        if (meal.getId() != null) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<MealDTOComplex> postMeal(@Valid @RequestBody MealDTOComplex meal, Authentication authentication) {
+        if (meal.id() != null) {
             throw new IllegalArgumentException("Food Type ID cannot be specified on new record");
         }
-        meal = mealService.createMeal(meal);
+        MealDTOComplex newMeal = mealService.createMeal(meal,userPrincipleService.castToUserPrinciple(authentication.getPrincipal()));
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(meal.getId())
+                .buildAndExpand(newMeal.id())
                 .toUri();
-        return ResponseEntity.created(location).body(meal);
+        return ResponseEntity.created(location).body(newMeal);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Meal> putMeal(@RequestBody Meal meal, @PathVariable Long id) {
+    public ResponseEntity<MealDTOComplex> putMeal(@RequestBody MealDTOSimple meal, @PathVariable Long id) {
+        if (!id.equals(meal.id())) {
+            throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
+        }
         try {
-            meal = mealService.updateMeal(id, meal);
-            return ResponseEntity.ok(meal);
+            MealDTOComplex updatedMeal = mealService.updateMeal(id, meal);
+            return ResponseEntity.ok(updatedMeal);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }

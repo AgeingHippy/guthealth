@@ -348,7 +348,7 @@ public class DataSetupHelper {
     private void initialiseMealComponents() {
         initialiseMealComponent(1L, 1L, 1L, 1L, 100);
         initialiseMealComponent(2L, 1L, 2L, 1L, 100);
-        initialiseMealComponent(3L, 1L, 3L, 1L, 1);
+        initialiseMealComponent(3L, 1L, 3L, 1L, 100);
 
         initialiseMealComponent(4L, 2L, 3L, 2L, 200);
         initialiseMealComponent(5L, 2L, 4L, 2L, 200);

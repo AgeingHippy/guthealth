@@ -30,13 +30,27 @@ public class MealService {
     }
 
     @Transactional
-    public Meal createMeal(Meal meal) {
-        meal.getMealComponents().forEach(mealComponent -> mealComponent.setMeal(meal));
-        return saveMeal(meal);
+    public MealDTOComplex createMeal(MealDTOSimple newMeal, UserPrinciple principle) {
+        Meal meal = dtoMapper.map(newMeal, Meal.class);
+        meal.setPrinciple(principle);
+
+        return dtoMapper.map(saveMeal(meal),MealDTOComplex.class);
     }
 
     @Transactional
-    public Meal saveMeal(Meal meal) {
+    public MealDTOComplex createMeal(MealDTOComplex newMeal, UserPrinciple principle) {
+        Meal meal = dtoMapper.map(newMeal, Meal.class);
+        meal.setPrinciple(principle);
+
+        for (int i = 0; i < meal.getMealComponents().size(); i++) {
+            meal.getMealComponents().get(i).setMeal(meal);
+        }
+
+        return dtoMapper.map(saveMeal(meal),MealDTOComplex.class);
+    }
+
+    @Transactional
+    private Meal saveMeal(Meal meal) {
         meal = mealRepository.save(meal);
         entityManager.flush();
         entityManager.refresh(meal);
@@ -47,24 +61,25 @@ public class MealService {
      * Updates the meal identified by the provided id with non-null values as provided in updateMeal
      *
      * @param id         The id of the {@code Meal} to update
-     * @param updateMeal the {@code Meal} containing updated values
-     * @return the updated {@code Meal}
+     * @param updateMeal the {@code MealDTOSimple} containing updated values
+     * @return the updated {@code MealDTOComplex}
      * @throws java.util.NoSuchElementException if the Meal with the provided id does not exist
      */
     @Transactional
-    public Meal updateMeal(Long id, Meal updateMeal) {
+    public MealDTOComplex updateMeal(Long id, MealDTOSimple updateMeal) {
         Meal meal = mealRepository.findById(id).orElseThrow();
-        meal.setDate(Util.valueIfNull(updateMeal.getDate(), meal.getDate()));
-        meal.setTime(Util.valueIfNull(updateMeal.getTime(), meal.getTime()));
-        //todo - add support for mealComponents
+        meal.setDescription(Util.valueIfNull(updateMeal.description(), meal.getDescription()));
+        meal.setDate(Util.valueIfNull(updateMeal.date(), meal.getDate()));
+        meal.setTime(Util.valueIfNull(updateMeal.time(), meal.getTime()));
 
-        return saveMeal(meal);
+        return dtoMapper.map(saveMeal(meal),MealDTOComplex.class);
     }
 
-    public void deleteMeal(Meal meal) {
+    private void deleteMeal(Meal meal) {
         mealRepository.deleteById(meal.getId());
     }
 
+    @Transactional
     public void deleteMeal(Long id) {
         Meal meal = mealRepository.findById(id).orElseThrow();
         deleteMeal(meal);

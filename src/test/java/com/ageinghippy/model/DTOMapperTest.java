@@ -1247,6 +1247,12 @@ class DTOMapperTest {
                         dsh.getMeal(4L),
                         dsh.getMealDTOSimple(4L),
                         MealDTOSimple.class
+                },
+                new Object[]{
+                        "Map MealDTOSimple to Meal",
+                        dsh.getMealDTOSimple(1L),
+                        cloneMealAsMappedFromSimpleDTO(dsh.getMeal(1L)),
+                        Meal.class
                 }
         );
     }
@@ -1317,7 +1323,7 @@ class DTOMapperTest {
                         List.of(),
                         MealDTOComplex.class
                 },
-                new Object[] {
+                new Object[]{
                         "Map MealDTOComplex list to Meal List",
                         List.of(
                                 dsh.getMealDTOComplex(1L),
@@ -1378,6 +1384,15 @@ class DTOMapperTest {
                         .map(this::cloneMealComponentAsMappedFromDTO)
                         .toList()
                 )
+                .build();
+    }
+
+    private Meal cloneMealAsMappedFromSimpleDTO(Meal meal) {
+        return Meal.builder()
+                .id(meal.getId())
+                .description(meal.getDescription())
+                .date(meal.getDate())
+                .time(meal.getTime())
                 .build();
     }
 }

@@ -87,8 +87,8 @@ public class DishService {
      * Updates the dish identified by the provided id with non-null values as provided in updateDish
      *
      * @param id         The id of the {@code Dish} to update
-     * @param updateDish the {@code Dish} containing updated values
-     * @return the updated {@code Dish}
+     * @param updateDish the {@code DishDTOSimple} containing updated values
+     * @return the updated {@code DishDTOComplex}
      * @throws java.util.NoSuchElementException if the Dish with the provided id does not exist
      */
     @Transactional

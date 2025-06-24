@@ -207,13 +207,12 @@ ALTER TABLE `dish_component` AUTO_INCREMENT=28;
 /*!40000 ALTER TABLE `meal` DISABLE KEYS */;
 INSERT
 INTO `meal`
-    (id, principle_id, date, time)
+    (id, principle_id, description, date, time)
 VALUES
-    (1, 2,'2024-12-02','20:15:00'),
-    (2, 2,'2024-12-20','13:30:00'),
-    (3, 2,'2024-12-03','21:30:00'),
-    (4, 2,'2024-12-08','13:00:00'),
-    (5, 2,'2024-12-08','14:00:00');
+    (1, 2,'Meal one description','2024-12-02','20:15:00'),
+    (2, 2,'Meal two description','2024-12-20','13:30:00'),
+    (3, 2,'Meal three description','2024-12-03','21:30:00'),
+    (4, 2,'Meal four description','2024-12-08','13:00:00');
 /*!40000 ALTER TABLE `meal` ENABLE KEYS */;
 
 ALTER TABLE `meal`AUTO_INCREMENT=6;
@@ -227,28 +226,18 @@ INSERT
 INTO `meal_component`
     (id, meal_id, food_type_id, preparation_technique_id, volume)
 VALUES
-    (1,1,1,1,200),
-    (2,1,2,1,200),
-    (3,1,3,1,200),
-    (4,1,4,1,200),
+    (1,1,1,1,100),
+    (2,1,2,1,100),
+    (3,1,3,1,100),
 
-    (5,2,1,1,100),
-    (6,2,2,1,100),
-    (7,2,3,1,100),
-    (8,2,4,1,100),
-    (9,2,1,3,200),
-    (10,2,5,3,200),
+    (4,1,3,2,200),
+    (5,1,4,2,200),
 
-    (11,3,15,2,1000),
-
-    (12,4,1,1,100),
-    (13,4,10,3,500),
-    (14,4,15,2,200),
-
-    (15,5,11,2, 2000);
+    (6,1,5,3,100),
+    (7,1,6,4,200);
 /*!40000 ALTER TABLE `meal_component` ENABLE KEYS */;
 
-ALTER TABLE `meal_component` AUTO_INCREMENT=44;
+ALTER TABLE `meal_component` AUTO_INCREMENT=8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -258,5 +247,5 @@ ALTER TABLE `meal_component` AUTO_INCREMENT=44;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-28 13:51:46
+
 
