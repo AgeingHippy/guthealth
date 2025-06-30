@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal List</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+    <p/>
+    <h1>Meal</h1>
+    <p/>
+    <p>The parent record of a given meal. Note that a meal need not only involve food. It can be completely fluid based, for example a night out on the town. Alcohol consumption can also influence your gut health and therefore is worth tracking.</p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="meal : ${meals}">
+            <td th:text="${meal.id}">></td>
+            <td th:text="${meal.description}"></td>
+            <td th:text="${meal.date}"></td>
+            <td th:text="${meal.time}"></td>
+            <td>
+                <a th:href="@{'/meal/edit/' + ${meal.id}}" class="icon-link">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{'/meal/delete/' + ${meal.id}}" class="icon-link">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{'/meal/view/' + ${meal.id}}" class="icon-link">
+                    <i class="bi bi-eye"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a sec:authorize="hasRole('ROLE_USER')" th:href="@{'/dish/new'}">
+        <button type="button" class="col-3 btn btn-primary">Add New</button>
+    </a>
+
+</div>
+
+</body>
+</html>

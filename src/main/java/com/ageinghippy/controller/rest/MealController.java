@@ -32,6 +32,7 @@ public class MealController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Meal','read')")
     public ResponseEntity<MealDTOComplex> getMeal(@PathVariable Long id) {
         MealDTOComplex meal = mealService.getMeal(id);
         if (meal != null) {
@@ -57,6 +58,7 @@ public class MealController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Meal','edit')")
     public ResponseEntity<MealDTOComplex> putMeal(@RequestBody MealDTOSimple meal, @PathVariable Long id) {
         if (!id.equals(meal.id())) {
             throw new IllegalArgumentException("The id specified in the request body must match the value specified in the url");
@@ -70,6 +72,7 @@ public class MealController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'Meal','delete')")
     public ResponseEntity<String> deleteMeal(@PathVariable Long id) {
         mealService.deleteMeal(id);
         return ResponseEntity.noContent().build();

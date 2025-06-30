@@ -26,6 +26,9 @@
                     <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">
                         <a class="nav-link" th:href="@{/dish}">Dish</a>
                     </li>
+                    <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">
+                        <a class="nav-link" th:href="@{/meal}">Meal</a>
+                    </li>
                     <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                         <a class="nav-link" th:href="@{/user}">User Maintenance</a>
                     </li>
