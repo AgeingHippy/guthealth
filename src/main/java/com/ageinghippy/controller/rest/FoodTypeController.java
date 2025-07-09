@@ -25,7 +25,7 @@ public class FoodTypeController {
     private final FoodTypeService foodTypeService;
     private final UserPrincipleService userPrincipleService;
 
-    @GetMapping("/all")
+    @GetMapping("/principle")
     public List<FoodTypeDTOComplex> getAllFoodTypes(Authentication authentication) {
         UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
         return foodTypeService.getFoodTypesByPrinciple(principle);

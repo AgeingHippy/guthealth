@@ -333,7 +333,7 @@ public class FoodTypeControllerIT {
                 dsh.getFoodTypeDTOComplex(15L)
         );
 
-        MvcResult result = mockMvc.perform(get(baseUrl + "/all"))
+        MvcResult result = mockMvc.perform(get(baseUrl + "/principle"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
