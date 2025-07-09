@@ -2,11 +2,14 @@ package com.ageinghippy.controller.rest;
 
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.FoodTypeService;
+import com.ageinghippy.service.UserPrincipleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,6 +23,13 @@ import java.util.NoSuchElementException;
 public class FoodTypeController {
 
     private final FoodTypeService foodTypeService;
+    private final UserPrincipleService userPrincipleService;
+
+    @GetMapping("/all")
+    public List<FoodTypeDTOComplex> getAllFoodTypes(Authentication authentication) {
+        UserPrinciple principle = userPrincipleService.castToUserPrinciple(authentication.getPrincipal());
+        return foodTypeService.getFoodTypesByPrinciple(principle);
+    }
 
     @GetMapping
     @PreAuthorize("hasPermission(#foodCategoryId,'FoodCategory','read')")

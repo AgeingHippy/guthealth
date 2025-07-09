@@ -7,6 +7,7 @@ import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodCategory;
 import com.ageinghippy.model.entity.FoodType;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
 import jakarta.persistence.EntityManager;
@@ -263,5 +264,50 @@ class FoodTypeServiceTest {
 
         verify(foodTypeCache, times(1)).evictIfPresent("foodCategoryId=1");
         verify(foodCategoryCache, times(1)).evictIfPresent(1L);
+    }
+
+    @Test
+    void getAllFoodTypesByPrinciple() {
+        UserPrinciple principle = dsh.getPrinciple("basic");
+        List<FoodType> foodTypes = List.of (
+                dsh.getFoodType(1L),
+                dsh.getFoodType(2L),
+                dsh.getFoodType(3L),
+                dsh.getFoodType(4L),
+                dsh.getFoodType(5L),
+                dsh.getFoodType(6L),
+                dsh.getFoodType(7L),
+                dsh.getFoodType(8L),
+                dsh.getFoodType(9L),
+                dsh.getFoodType(10L),
+                dsh.getFoodType(11L),
+                dsh.getFoodType(12L),
+                dsh.getFoodType(13L),
+                dsh.getFoodType(14L),
+                dsh.getFoodType(15L)
+        );
+        List<FoodTypeDTOComplex> foodTypeDTOComplexList = List.of (
+                dsh.getFoodTypeDTOComplex(1L),
+                dsh.getFoodTypeDTOComplex(2L),
+                dsh.getFoodTypeDTOComplex(3L),
+                dsh.getFoodTypeDTOComplex(4L),
+                dsh.getFoodTypeDTOComplex(5L),
+                dsh.getFoodTypeDTOComplex(6L),
+                dsh.getFoodTypeDTOComplex(7L),
+                dsh.getFoodTypeDTOComplex(8L),
+                dsh.getFoodTypeDTOComplex(9L),
+                dsh.getFoodTypeDTOComplex(10L),
+                dsh.getFoodTypeDTOComplex(11L),
+                dsh.getFoodTypeDTOComplex(12L),
+                dsh.getFoodTypeDTOComplex(13L),
+                dsh.getFoodTypeDTOComplex(14L),
+                dsh.getFoodTypeDTOComplex(15L)
+        );
+
+        when(foodTypeRepository.findAllByPrincipleId(principle.getId())).thenReturn(foodTypes);
+
+        List<FoodTypeDTOComplex> result = foodTypeService.getFoodTypesByPrinciple(principle);
+
+        verify(foodTypeRepository,times(1)).findAllByPrincipleId(principle.getId());
     }
 }

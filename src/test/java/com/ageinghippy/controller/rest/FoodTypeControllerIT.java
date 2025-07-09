@@ -1,5 +1,6 @@
 package com.ageinghippy.controller.rest;
 
+import com.ageinghippy.DataSetupHelper;
 import com.ageinghippy.GutHealthApplication;
 import com.ageinghippy.model.dto.FoodCategoryDTOSimple;
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
@@ -49,13 +50,14 @@ public class FoodTypeControllerIT {
     EntityManager entityManager;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final DataSetupHelper dsh = new DataSetupHelper();
 
     private final String baseUrl = "/api/v1/food-types";
 
     @Test
     @Order(1)
     void getAll() throws Exception {
-        MvcResult result = mockMvc.perform(get(baseUrl +"?foodCategoryId=1"))
+        MvcResult result = mockMvc.perform(get(baseUrl + "?foodCategoryId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -111,6 +113,7 @@ public class FoodTypeControllerIT {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
 
     @Test
     void create_success() throws Exception {
@@ -307,5 +310,39 @@ public class FoodTypeControllerIT {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(5)
+    void getAllFoodTypesForPrinciple() throws Exception {
+        List<FoodTypeDTOComplex> expected = List.of(
+                dsh.getFoodTypeDTOComplex(1L),
+                dsh.getFoodTypeDTOComplex(2L),
+                dsh.getFoodTypeDTOComplex(3L),
+                dsh.getFoodTypeDTOComplex(4L),
+                dsh.getFoodTypeDTOComplex(5L),
+                dsh.getFoodTypeDTOComplex(6L),
+                dsh.getFoodTypeDTOComplex(7L),
+                dsh.getFoodTypeDTOComplex(8L),
+                dsh.getFoodTypeDTOComplex(9L),
+                dsh.getFoodTypeDTOComplex(10L),
+                dsh.getFoodTypeDTOComplex(11L),
+                dsh.getFoodTypeDTOComplex(12L),
+                dsh.getFoodTypeDTOComplex(13L),
+                dsh.getFoodTypeDTOComplex(14L),
+                dsh.getFoodTypeDTOComplex(15L)
+        );
+
+        MvcResult result = mockMvc.perform(get(baseUrl + "/all"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        List<FoodTypeDTOComplex> resultList =
+                objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                });
+
+        assertEquals(expected,resultList);
     }
 }

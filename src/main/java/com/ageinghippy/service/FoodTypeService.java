@@ -4,6 +4,7 @@ import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodTypeDTOComplex;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.entity.FoodType;
+import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.repository.FoodCategoryRepository;
 import com.ageinghippy.repository.FoodTypeRepository;
 import com.ageinghippy.util.Util;
@@ -14,6 +15,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +86,7 @@ public class FoodTypeService {
     protected void deleteFoodType(FoodType foodType) {
         foodTypeRepository.deleteById(foodType.getId());
         evictFoodTypeListCacheForFoodCategory(foodType.getFoodCategory().getId());
+        evictFoodTypeListCacheForCurrentPrinciple();
     }
 
     @CacheEvict(value = "foodTypeList", key = "'foodCategoryId=' + #foodType.foodCategory.id")
@@ -92,6 +95,7 @@ public class FoodTypeService {
         entityManager.flush();
         entityManager.refresh(foodType);
 
+        evictFoodTypeListCacheForCurrentPrinciple();
         return foodType;
     }
 
@@ -103,6 +107,19 @@ public class FoodTypeService {
         }
         if (foodCategoryCache != null) {
             foodCategoryCache.evictIfPresent(foodCategoryId);
+        }
+    }
+
+    @Cacheable(value = "foodTypeList", key = "'principleId=' + #principle.id")
+    public List<FoodTypeDTOComplex> getFoodTypesByPrinciple(UserPrinciple principle) {
+        return dtoMapper.mapList(foodTypeRepository.findAllByPrincipleId(principle.getId()), FoodTypeDTOComplex.class);
+    }
+
+    private void evictFoodTypeListCacheForCurrentPrinciple() {
+        Cache cache =cacheManager.getCache("foodTypeList");
+        if (cache != null) {
+            UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            cache.evictIfPresent("principleId=" + userPrinciple.getId());
         }
     }
 }
