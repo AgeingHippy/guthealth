@@ -75,7 +75,7 @@ public class DishViewController {
     }
 
     @GetMapping("/edit/{id}")
-    @PreAuthorize("hasPermission(#id,'Dish','read')")
+    @PreAuthorize("hasPermission(#id,'Dish','update')")
     public String showDishEditView(Model model, @PathVariable Long id) {
         if (!model.containsAttribute("dish")) {
             DishDTOComplex dish = dishService.getDish(id);

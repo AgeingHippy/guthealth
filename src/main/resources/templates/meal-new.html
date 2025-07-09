@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal - create</title>
+</head>
+<body>
+
+    <div layout:fragment="content" th:remove="tag">
+
+        <div class="container">
+            <p/>
+            <h1>Create new Meal</h1>
+            <p/>
+
+            <div id="mealDetail">
+                <form th:action="@{'/meal/create'}"
+                      th:object="${meal}" method="post">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Description:</span>
+                        <input type="text" class="form-control" id="description" th:field="*{description}" required>
+                        <div class="invalid-feedback">This field is required</div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Date:</span>
+                        <input type="date" class="form-control" id="date" th:field="*{date}" required>
+                        <div class="invalid-feedback">This field is required</div>
+                    </div>
+                    <div class="input-group mb-3">
+                    <span class="input-group-text">Time:</span>
+                            <input type="time" class="form-control" id="time" th:field="*{time}" required>
+                            <div class="invalid-feedback">This field is required</div>
+                    </div>
+                    <button class="col-3 btn btn-primary" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            window.onload = function () {
+                initialiseDateAndTimeIfNotSet();
+            }
+
+            function initialiseDateAndTimeIfNotSet() {
+                const now = new Date();
+                if(document.getElementById("date").value == '') {
+                    document.getElementById("date").value = now.toISOString().slice(0, 10);
+                    document.getElementById("time").value = now.toTimeString().slice(0,5);
+                }
+            }
+        </script>
+    </div>
+
+</body>
+</html>

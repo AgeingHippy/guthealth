@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal - edit</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div class="container">
+        <p/>
+        <h1>Meal</h1>
+        <p/>
+
+        <div id="mealDetail">
+            <form th:action="@{'/meal/update/' + ${meal.id}}"
+                  th:object="${meal}" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ID:</span>
+                    <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Description:</span>
+                    <input type="text" class="form-control" id="description" th:field="*{description}" required>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Date:</span>
+                    <input type="date" class="form-control" id="date" th:field="*{date}" required>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Time:</span>
+                    <input type="time" class="form-control" id="time" th:field="*{time}" required>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
+            </form>
+        </div>
+
+        <p/>
+        <h4>Meal Components</h4>
+        <p/>
+
+        <div id="mealComponentsDetail">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Food Type</th>
+                        <th>Preparation Technique</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="mealComponent : ${meal.mealComponents}">
+                        <td th:text="${mealComponent.id}">></td>
+                        <td th:text="${mealComponent.foodType.name}"></td>
+                        <td th:text="${mealComponent.preparationTechnique.code}"></td>
+                        <td th:text="${mealComponent.volume}"></td>
+                        <td>
+                            <a th:href="@{'/meal-component/edit/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}" class="icon-link">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{'/meal-component/delete/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}" class="icon-link">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{'/meal-component/new?mealId=' + ${meal.id}}">
+                <button type="button" class="col-3 btn btn-primary">Add New</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+    </script>
+
+</div>
+
+</body>
+</html>

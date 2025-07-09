@@ -92,4 +92,16 @@ public class MealViewControllerTest {
         verify(mealService, times(1)).getMeal(1L);
     }
 
+    @Test
+    @WithMockUser(username = "basic", roles = "USER")
+    void showCreateMealView() throws Exception {
+        MealDTOSimple mealDTOSimple = new MealDTOSimple(null,null,null,null);
+
+        mockMvc.perform(get(rootUri + "/new"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("meal-new"))
+                .andExpect(model().attributeExists("meal"))
+                .andExpect(model().attribute("meal", mealDTOSimple));
+    }
 }
