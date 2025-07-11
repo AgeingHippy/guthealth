@@ -49,7 +49,7 @@ public class MealViewController {
                     new MealDTOSimple(null, null, null,null));
         }
 
-        return "/meal-new";
+        return "meal-new";
     }
 
     @PostMapping("/create")
@@ -77,7 +77,7 @@ public class MealViewController {
             model.addAttribute("meal", meal);
         }
 
-        return "/meal-edit";
+        return "meal-edit";
     }
 
 }
