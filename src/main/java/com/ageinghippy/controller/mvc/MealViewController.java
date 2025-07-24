@@ -80,4 +80,37 @@ public class MealViewController {
         return "meal-edit";
     }
 
+    @PostMapping("/update/{id}")
+    @PreAuthorize("hasPermission(#id,'Meal','update')")
+    public String updateMeal(@ModelAttribute MealDTOSimple meal,
+                             @PathVariable Long id,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            mealService.updateMeal(id, meal);
+            redirectAttributes.addFlashAttribute("successMessage", "Meal updated successfully");
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "Meal update failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("meal",
+                    new MealDTOComplex(meal.id(),  meal.description(), meal.date(), meal.time(),
+                            mealService.getMeal(meal.id()).mealComponents()));
+        }
+
+        return "redirect:/meal/edit/" + id;
+    }
+
+    @RequestMapping("/delete/{id}")
+    @PreAuthorize("hasPermission(#id,'Meal','delete')")
+    public String deleteMeal(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            mealService.deleteMeal(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Meal deleted successfully");
+        } catch (Exception e) {
+            String errorMessage = e.getClass().getSimpleName() + " - " + "Meal delete failed.";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        }
+
+        return "redirect:/meal";
+    }
+
 }
