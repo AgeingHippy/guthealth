@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Meal Component</title>
+</head>
+<body>
+
+<div layout:fragment="content" th:remove="tag">
+
+    <div>
+
+        <p/>
+        <p> New meal component for <span th:text="${meal.description}"></span></p>
+        <p/>
+
+        <form th:action="@{'/meal-component/create?mealId=' + ${meal.id}}"
+              method="post"
+              th:object="${mealComponent}">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Food Category:</span>
+                <select class="form-select" id="foodCategory.id"
+                        name="foodCategory.id">
+<!--                        <option value=""></option>-->
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Food Type:</span>
+                <select class="form-select" id="foodType.id"
+                        th:field="*{foodType.id}" required>
+<!--                        <option value=""></option>-->
+                </select>
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Preparation Technique:</span>
+                <select class="form-select" id="preparationTechnique.id"
+                        th:field="*{preparationTechnique.id}" required>
+                    <!--                        <option value=""></option>-->
+                </select>
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Volume:</span>
+                <input type="number"  min="0" step="1" class="form-control" id="volume"
+                       th:field="*{volume}" required="true">
+                <div class="invalid-feedback">This field is required</div>
+            </div>
+
+            <div>
+                <button class="col-3 btn btn-primary" type="submit">Save</button>
+            </div>
+        </form>
+
+        <script>
+            async function changeFoodCategory() {
+                let foodCategoryId = document.getElementById("foodCategory.id").value;
+                let foodTypes = [];
+                if (foodCategoryId) {
+                    foodTypes = await fetchSelectOptions(`${foodTypesUri}?foodCategoryId=${foodCategoryId}`);
+                }
+                buildSelectOptions("foodType.id", foodTypes, "id", "name", true);
+            }
+
+             async function initialiseFoodCategorySelect() {
+                let foodCategories = await fetchSelectOptions(foodCategoriesUri);
+                buildSelectOptions("foodCategory.id",foodCategories, "id","name",true);
+            }
+
+            async function initialisePreparationTechniqueSelect() {
+                let preparationTechniques = await fetchSelectOptions(preparationTechniquesUri);
+                buildSelectOptions("preparationTechnique.id",preparationTechniques, "id","code",true);
+            }
+
+            window.onload = function () {
+                initialiseFoodCategorySelect();
+                initialisePreparationTechniqueSelect();
+            }
+
+            document.getElementById("foodCategory.id").addEventListener("change", changeFoodCategory);
+
+        </script>
+
+    </div>
+
+
+</div>
+
+</body>
+</html>
