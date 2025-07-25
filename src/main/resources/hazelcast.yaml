@@ -2,4 +2,8 @@ hazelcast:
   network:
     join:
       multicast:
+        enabled: false
+      tcp-ip:
         enabled: true
+        member-list:
+          - 127.0.0.1
