@@ -11,7 +11,6 @@
 const preparationTechniquesUri = contextPath + "api/v1/preparation-techniques";
 const foodCategoriesUri = contextPath + "api/v1/food-categories";
 const foodTypesUri = contextPath + "api/v1/food-types";
-const tasksUri = contextPath + "api/v1/tasks";
 const testUri = contextPath + "test/time";
 const userPasswordUri = contextPath + "api/v1/users/password";
 const userRegisterUri = contextPath + "api/v1/users/register";

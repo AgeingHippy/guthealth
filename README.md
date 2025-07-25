@@ -68,7 +68,7 @@ GutHealth is a Java 21 Spring Boot application using:
 - H2 in memory database (for testing and as an available profile for quick development without a database)
 - Flyway
 - MySQL is used as the persistent repository
-- CodingNomads TaskList API at http://demo.codingnomads.co:8080/tasks_api/swagger-ui/index.html
+- ~~CodingNomads TaskList API at http://demo.codingnomads.co:8080/tasks_api/swagger-ui/index.html~~
 
 # Change Log
 
@@ -91,18 +91,18 @@ GutHealth is a Java 21 Spring Boot application using:
 - Modify preparationTechnique dropdown in Dish views to work with new data structure
 - Add logging of SYSTEM data copy and new user registration using AOP
 - 3rd Party API integration to fetch GitHub OAuth2 authenticated user's email address
-- 3rd Party API integration - Implement task list for users
+- ~~3rd Party API integration - Implement task list for users~~ removed
 - Implement FlyWay to initialise database
 - AWS deployment prior to submitting to CodingNomads for certificate application
 - Admin user maintenance
 
 ## Current phase:
 - Meal MVC
-- [] Repository
+- [x] Repository
 - [x] Meal Service
 - [] Meal REST API
-- [] Meal based permissions
-- [] Meal Views
+- [x] Meal based permissions
+- [x] Meal Views
 
 ## Future Phases
 - remove disabling of CSRF and test

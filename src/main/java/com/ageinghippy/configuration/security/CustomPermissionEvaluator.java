@@ -15,6 +15,7 @@ import java.util.Optional;
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private final MealRepository mealRepository;
+    private final MealComponentRepository mealComponentRepository;
     private final DishRepository dishRepository;
     private final DishComponentRepository dishComponentRepository;
     private final FoodCategoryRepository foodCategoryRepository;
@@ -55,6 +56,13 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                     return true;
                 }
                 return meal.get().getPrinciple().getUsername().equals(userPrinciple.getUsername());
+
+            case "MealComponent":
+                Optional<MealComponent> mealComponent = mealComponentRepository.findById(Long.parseLong(targetId.toString()));
+                if (mealComponent.isEmpty()) {
+                    return true;
+                }
+                return mealComponent.get().getMeal().getPrinciple().getUsername().equals(userPrinciple.getUsername());
 
             case "Dish":
                 Optional<Dish> dish = dishRepository.findById(Long.parseLong(targetId.toString()));

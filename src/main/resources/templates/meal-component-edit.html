@@ -16,7 +16,7 @@
         <p> Edit meal component for <span th:text="${meal.description}"></span></p>
         <p/>
 
-        <form th:action="@{'/meal-component/create?mealId=' + ${meal.id}}"
+        <form th:action="@{'/meal-component/update/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}"
               method="post"
               th:object="${mealComponent}">
 
@@ -41,7 +41,7 @@
                 <span class="input-group-text">Preparation Technique:</span>
                 <select class="form-select" id="preparationTechnique.id"
                         th:field="*{preparationTechnique.id}" required>
-                    <!--                        <option value=""></option>-->
+<!--                        <option value=""></option>-->
                 </select>
                 <div class="invalid-feedback">This field is required</div>
             </div>

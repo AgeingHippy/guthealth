@@ -4,6 +4,7 @@ import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.MealComponentDTO;
 import com.ageinghippy.model.entity.MealComponent;
 import com.ageinghippy.repository.*;
+import com.ageinghippy.util.Util;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,18 @@ public class MealComponentService {
 
     @Transactional
     public MealComponentDTO updateMealComponent(Long id, MealComponentDTO updatedMealComponent) {
-        MealComponent mealComponent = dtoMapper.map(updatedMealComponent, MealComponent.class);
+        MealComponent mealComponent = mealComponentRepository.findById(id).orElseThrow();
+
+        if ( updatedMealComponent.foodType().id() != null) {
+            mealComponent.setFoodType(foodTypeRepository.findById(updatedMealComponent.foodType().id()).orElseThrow());
+        }
+        if (updatedMealComponent.preparationTechnique().id() != null) {
+            mealComponent.setPreparationTechnique(
+                    preparationTechniqueRepository.findById(
+                            updatedMealComponent.preparationTechnique().id()).orElseThrow());
+        }
+        mealComponent.setVolume(Util.valueIfNull(updatedMealComponent.volume(), mealComponent.getVolume()));
+
         return dtoMapper.map(saveMealComponent(mealComponent),MealComponentDTO.class);
     }
 
