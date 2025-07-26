@@ -45,36 +45,62 @@
         <h4>Meal Components</h4>
         <p/>
 
-        <div id="mealComponentsDetail">
+        <div>
+            <button type="button" class="full-width btn btn-warning" id="button-show-mealComponentsFromDish" href="#">
+                Populate Meal components from a dish
+            </button>
+        </div>
+        <br>
 
-            <div>PLACEHOLDER LINK TO CREATE COMPONENTS FROM MEAL HERE</div>
+        <div id="mealComponentsFromDish" hidden>
+            <form th:action="@{'/meal-component/add?mealId=' + ${meal.id}}" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Dish:</span>
+                    <select class="form-select" id="dishId"
+                            name="dishId">
+                        <!--                        <option value=""></option>-->
+                    </select>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Portion Size:</span>
+                    <input type="number" class="form-control" id="portionSize" name="portionSize" required>
+                    <div class="invalid-feedback">This field is required</div>
+                </div>
+                <button class="col-3 btn btn-primary" type="submit" id="submit-mealComponentsFromDish">Save</button>
+            </form>
+        </div>
+
+        <div id="mealComponentsDetail">
 
             <table class="table table-hover">
                 <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Food Type</th>
-                        <th>Preparation Technique</th>
-                        <th>Volume</th>
-                    </tr>
+                <tr>
+                    <th>Id</th>
+                    <th>Food Type</th>
+                    <th>Preparation Technique</th>
+                    <th>Volume</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="mealComponent : ${meal.mealComponents}">
-                        <td th:text="${mealComponent.id}">></td>
-                        <td th:text="${mealComponent.foodType.name}"></td>
-                        <td th:text="${mealComponent.preparationTechnique.code}"></td>
-                        <td th:text="${mealComponent.volume}"></td>
-                        <td>
-                            <a th:href="@{'/meal-component/edit/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}" class="icon-link">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a th:href="@{'/meal-component/delete/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}" class="icon-link">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
+                <tr th:each="mealComponent : ${meal.mealComponents}">
+                    <td th:text="${mealComponent.id}">></td>
+                    <td th:text="${mealComponent.foodType.name}"></td>
+                    <td th:text="${mealComponent.preparationTechnique.code}"></td>
+                    <td th:text="${mealComponent.volume}"></td>
+                    <td>
+                        <a th:href="@{'/meal-component/edit/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}"
+                           class="icon-link">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a th:href="@{'/meal-component/delete/' + ${mealComponent.id} + '?mealId=' + ${meal.id}}"
+                           class="icon-link">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <a th:href="@{'/meal-component/new?mealId=' + ${meal.id}}">
@@ -84,6 +110,24 @@
     </div>
 
     <script>
+        window.onload = function () {
+            initialiseDishSelect();
+        }
+
+        async function initialiseDishSelect() {
+            let dishes = await fetchSelectOptions(dishesUri);
+            buildSelectOptions("dishId",dishes, "id","name",true);
+        }
+
+        function showMealComponentsFromDish() {
+            document.getElementById("mealComponentsDetail").setAttribute("hidden","hidden");
+
+            document.getElementById("mealComponentsFromDish").removeAttribute("hidden");
+        }
+
+        document.getElementById("button-show-mealComponentsFromDish").addEventListener("click",showMealComponentsFromDish);
+
+
     </script>
 
 </div>

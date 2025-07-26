@@ -1,14 +1,18 @@
 package com.ageinghippy.controller.mvc;
 
 import com.ageinghippy.model.dto.*;
+import com.ageinghippy.service.DishService;
 import com.ageinghippy.service.FoodTypeService;
 import com.ageinghippy.service.MealComponentService;
 import com.ageinghippy.service.MealService;
+import com.ageinghippy.util.ManipulateMealComponents;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/meal-component")
@@ -18,6 +22,7 @@ public class MealComponentViewController {
     private final MealService mealService;
     private final MealComponentService mealComponentService;
     private final FoodTypeService foodTypeService;
+    private final DishService dishService;
 
     @GetMapping("/new")
     @PreAuthorize("hasPermission(#mealId,'Meal','edit')")
@@ -71,4 +76,16 @@ public class MealComponentViewController {
         return "redirect:/meal/edit/" + mealId;
     }
 
+    @PostMapping("/add")
+    @PreAuthorize("hasPermission(#mealId,'Meal','delete')")
+    public String addMealComponentsFromDish(@RequestParam Long mealId, @ModelAttribute MealComponentFromDishDTO mealComponentFromDishDTO) {
+        List<MealComponentDTO> mealComponents =
+                ManipulateMealComponents.buildMealComponentsFromDish(
+                        dishService.getDish(mealComponentFromDishDTO.dishId()),
+                        mealComponentFromDishDTO.portionSize());
+
+        mealComponentService.addMealComponents(mealId,mealComponents);
+
+        return "redirect:/meal/edit/" + mealId;
+    }
 }

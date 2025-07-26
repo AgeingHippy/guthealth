@@ -2,6 +2,7 @@ package com.ageinghippy.service;
 
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.MealComponentDTO;
+import com.ageinghippy.model.entity.Meal;
 import com.ageinghippy.model.entity.MealComponent;
 import com.ageinghippy.repository.*;
 import com.ageinghippy.util.Util;
@@ -9,6 +10,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +72,12 @@ public class MealComponentService {
         MealComponent mealComponent = mealComponentRepository.findById(id).orElseThrow();
 
         mealComponentRepository.delete(mealComponent);
+    }
+
+    @Transactional
+    public void addMealComponents(Long mealId, List<MealComponentDTO> mealComponents) {
+        mealComponents.forEach(mealComponent -> {
+            createNewMealComponent(mealId, mealComponent);
+        });
     }
 }

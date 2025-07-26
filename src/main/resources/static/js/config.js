@@ -16,3 +16,4 @@ const userPasswordUri = contextPath + "api/v1/users/password";
 const userRegisterUri = contextPath + "api/v1/users/register";
 const adminUserPasswordUri = contextPath + "api/v1/users/{id}/password";
 const usersUri = contextPath + "api/v1/users";
+const dishesUri = contextPath +"api/v1/dishes"
