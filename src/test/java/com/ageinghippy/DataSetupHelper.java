@@ -6,6 +6,7 @@ import com.ageinghippy.model.entity.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class DataSetupHelper {
     private Map<Long, Role> roleMap = new HashMap<>();
@@ -27,6 +28,9 @@ public class DataSetupHelper {
     private Map<Long, Dish> dishMap = new HashMap<>();
     private Map<Long, DishDTOSimple> dishDTOSimpleMap = new HashMap<>();
     private Map<Long, DishDTOComplex> dishDTOComplexMap = new HashMap<>();
+
+    private Map<Long, DishComponent> dishComponentMap = new HashMap<>();
+    private Map<Long, DishComponentDTO> dishComponentDTOMap = new HashMap<>();
 
     private Map<Long, Meal> mealMap = new HashMap<>();
     private Map<Long, MealDTOSimple> mealDTOSimpleMap = new HashMap<>();
@@ -296,27 +300,96 @@ public class DataSetupHelper {
         initialiseDish(2L, 2L, "Dish2", "Dish two Description", 1L);
         initialiseDish(3L, 2L, "Dish3", "Dish three Description", 2L);
         initialiseDish(4L, 2L, "Dish4", "Dish four Description", 3L);
+
+        initialiseDishComponents();
+
+        addDishComponentsToDishes();
+
+        initialiseDishDTOMaps();
     }
 
     private void initialiseDish(Long id, Long userPrincipleId, String name,
                                 String description, Long preparationTechniqueId) {
-        dishMap.put(id,
-                Dish.builder()
+        Dish dish = Dish.builder()
+                .id(id)
+                .principle(userPrincipleMap.get(userPrincipleId))
+                .name(name)
+                .description(description)
+                .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueId))
+                .build();
+        dishMap.put(id, dish);
+
+    }
+
+
+    private void initialiseDishComponents() {
+        initialiseDishComponent(1L, 1L, 1L, 100);
+        initialiseDishComponent(2L, 1L, 2L, 100);
+        initialiseDishComponent(3L, 1L, 3L, 100);
+        initialiseDishComponent(4L, 1L, 4L, 100);
+
+        initialiseDishComponent(5L, 2L, 1L, 100);
+        initialiseDishComponent(6L, 2L, 3L, 200);
+        initialiseDishComponent(7L, 2L, 5L, 300);
+        initialiseDishComponent(8L, 2L, 7L, 400);
+
+        initialiseDishComponent(9L, 3L, 1L, 1);
+        initialiseDishComponent(10L, 3L, 10L, 2);
+    }
+
+    private void initialiseDishComponent(Long id, Long dishId, Long foodTypeId, Integer proportion) {
+        dishComponentMap.put(
+                id,
+                DishComponent.builder()
                         .id(id)
-                        .principle(userPrincipleMap.get(userPrincipleId))
-                        .name(name)
-                        .description(description)
-                        .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueId))
-                        .dishComponents(new ArrayList<>()) //todo
-                        .build());
+                        .dish(dishMap.get(dishId))
+                        .foodType(foodTypeMap.get(foodTypeId))
+                        .proportion(proportion)
+                        .build()
+        );
 
-        dishDTOSimpleMap.put(id,
-                new DishDTOSimple(id, name, description, preparationTechniqueDTOMap.get(preparationTechniqueId)));
+        dishComponentDTOMap.put(
+                id,
+                new DishComponentDTO(
+                        id,
+                        foodTypeDTOSimpleMap.get(foodTypeId),
+                        proportion
+                )
+        );
+    }
 
-        dishDTOComplexMap.put(id,
-                new DishDTOComplex(id, name, description,
-                        preparationTechniqueDTOMap.get(preparationTechniqueId),
-                        List.of())); //todo
+    private void addDishComponentsToDishes() {
+        dishMap.values().forEach(dish -> {
+            dish.setDishComponents(
+                    dish.getDishComponents().stream()
+                            .filter(dishComponent -> dishComponent.getDish().getId().equals(dish.getId()))
+                            .toList());
+        });
+    }
+
+    private void initialiseDishDTOMaps() {
+        dishMap.values().forEach(dish -> {
+            dish.getDishComponents().forEach(dishComponent -> {
+                        dishDTOComplexMap.put(dish.getId(),
+                                new DishDTOComplex(dish.getId(), dish.getName(), dish.getDescription(),
+                                        preparationTechniqueDTOMap.get(dish.getPreparationTechnique().getId()),
+                                        dish.getDishComponents().stream()
+                                                .map(dc -> dishComponentDTOMap.get(dc.getId()))
+                                                .toList()
+                                )
+                        );
+                    }
+            );
+        });
+
+        dishDTOComplexMap.values().forEach(dishDTOComplex -> {
+            dishDTOSimpleMap.put(dishDTOComplex.id(),
+                    new DishDTOSimple(
+                            dishDTOComplex.id(),
+                            dishDTOComplex.name(),
+                            dishDTOComplex.description(),
+                            dishDTOComplex.preparationTechnique()));
+        });
     }
 
     private void initialiseMeals() {
@@ -391,7 +464,7 @@ public class DataSetupHelper {
 
             List<MealComponentDTO> mealComponentDTOList = new ArrayList<>();
             meal.getMealComponents().forEach(mealComponent -> {
-                mealComponentDTOList.add( mealComponentDTOMap.get(mealComponent.getId()));
+                mealComponentDTOList.add(mealComponentDTOMap.get(mealComponent.getId()));
             });
 
             mealDTOComplexMap.put(meal.getId(),

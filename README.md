@@ -21,7 +21,7 @@ Currently under transformation from my CodingNomads Java 301 module Capstone pro
 ### Overview
 GutHealth is the seeds of an applications which will track consumption and gut health and finally use AI to detect links between the two.
 
-The current phase allows the user to capture food types and dishes to enable the capture of consumption (Meals).
+The current phase allows the user to capture food types, dishes and meals to enable the capture of consumption (Meals).
 Future phases will allow the capture of gut health and other related data, and finally AI to identify relationships between consumption and gut health.
 
 ### Data categories
