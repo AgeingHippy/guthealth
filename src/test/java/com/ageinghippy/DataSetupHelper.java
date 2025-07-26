@@ -316,6 +316,7 @@ public class DataSetupHelper {
                 .name(name)
                 .description(description)
                 .preparationTechnique(preparationTechniqueMap.get(preparationTechniqueId))
+                .dishComponents(List.of())
                 .build();
         dishMap.put(id, dish);
 
@@ -361,7 +362,7 @@ public class DataSetupHelper {
     private void addDishComponentsToDishes() {
         dishMap.values().forEach(dish -> {
             dish.setDishComponents(
-                    dish.getDishComponents().stream()
+                    dishComponentMap.values().stream()
                             .filter(dishComponent -> dishComponent.getDish().getId().equals(dish.getId()))
                             .toList());
         });
@@ -369,18 +370,19 @@ public class DataSetupHelper {
 
     private void initialiseDishDTOMaps() {
         dishMap.values().forEach(dish -> {
-            dish.getDishComponents().forEach(dishComponent -> {
-                        dishDTOComplexMap.put(dish.getId(),
-                                new DishDTOComplex(dish.getId(), dish.getName(), dish.getDescription(),
-                                        preparationTechniqueDTOMap.get(dish.getPreparationTechnique().getId()),
-                                        dish.getDishComponents().stream()
-                                                .map(dc -> dishComponentDTOMap.get(dc.getId()))
-                                                .toList()
-                                )
-                        );
-                    }
-            );
-        });
+                    dishDTOComplexMap.put(dish.getId(),
+                            new DishDTOComplex(
+                                    dish.getId(),
+                                    dish.getName(),
+                                    dish.getDescription(),
+                                    preparationTechniqueDTOMap.get(dish.getPreparationTechnique().getId()),
+                                    dish.getDishComponents().stream()
+                                            .map(dc -> dishComponentDTOMap.get(dc.getId()))
+                                            .toList()
+                            )
+                    );
+                }
+        );
 
         dishDTOComplexMap.values().forEach(dishDTOComplex -> {
             dishDTOSimpleMap.put(dishDTOComplex.id(),
