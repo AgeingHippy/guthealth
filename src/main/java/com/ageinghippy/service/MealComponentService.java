@@ -80,4 +80,13 @@ public class MealComponentService {
             createNewMealComponent(mealId, mealComponent);
         });
     }
+
+    @Transactional
+    public void replaceMealComponents(Long mealId, List<MealComponentDTO> mealComponents) {
+        Meal meal = mealRepository.findById(mealId).orElseThrow();
+
+        meal.getMealComponents().forEach(mealComponent -> deleteMealComponent(mealComponent.getId()));
+
+        addMealComponents(mealId, mealComponents);
+    }
 }

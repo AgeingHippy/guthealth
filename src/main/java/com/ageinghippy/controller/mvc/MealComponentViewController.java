@@ -77,7 +77,7 @@ public class MealComponentViewController {
     }
 
     @PostMapping("/add")
-    @PreAuthorize("hasPermission(#mealId,'Meal','delete')")
+    @PreAuthorize("hasPermission(#mealId,'Meal','edit')")
     public String addMealComponentsFromDish(@RequestParam Long mealId, @ModelAttribute MealComponentFromDishDTO mealComponentFromDishDTO) {
         List<MealComponentDTO> mealComponents =
                 ManipulateMealComponents.buildMealComponentsFromDish(
@@ -88,4 +88,18 @@ public class MealComponentViewController {
 
         return "redirect:/meal/edit/" + mealId;
     }
+
+    @GetMapping("/aggregate")
+    @PreAuthorize("hasPermission(#mealId,'Meal','edit')")
+    public String aggregateMealComponents(@RequestParam Long mealId) {
+        List<MealComponentDTO> mealComponents =
+                ManipulateMealComponents.aggregateMealComponents(
+                        mealService.getMeal(mealId)
+                );
+
+        mealComponentService.replaceMealComponents(mealId, mealComponents);
+
+        return "redirect:/meal/edit/" + mealId;
+    }
+
 }

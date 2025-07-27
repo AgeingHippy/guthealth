@@ -4,6 +4,7 @@ import com.ageinghippy.DataSetupHelper;
 import com.ageinghippy.model.DTOMapper;
 import com.ageinghippy.model.dto.FoodTypeDTOSimple;
 import com.ageinghippy.model.dto.MealComponentDTO;
+import com.ageinghippy.model.dto.MealDTOComplex;
 import com.ageinghippy.model.dto.PreparationTechniqueDTO;
 import com.ageinghippy.model.entity.FoodType;
 import com.ageinghippy.model.entity.Meal;
@@ -20,10 +21,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -96,4 +100,27 @@ public class MealComponentServiceTest {
 
         assertEquals(expectedMealComponent,createdMealComponent);
     }
+
+//    @Test
+//    void replaceMealComponents() {
+//        MealDTOComplex meal = dsh.getMealDTOComplex(1L);
+//
+//        List<MealComponentDTO> mealComponents = List.of(
+//                new MealComponentDTO(
+//                        null,
+//                        dsh.getFoodTypeDTOSimple(14L),
+//                        dsh.getPreparationTechniqueDTO(2L),
+//                        50),
+//                new MealComponentDTO(
+//                        null,
+//                        dsh.getFoodTypeDTOSimple(15L),
+//                        dsh.getPreparationTechniqueDTO(2L),
+//                        50)
+//        );
+//
+//        doNothing().when(mealComponentRepository.delete(any(MealComponent.class)));
+//
+//        mealComponentService.replaceMealComponents(meal.id(), mealComponents);
+//
+//    }
 }

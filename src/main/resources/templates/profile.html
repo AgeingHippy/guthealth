@@ -42,9 +42,12 @@
                         <input type="password" id="repeat-new-password" class="password form-control"
                                name="repeat-new-password">
                     </div>
-                    <div>
+                    <div class="d-flex justify-content-between">
                         <button type="button" class="col-3 btn btn-primary" id="button-submit-password">
-                            Submit Password
+                            Submit
+                        </button>
+                        <button type="button" class="col-3 btn btn-secondary" id="button-cancel-password">
+                            Cancel
                         </button>
                     </div>
 
@@ -157,6 +160,7 @@
         catch (ignored) {}
 
         document.getElementById("button-submit-password").addEventListener("click",submitPassword);
+        document.getElementById("button-cancel-password").addEventListener("click",hidePasswordUpdate);
 
         try {
             document.getElementById("button-show-password-div").addEventListener("click",showPasswordUpdate);

@@ -50,6 +50,12 @@
                 Populate Meal components from a dish
             </button>
         </div>
+        <div th:if="${aggregationRequired}">
+            <button type="button" class="full-width btn btn-warning" id="button-aggregate-mealComponents"
+                    href="@{'/meal-component/aggregate/' + ${meal.id}}">
+                Aggregate meal components by foodType and Preparation technique
+            </button>
+        </div>
         <br>
 
         <div id="mealComponentsFromDish" hidden>
@@ -67,7 +73,11 @@
                     <input type="number" class="form-control" id="portionSize" name="portionSize" required>
                     <div class="invalid-feedback">This field is required</div>
                 </div>
-                <button class="col-3 btn btn-primary" type="submit" id="submit-mealComponentsFromDish">Save</button>
+                <div  class="d-flex justify-content-between">
+                    <button class="col-3 btn btn-primary" type="submit" id="submit-mealComponentsFromDish">Apply</button>
+                    <button class="col-3 btn btn-secondary" type="button" id="cancel-mealComponentsFromDish">Cancel</button>
+                </div>
+
             </form>
         </div>
 
@@ -125,8 +135,14 @@
             document.getElementById("mealComponentsFromDish").removeAttribute("hidden");
         }
 
-        document.getElementById("button-show-mealComponentsFromDish").addEventListener("click",showMealComponentsFromDish);
+        function cancelMealComponentsFromDish() {
+            document.getElementById("mealComponentsFromDish").setAttribute("hidden","hidden");
 
+            document.getElementById("mealComponentsDetail").removeAttribute("hidden");
+        }
+
+        document.getElementById("button-show-mealComponentsFromDish").addEventListener("click",showMealComponentsFromDish);
+        document.getElementById("cancel-mealComponentsFromDish").addEventListener("click",cancelMealComponentsFromDish);
 
     </script>
 
