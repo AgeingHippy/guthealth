@@ -5,7 +5,6 @@ import com.ageinghippy.model.dto.DishComponentDTO;
 import com.ageinghippy.model.dto.DishDTOComplex;
 import com.ageinghippy.model.dto.MealComponentDTO;
 import com.ageinghippy.model.dto.MealDTOComplex;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,10 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ManipulateMealComponentsTest {
 
     private final DataSetupHelper dsh = new DataSetupHelper();
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void buildMealComponentsFromDish_emptyList() {
@@ -154,4 +149,48 @@ class ManipulateMealComponentsTest {
         });
 
     }
+
+    @Test
+    void aggregation_required_true() {
+        MealDTOComplex meal3 = dsh.getMealDTOComplex(3L);
+        MealDTOComplex meal = new MealDTOComplex(
+                meal3.id(),
+                meal3.description(),
+                meal3.date(),
+                meal3.time(),
+                List.of(
+                        meal3.mealComponents().get(0),
+                        meal3.mealComponents().get(1),
+                        new MealComponentDTO(
+                                98L,
+                                meal3.mealComponents().get(0).foodType(),
+                                meal3.mealComponents().get(0).preparationTechnique(),
+                                100),
+                        new MealComponentDTO(
+                                99L,
+                                meal3.mealComponents().get(0).foodType(),
+                                dsh.getPreparationTechniqueDTO(1L),
+                                1000)
+                )
+        );
+
+        Boolean aggregationRequired = ManipulateMealComponents.aggregationRequired(meal);
+
+        assertTrue(aggregationRequired);
+    }
+
+    @Test
+    void aggregation_required_false_emptylist() {
+        MealDTOComplex meal = dsh.getMealDTOComplex(4L);
+
+        assertFalse(ManipulateMealComponents.aggregationRequired(meal));
+    }
+
+    @Test
+    void aggregation_required_false() {
+        MealDTOComplex meal = dsh.getMealDTOComplex(1L);
+
+        assertFalse(ManipulateMealComponents.aggregationRequired(meal));
+    }
+
 }

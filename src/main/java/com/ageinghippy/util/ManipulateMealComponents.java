@@ -7,6 +7,23 @@ import java.util.*;
 
 public class ManipulateMealComponents {
 
+    static class KeySet {
+        FoodTypeDTOSimple foodType;
+        PreparationTechniqueDTO preparationTechnique;
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            KeySet keySet = (KeySet) o;
+            return Objects.equals(foodType, keySet.foodType) && Objects.equals(preparationTechnique, keySet.preparationTechnique);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(foodType, preparationTechnique);
+        }
+    }
+
     public static List<MealComponentDTO> buildMealComponentsFromDish(DishDTOComplex dish, Integer servingSize) {
         List<MealComponentDTO> mealComponents = new ArrayList<>();
         Integer dishProportionTotal = dish.dishComponents().stream()
@@ -23,23 +40,6 @@ public class ManipulateMealComponents {
     }
 
     public static List<MealComponentDTO> aggregateMealComponents(MealDTOComplex meal) {
-        class KeySet {
-            FoodTypeDTOSimple foodType;
-            PreparationTechniqueDTO preparationTechnique;
-
-            @Override
-            public boolean equals(Object o) {
-                if (o == null || getClass() != o.getClass()) return false;
-                KeySet keySet = (KeySet) o;
-                return Objects.equals(foodType, keySet.foodType) && Objects.equals(preparationTechnique, keySet.preparationTechnique);
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hash(foodType, preparationTechnique);
-            }
-        }
-
         Set<KeySet> keys = new HashSet<>();
 
         meal.mealComponents().forEach(mc -> {
@@ -70,4 +70,16 @@ public class ManipulateMealComponents {
         return mealComponents;
     }
 
+    public static Boolean aggregationRequired(MealDTOComplex meal) {
+        Set<KeySet> keys = new HashSet<>();
+
+        meal.mealComponents().forEach(mc -> {
+            KeySet keySet = new KeySet();
+            keySet.foodType = mc.foodType();
+            keySet.preparationTechnique = mc.preparationTechnique();
+            keys.add(keySet);
+        });
+
+        return keys.size() != meal.mealComponents().size();
+    }
 }
