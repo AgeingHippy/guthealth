@@ -25,6 +25,7 @@ public class MealComponent implements Serializable {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "meal_id")
     @JsonIgnoreProperties("meals")
     private Meal meal;
 

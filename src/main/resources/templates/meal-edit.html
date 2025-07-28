@@ -51,8 +51,9 @@
             </button>
         </div>
         <div th:if="${aggregationRequired}">
+            <br>
             <button type="button" class="full-width btn btn-warning" id="button-aggregate-mealComponents"
-                    href="@{'/meal-component/aggregate/' + ${meal.id}}">
+                    th:data-url="@{'/meal-component/aggregate?mealId=' + ${meal.id}}">
                 Aggregate meal components by foodType and Preparation technique
             </button>
         </div>
@@ -144,6 +145,10 @@
         document.getElementById("button-show-mealComponentsFromDish").addEventListener("click",showMealComponentsFromDish);
         document.getElementById("cancel-mealComponentsFromDish").addEventListener("click",cancelMealComponentsFromDish);
 
+        document.getElementById('button-aggregate-mealComponents').addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            window.location.href = url;
+        });
     </script>
 
 </div>

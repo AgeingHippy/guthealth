@@ -25,12 +25,12 @@ public class MealComponentService {
     private final EntityManager entityManager;
 
     public MealComponentDTO getMealComponent(Long id) {
-        return dtoMapper.map(mealComponentRepository.findById(id).orElseThrow(),MealComponentDTO.class);
+        return dtoMapper.map(mealComponentRepository.findById(id).orElseThrow(), MealComponentDTO.class);
     }
 
     @Transactional
     public MealComponentDTO createNewMealComponent(Long mealId, MealComponentDTO newMealComponent) {
-        MealComponent mealComponent = dtoMapper.map(newMealComponent,MealComponent.class);
+        MealComponent mealComponent = dtoMapper.map(newMealComponent, MealComponent.class);
 
         mealComponent.setMeal(mealRepository.findById(mealId).orElseThrow());
         mealComponent.setFoodType(foodTypeRepository.findById(newMealComponent.foodType().id()).orElseThrow());
@@ -38,14 +38,14 @@ public class MealComponentService {
 
         mealComponent = saveMealComponent(mealComponent);
 
-        return dtoMapper.map(mealComponent,MealComponentDTO.class);
+        return dtoMapper.map(mealComponent, MealComponentDTO.class);
     }
 
     @Transactional
     public MealComponentDTO updateMealComponent(Long id, MealComponentDTO updatedMealComponent) {
         MealComponent mealComponent = mealComponentRepository.findById(id).orElseThrow();
 
-        if ( updatedMealComponent.foodType().id() != null) {
+        if (updatedMealComponent.foodType().id() != null) {
             mealComponent.setFoodType(foodTypeRepository.findById(updatedMealComponent.foodType().id()).orElseThrow());
         }
         if (updatedMealComponent.preparationTechnique().id() != null) {
@@ -55,7 +55,7 @@ public class MealComponentService {
         }
         mealComponent.setVolume(Util.valueIfNull(updatedMealComponent.volume(), mealComponent.getVolume()));
 
-        return dtoMapper.map(saveMealComponent(mealComponent),MealComponentDTO.class);
+        return dtoMapper.map(saveMealComponent(mealComponent), MealComponentDTO.class);
     }
 
     private MealComponent saveMealComponent(MealComponent mealComponent) {
@@ -85,7 +85,7 @@ public class MealComponentService {
     public void replaceMealComponents(Long mealId, List<MealComponentDTO> mealComponents) {
         Meal meal = mealRepository.findById(mealId).orElseThrow();
 
-        meal.getMealComponents().forEach(mealComponent -> deleteMealComponent(mealComponent.getId()));
+        meal.getMealComponents().clear();
 
         addMealComponents(mealId, mealComponents);
     }

@@ -4,6 +4,7 @@ import com.ageinghippy.model.dto.*;
 import com.ageinghippy.model.entity.UserPrinciple;
 import com.ageinghippy.service.MealService;
 import com.ageinghippy.service.UserPrincipleService;
+import com.ageinghippy.util.ManipulateMealComponents;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,6 +77,7 @@ public class MealViewController {
             MealDTOComplex meal = mealService.getMeal(id);
             model.addAttribute("meal", meal);
         }
+        model.addAttribute("aggregationRequired", ManipulateMealComponents.aggregationRequired((MealDTOComplex) model.getAttribute("meal")));
 
         return "meal-edit";
     }
