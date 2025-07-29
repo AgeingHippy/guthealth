@@ -95,14 +95,9 @@ GutHealth is a Java 21 Spring Boot application using:
 - Implement FlyWay to initialise database
 - AWS deployment prior to submitting to CodingNomads for certificate application
 - Admin user maintenance
+- Meal MVC
 
 ## Current phase:
-- Meal MVC
-- [x] Repository
-- [x] Meal Service
-- [] Meal REST API
-- [x] Meal based permissions
-- [x] Meal Views
 
 ## Future Phases
 - remove disabling of CSRF and test
